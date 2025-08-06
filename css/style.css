@@ -123,6 +123,8 @@ footer { background-color: var(--color-dark-primary); color: var(--color-text-li
     flex-grow: 1;
 }
 
+/* FILE: css/style.css (Solution) */
+
 .mobile-menu-link {
     display: flex;
     align-items: center;
@@ -132,7 +134,7 @@ footer { background-color: var(--color-dark-primary); color: var(--color-text-li
     font-weight: 600;
     text-decoration: none;
     color: var(--color-text-dark);
-    background-color: var(--color-light-card);
+    background-color: var(--color-light-card); /* This line fixes the background */
     transition: background-color 0.2s, transform 0.2s;
 }
 
