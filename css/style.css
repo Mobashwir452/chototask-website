@@ -277,9 +277,7 @@ footer {
         align-items: center;
         gap: 0.75rem;
     }
-    .menu-button {
-        display: none;
-    }
+
     .footer-main {
         flex-direction: row;
         justify-content: space-between;
