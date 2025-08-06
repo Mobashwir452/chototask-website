@@ -54,6 +54,7 @@ header {
     display: flex;
     align-items: center;
     gap: 1rem;
+    flex-grow: 1;
 }
 
 .logo {
@@ -65,8 +66,12 @@ header {
     text-decoration: none;
 }
 
+/* FILE: css/style.css (Corrected) */
+
 .header-right {
-    display: none; /* Hidden on mobile */
+    display: flex; /* This makes the buttons visible */
+    align-items: center;
+    gap: 0.5rem; /* Adds a small space between buttons */
 }
 
 /* Footer Styles */
@@ -143,8 +148,9 @@ footer {
 /* Reusable Button Styles */
 .btn {
     display: inline-block;
-    padding: 0.75rem 1.5rem;
-    border-radius: 999px; /* pill shape */
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    border-radius: 999px;/* pill shape */
     font-weight: 600;
     text-decoration: none;
     text-align: center;
@@ -179,7 +185,7 @@ footer {
 }
 
 .btn-outline {
-    border: 2px solid #d1d5db;
+    border: 2px solid #d1d5db; /* Make the border thicker */
     background-color: transparent;
     color: var(--color-text-dark);
 }
@@ -190,7 +196,7 @@ footer {
     background: linear-gradient(90deg, var(--color-dark-secondary), var(--color-dark-primary));
     color: white;
     padding: 0.5rem;
-    border-radius: 999px;
+    border-radius: 999px; /* This makes it a perfect circle */
     border: none;
     cursor: pointer;
 }
