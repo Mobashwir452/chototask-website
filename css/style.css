@@ -30,18 +30,144 @@ header { background-color: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px)
 .logo { font-size: 1.5rem; font-weight: 700; background: linear-gradient(90deg, var(--color-dark-secondary), var(--color-dark-primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-decoration: none; }
 .header-right { display: flex; align-items: center; gap: 0.5rem; }
 
-footer { background-color: var(--color-dark-primary); color: var(--color-text-light); padding: 4rem 0 2rem 0; }
-.footer-container { display: flex; flex-direction: column; }
-.footer-main { display: flex; flex-direction: column; gap: 2rem; padding-bottom: 2rem; border-bottom: 1px solid #4a5a6a; }
-.footer-about p { color: #a9b4c0; margin: 1rem 0; max-width: 300px; }
-.social-icons { display: flex; gap: 1rem; }
-.social-icons a { opacity: 0.7; transition: opacity 0.3s; }
-.social-icons a:hover { opacity: 1; }
-.footer-links { display: flex; flex-direction: column; gap: 2rem; }
-.footer-links h4 { font-weight: 600; margin-bottom: 0.75rem; color: var(--color-text-light); }
-.footer-links a { display: block; color: #a9b4c0; text-decoration: none; margin-bottom: 0.5rem; transition: color 0.3s; }
-.footer-links a:hover { color: var(--color-accent-primary); }
-.footer-bottom { padding-top: 2rem; text-align: center; color: #a9b4c0; }
+/* FILE: css/style.css (Solution) */
+
+/* FILE: css/style.css (Final, Corrected Footer Styles) */
+
+/* Main Footer Container */
+footer {
+    background: var(--worker, #2c3e50);
+    color: var(--background, #f8f9fa);
+    padding: 3rem 0 1.5rem 0;
+}
+
+.footer-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* This creates the dividing line between sections */
+.footer-section {
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid;
+    border-image: linear-gradient(90deg, rgba(0, 255, 205, 1) 0%, rgba(0, 184, 255, 1) 100%);
+    border-image-slice: 1;
+}
+
+/* About Section */
+.footer-about .logo {
+    font-family: "Poppins-Bold", sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 8px; /* Space for the line */
+}
+
+/* The accent line under the logo */
+.footer-about .logo::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 76px;
+    height: 2px;
+    border-top: 2px solid;
+    border-image: linear-gradient(90deg, rgba(0, 255, 205, 1) 0%, rgba(0, 184, 255, 1) 100%);
+    border-image-slice: 1;
+}
+
+.footer-about p {
+    font-family: "Poppins-Regular", sans-serif;
+    font-size: 14px;
+    color: var(--background, #f8f9fa);
+    margin: 1rem 0 1.5rem 0;
+    max-width: 363px;
+}
+
+.social-icons {
+    display: flex;
+    gap: 1rem;
+}
+
+.social-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #2C3E50 0%, #00709B 100%);
+    color: var(--background, #f8f9fa);
+    transition: transform 0.3s;
+}
+
+.social-icon:hover {
+    transform: scale(1.1);
+}
+
+/* Links Section */
+.footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.footer-links h4 {
+    font-family: "Poppins-Bold", sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--background, #f8f9fa);
+    position: relative;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    padding-bottom: 8px; /* Space for the line */
+}
+
+/* The accent line under the link headings */
+.footer-links h4::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 76px;
+    height: 2px;
+    border-top: 2px solid;
+    border-image: linear-gradient(90deg, rgba(0, 255, 205, 1) 0%, rgba(0, 184, 255, 1) 100%);
+    border-image-slice: 1;
+}
+
+.footer-links a {
+    display: block;
+    font-family: "Poppins-Regular", sans-serif;
+    font-size: 14px;
+    color: var(--background, #f8f9fa);
+    text-decoration: none;
+    margin-bottom: 0.75rem;
+    transition: color 0.3s;
+}
+
+.footer-links a:hover {
+    color: var(--color-accent-primary);
+}
+
+/* Copyright Section */
+.footer-bottom {
+    padding-top: 1rem;
+    text-align: center;
+    font-family: "Poppins-Regular", sans-serif;
+    font-size: 14px;
+    color: var(--background, #f8f9fa);
+}
+
+/* --- Desktop Styles for Footer --- */
+@media (min-width: 768px) {
+    .footer-links {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}
 
 .btn { display: inline-block; padding: 0.5rem 1rem; font-size: 0.875rem; border-radius: 999px; font-weight: 600; text-decoration: none; text-align: center; transition: transform 0.2s, box-shadow 0.2s; border: none; cursor: pointer; }
 .btn:hover { transform: translateY(-2px); }
