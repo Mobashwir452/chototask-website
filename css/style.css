@@ -55,7 +55,6 @@ footer {
     border-image-slice: 1;
 }
 
-/* About Section */
 .footer-about .logo {
     font-family: "Poppins-Bold", sans-serif;
     font-size: 20px;
@@ -63,6 +62,7 @@ footer {
     position: relative;
     display: inline-block;
     padding-bottom: 8px; /* Space for the line */
+    color: var(--background, #f8f9fa); /* This makes the text white */
 }
 
 /* The accent line under the logo */
@@ -98,8 +98,9 @@ footer {
     width: 48px;
     height: 48px;
     border-radius: 50%;
+    /* This is the correct gradient from your Figma design */
     background: linear-gradient(180deg, #2C3E50 0%, #00709B 100%);
-    color: var(--background, #f8f9fa);
+    color: var(--background, #f8f9fa); /* This makes the SVG icon white */
     transition: transform 0.3s;
 }
 
