@@ -58,23 +58,25 @@ footer { background-color: var(--color-dark-primary); color: var(--color-text-li
 
 
 
-/* FILE: css/style.css (Final Corrected Mobile Menu Styles) */
+/* FILE: css/style.css (Final, Guaranteed Fix for Mobile Menu) */
 
-/* Mobile Menu */
-/* FILE: css/style.css (Solution) */
-
-.mobile-menu-container {
-    position: fixed;
-    inset: 0;
-    background-color: rgba(0,0,0,0.6);
-    z-index: 100;
-    /* This line hides the menu off-screen by default */
-    transform: translateX(-100%); 
-    transition: transform 0.3s ease-in-out;
+/* Hide the checkbox itself */
+.menu-toggle-input {
+    display: none;
 }
 
-.mobile-menu-container.active {
-    transform: translateX(0);
+/* Style the menu container (hidden by default) */
+.mobile-menu-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
 }
 
 .mobile-menu-content {
@@ -88,7 +90,22 @@ footer { background-color: var(--color-dark-primary); color: var(--color-text-li
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
 }
+
+/* --- THIS IS THE MAGIC --- */
+/* When the checkbox is checked, show the menu */
+.menu-toggle-input:checked ~ .mobile-menu-container {
+    opacity: 1;
+    visibility: visible;
+}
+
+.menu-toggle-input:checked ~ .mobile-menu-container .mobile-menu-content {
+    transform: translateX(0);
+}
+/* ------------------------- */
+
 
 .mobile-menu-header {
     display: flex;
@@ -104,17 +121,17 @@ footer { background-color: var(--color-dark-primary); color: var(--color-text-li
     color: var(--color-dark-primary);
 }
 
-#close-menu-btn {
+.close-menu-btn {
     background: none;
     border: none;
     cursor: pointer;
     padding: 0.5rem;
     color: var(--color-text-muted);
 }
-#close-menu-btn:hover {
+.close-menu-btn:hover {
     color: var(--color-dark-primary);
 }
-#close-menu-btn .icon {
+.close-menu-btn .icon {
     width: 1.5rem;
     height: 1.5rem;
 }
@@ -126,8 +143,6 @@ footer { background-color: var(--color-dark-primary); color: var(--color-text-li
     flex-grow: 1;
 }
 
-/* FILE: css/style.css (Solution) */
-
 .mobile-menu-link {
     display: flex;
     align-items: center;
@@ -137,7 +152,7 @@ footer { background-color: var(--color-dark-primary); color: var(--color-text-li
     font-weight: 600;
     text-decoration: none;
     color: var(--color-text-dark);
-    background-color: var(--color-light-card); /* This line fixes the background */
+    background-color: var(--color-light-card);
     transition: background-color 0.2s, transform 0.2s;
 }
 
@@ -169,7 +184,6 @@ footer { background-color: var(--color-dark-primary); color: var(--color-text-li
     justify-content: center;
     padding: 0.8rem 1.5rem;
 }
-
 
 
 

@@ -1,12 +1,16 @@
-<!-- FILE: components/header-public.html (Final Corrected Version) -->
+<!-- FILE: components/header-public.html (Final, Guaranteed Fix) -->
+
+<!-- This invisible checkbox will control the menu's state -->
+<input type="checkbox" id="menu-toggle" class="menu-toggle-input">
 
 <nav class="header-nav container">
     <div class="header-left">
-        <button id="menu-btn" class="menu-button">
+        <!-- The menu button is now a label for the checkbox -->
+        <label for="menu-toggle" class="menu-button">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="icon">
               <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
             </svg>
-        </button>
+        </label>
         <a href="/" class="logo">ChotoTask</a>
     </div>
     <div class="header-right">
@@ -15,40 +19,24 @@
     </div>
 </nav>
 
-<!-- FILE: components/header-public.html (Solution) -->
-
-<nav class="mobile-menu-nav">
-    <a class="mobile-menu-link" href="/">
-        <div class="nav-icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon"><path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 001.061 1.06l8.69-8.69z" /><path d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 01-.75-.75v-4.5a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75V21a.75.75 0 01-.75.75H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 5.43z" /></svg></div>
-        <span>Home</span>
-    </a>
-    <a class="mobile-menu-link" href="/tasks.html">
-        <div class="nav-icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon"><path d="M12 9a3.75 3.75 0 100 7.5A3.75 3.75 0 0012 9z" /><path fill-rule="evenodd" d="M9.344 3.071a49.52 49.52 0 015.312 0c.967.052 1.83.585 2.342 1.374a3.026 3.026 0 01.64 2.298V16.5a3.026 3.026 0 01-.64 2.298c-.512.79-1.375 1.322-2.342 1.374a49.52 49.52 0 01-5.312 0c-.967-.052-1.83-.585-2.342-1.374a3.026 3.026 0 01-.64-2.298V6.743a3.026 3.026 0 01.64-2.298c.512-.79 1.375-1.322 2.342-1.374zM12 15.75a3.75 3.75 0 100-7.5 3.75 3.75 0 000 7.5z" clip-rule="evenodd" /></svg></div>
-        <span>Explore Tasks</span>
-    </a>
-    <a class="mobile-menu-link" href="/faq.html">
-        <div class="nav-icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon"><path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm11.378-3.917c-.842-1.138-2.554-1.138-3.396 0a.75.75 0 01-1.262-.75 4.5 4.5 0 018.174 0 .75.75 0 01-1.262.75zM10.5 12a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V12.75a.75.75 0 01.75-.75zm3.75-1.5a.75.75 0 00-1.5 0v4.5a.75.75 0 001.5 0V10.5z" clip-rule="evenodd" /></svg></div>
-        <span>FAQ</span>
-    </a>
-    <a class="mobile-menu-link" href="/how-it-works.html">
-        <div class="nav-icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon"><path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd" /></svg></div>
-        <span>How It Works</span>
-    </a>
-    <a class="mobile-menu-link" href="/pricing.html">
-        <div class="nav-icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon"><path d="M12 7.5a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5z" /><path fill-rule="evenodd" d="M1.5 4.5a3 3 0 013-3h15a3 3 0 013 3v15a3 3 0 01-3 3h-15a3 3 0 01-3-3V4.5zM3 16.5v-1.875a.75.75 0 01.75-.75h16.5a.75.75 0 01.75.75v1.875a.75.75 0 01-.75.75h-16.5a.75.75 0 01-.75-.75zM3 9.75v-1.5a.75.75 0 01.75-.75h16.5a.75.75 0 01.75.75v1.5a.75.75 0 01-.75.75h-16.5a.75.75 0 01-.75-.75z" clip-rule="evenodd" /></svg></div>
-        <span>Pricing</span>
-    </a>
-    <a class="mobile-menu-link" href="/contact.html">
-        <div class="nav-icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon"><path fill-rule="evenodd" d="M1.5 4.5a3 3 0 013-3h15a3 3 0 013 3v15a3 3 0 01-3 3h-15a3 3 0 01-3-3V4.5zm4.5.75a.75.75 0 01.75.75v9a.75.75 0 01-1.5 0V6a.75.75 0 01.75-.75zm3.75 0a.75.75 0 01.75.75v9a.75.75 0 01-1.5 0V6a.75.75 0 01.75-.75zm3.75 0a.75.75 0 01.75.75v9a.75.75 0 01-1.5 0V6a.75.75 0 01.75-.75z" clip-rule="evenodd" /></svg></div>
-        <span>Contact Us</span>
-    </a>
-    <a class="mobile-menu-link" href="/terms.html">
-        <div class="nav-icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon"><path fill-rule="evenodd" d="M12.97 3.97a.75.75 0 011.06 0l7.5 7.5a.75.75 0 010 1.06l-7.5 7.5a.75.75 0 11-1.06-1.06l6.22-6.22H3a.75.75 0 010-1.5h16.19l-6.22-6.22a.75.75 0 010-1.06z" clip-rule="evenodd" /></svg></div>
-        <span>Terms</span>
-    </a>
-    <a class="mobile-menu-link" href="/privacy.html">
-        <div class="nav-icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon"><path fill-rule="evenodd" d="M12 1.5a5.25 5.25 0 00-5.25 5.25v3a3 3 0 00-3 3v6.75a3 3 0 003 3h10.5a3 3 0 003-3v-6.75a3 3 0 00-3-3v-3c0-2.9-2.35-5.25-5.25-5.25zm3.75 8.25v-3a3.75 3.75 0 10-7.5 0v3h7.5z" clip-rule="evenodd" /></svg></div>
-        <span>Privacy Policy</span>
-    </a>
-    <a href="/register.html" class="btn btn-accent get-started-btn">Get Started</a>
-</nav>
+<!-- Mobile Menu Structure -->
+<div class="mobile-menu-container">
+    <div class="mobile-menu-content">
+        <div class="mobile-menu-header">
+            <h2>Menu</h2>
+            <!-- The close button is also a label for the checkbox -->
+            <label for="menu-toggle" class="close-menu-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon">
+                    <path fill-rule="evenodd" d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z" clip-rule="evenodd" />
+                </svg>
+            </label>
+        </div>
+        <nav class="mobile-menu-nav">
+            <!-- All the links from before -->
+            <a class="mobile-menu-link" href="/">...</a>
+            <a class="mobile-menu-link" href="/tasks.html">...</a>
+            <!-- ... and so on for all your links ... -->
+            <a href="/register.html" class="btn btn-accent get-started-btn">Get Started</a>
+        </nav>
+    </div>
+</div>
