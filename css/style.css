@@ -277,10 +277,10 @@ footer {
 .mobile-menu-nav {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem; /* Reduced gap between links */
+    gap: 0.5rem; /* Links will have a small gap between them */
     flex-grow: 1;
-    background-color: var(--color-light-card); /* The solid background for the whole list */
-    padding: 0.5rem; /* Padding around the list */
+    background-color: var(--color-light-card); /* Solid background for the whole list */
+    padding: 0.75rem; /* Padding around the list */
     border-radius: 1rem; /* Rounded corners for the whole list */
 }
 
