@@ -1,16 +1,12 @@
 <!-- FILE: components/header-public.html (Final, Corrected Version) -->
 
-<!-- This invisible checkbox is the new, reliable controller for the menu -->
-<input type="checkbox" id="menu-toggle" class="menu-toggle-input">
-
 <nav class="header-nav container">
     <div class="header-left">
-        <!-- The hamburger button is now a 'label' that toggles the checkbox -->
-        <label for="menu-toggle" class="menu-button">
+        <button id="menu-open-btn" class="menu-button">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="icon">
               <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
             </svg>
-        </label>
+        </button>
         <a href="/" class="logo">ChotoTask</a>
     </div>
     <div class="header-right">
@@ -19,17 +15,16 @@
     </div>
 </nav>
 
-<!-- The Mobile Menu Container -->
-<div class="mobile-menu-container">
+<!-- Mobile Menu Structure -->
+<div id="mobile-menu-container" class="mobile-menu-container">
     <div class="mobile-menu-content">
         <div class="mobile-menu-header">
             <h2>Menu</h2>
-            <!-- The close button is also a 'label' that untoggles the checkbox -->
-            <label for="menu-toggle" class="menu-close-btn">
+            <button id="menu-close-btn" class="menu-close-btn">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon">
                     <path fill-rule="evenodd" d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z" clip-rule="evenodd" />
                 </svg>
-            </label>
+            </button>
         </div>
         <nav class="mobile-menu-nav">
             <a class="mobile-menu-link" href="/">
