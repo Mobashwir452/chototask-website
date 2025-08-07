@@ -16,9 +16,9 @@ const unsubscribe = onSnapshot(q, (querySnapshot) => {
         return;
     }
 
-    querySnapshot.forEach((document) => {
-        const messageData = document.data();
-        const messageId = document.id;
+    querySnapshot.forEach((doc) => { // Changed 'document' to 'doc' to avoid conflict
+        const messageData = doc.data();
+        const messageId = doc.id;
 
         // Create the message card element
         const card = document.createElement('div');
