@@ -32,3 +32,39 @@ const initializePageInteractions = () => {
 // Listen for the custom 'componentsLoaded' event from component-loader.js
 // This is the professional way to ensure interactions are initialized only after the dynamic content is ready.
 document.addEventListener('componentsLoaded', initializePageInteractions);
+
+
+/* FILE: js/main.js (Add this new code at the end) */
+
+// --- Testimonial Slider Drag-to-Scroll Functionality ---
+const slider = document.querySelector('.testimonial-slider');
+if (slider) {
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    slider.addEventListener('mousedown', (e) => {
+        isDown = true;
+        slider.classList.add('active');
+        startX = e.pageX - slider.offsetLeft;
+        scrollLeft = slider.scrollLeft;
+    });
+
+    slider.addEventListener('mouseleave', () => {
+        isDown = false;
+        slider.classList.remove('active');
+    });
+
+    slider.addEventListener('mouseup', () => {
+        isDown = false;
+        slider.classList.remove('active');
+    });
+
+    slider.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - slider.offsetLeft;
+        const walk = (x - startX) * 2; // The multiplier '2' makes the scroll faster
+        slider.scrollLeft = scrollLeft - walk;
+    });
+}

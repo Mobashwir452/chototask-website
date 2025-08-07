@@ -230,7 +230,14 @@
     display: none;
 }
 
+/* FILE: css/index.css (Add this new rule) */
 
+/* Style for when the slider is being actively dragged */
+.testimonial-slider.active {
+    cursor: grabbing; /* Changes the cursor to a "grabbing hand" icon */
+    cursor: -webkit-grabbing;
+    user-select: none; /* Prevents text from being selected during the drag */
+}
 
 
 /* New styling for each card to match the design */
