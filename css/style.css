@@ -99,6 +99,8 @@ footer {
     gap: 1rem;
 }
 
+/* FILE: css/style.css (Corrected) */
+
 .social-icon {
     display: flex;
     align-items: center;
@@ -106,10 +108,10 @@ footer {
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    /* This is the correct gradient from your Figma design */
     background: linear-gradient(180deg, #2C3E50 0%, #00709B 100%);
-    color: var(--background, #f8f9fa); /* This makes the SVG icon white */
+    color: var(--background, #f8f9fa);
     transition: transform 0.3s;
+    text-decoration: none; /* এই লাইনটি আন্ডারলাইন রিমুভ করবে */
 }
 
 .social-icon:hover {
