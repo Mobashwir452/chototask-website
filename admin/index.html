@@ -6,55 +6,99 @@
     <title>Admin Dashboard | ChotoTask</title>
     
     <!-- Fonts & Icons -->
-    <link href="[https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap](https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap)" rel="stylesheet">
-    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css)">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/admin-global.css">
+    <link rel="stylesheet" href="../css/admin-dashboard.css">
 </head>
 <body class="admin-body">
 
-    <!-- This script MUST be the first script in the body -->
-    <!-- It protects the page from unauthorized access -->
+    <!-- This security script MUST run before the rest of the page loads -->
     <script type="module" src="../js/admin-auth.js"></script>
 
     <div class="admin-wrapper">
-        <!-- Admin Sidebar -->
-        <aside class="admin-sidebar">
-            <h1 class="admin-logo">ChotoTask</h1>
-            <nav class="admin-nav">
-                <a href="/admin/" class="admin-nav-link active">
-                    <i class="fa-solid fa-tachometer-alt"></i>
-                    <span>Dashboard</span>
-                </a>
-                <a href="/admin/messages.html" class="admin-nav-link">
-                    <i class="fa-solid fa-inbox"></i>
-                    <span>Messages</span>
-                </a>
-                <!-- Other links will go here -->
-            </nav>
-            <button id="admin-logout-btn" class="btn btn-outline">Logout</button>
-        </aside>
+        <!-- Sidebar placeholder - will be filled by JavaScript -->
+        <aside id="admin-sidebar-placeholder"></aside>
 
-        <!-- Main Content -->
+        <!-- Main Content Area -->
         <main class="admin-main-content">
             <header class="admin-header">
-                <h2>Welcome, Admin!</h2>
+                <h2>Dashboard</h2>
+                <p>An overview of your platform's activity.</p>
             </header>
+
             <div class="admin-content">
-                <p>This is your dummy dashboard. The real content will be added here soon.</p>
-                <p>Please proceed to create the <strong>Public Messages</strong> page next.</p>
+                <!-- Statistics Cards -->
+                <div class="stats-grid">
+                    <!-- Stat Card 1: Total Users -->
+                    <div class="stat-card">
+                        <div class="stat-icon users">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-title">Total Users</span>
+                            <span class="stat-number">1,250</span>
+                            <span class="stat-change">+15 this week</span>
+                        </div>
+                    </div>
+
+                    <!-- Stat Card 2: Total Workers -->
+                    <div class="stat-card">
+                        <div class="stat-icon workers">
+                            <i class="fa-solid fa-briefcase"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-title">Active Workers</span>
+                            <span class="stat-number">980</span>
+                            <span class="stat-change">+12 this week</span>
+                        </div>
+                    </div>
+
+                    <!-- Stat Card 3: Total Clients -->
+                    <div class="stat-card">
+                        <div class="stat-icon clients">
+                            <i class="fa-solid fa-user-tie"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-title">Active Clients</span>
+                            <span class="stat-number">270</span>
+                            <span class="stat-change">+3 this week</span>
+                        </div>
+                    </div>
+
+                    <!-- Stat Card 4: Total Tasks -->
+                    <div class="stat-card">
+                        <div class="stat-icon tasks">
+                            <i class="fa-solid fa-list-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-title">Tasks Posted</span>
+                            <span class="stat-number">5,430</span>
+                            <span class="stat-change">+120 this week</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Stat Card 5: Commission Earned -->
+                    <div class="stat-card">
+                        <div class="stat-icon earnings">
+                            <i class="fa-solid fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-title">Commission Earned</span>
+                            <span class="stat-number">$1,890.50</span>
+                            <span class="stat-change">+$75.20 this week</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
 
-
-
-<script type="module" src="../js/firebase-config.js"></script>
-<script type="module" src="../js/admin-login.js"></script>
-
-
+    <!-- Global Admin Scripts -->
+    <script type="module" src="../js/firebase-config.js"></script>
+    <script type="module" src="../js/admin-global.js"></script>
 
 </body>
 </html>
