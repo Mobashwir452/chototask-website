@@ -5,42 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login | ChotoTask</title>
     
-    <!-- Fonts & Icons -->
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/admin.css">
+    <!-- We no longer need style.css, only the admin-specific stylesheets -->
+    <link rel="stylesheet" href="../css/admin-global.css">
+    <link rel="stylesheet" href="../css/admin-login.css">
 </head>
 <body class="admin-body">
 
-    <main class="admin-auth-container">
-        <div class="admin-auth-card">
-            <h1 class="admin-logo">ChotoTask</h1>
+    <main class="admin-login-container">
+        <div class="admin-login-card">
+            <h1 class="admin-login-logo">ChotoTask</h1>
             <h2>Admin Panel Login</h2>
             <p>Please enter your credentials to proceed.</p>
-            <form id="admin-login-form" class="admin-form">
+            <form id="admin-login-form" class="admin-login-form">
                 <div class="form-group">
-                    <input type="email" id="email" required>
+                    <input type="email" id="email" required autocomplete="email">
                     <label for="email">Email Address</label>
                 </div>
                 <div class="form-group">
-                    <input type="password" id="password" required>
+                    <input type="password" id="password" required autocomplete="current-password">
                     <label for="password">Password</label>
                 </div>
-                <p id="error-message" class="error-message"></p>
-                <button type="submit" class="btn btn-dark-accent">Login Securely</button>
+                <p id="error-message" class="admin-login-error"></p>
+                <button type="submit" class="admin-btn admin-btn-accent">Login Securely</button>
             </form>
         </div>
     </main>
 
-
-<script type="module" src="../js/firebase-config.js"></script>
-<script type="module" src="../js/admin-login.js"></script>
-
+    <!-- Firebase Scripts -->
+    <script type="module" src="../js/firebase-config.js"></script>
+    <script type="module" src="../js/admin-login.js"></script>
 
 </body>
 </html>
-
-

@@ -1,0 +1,93 @@
+.admin-login-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 1rem;
+}
+
+.admin-login-card {
+    background-color: var(--admin-card-bg);
+    padding: 2.5rem;
+    border-radius: 1rem; /* 16px */
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+    border: 1px solid var(--admin-border);
+}
+
+.admin-login-logo {
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(90deg, var(--admin-accent-start), var(--admin-accent-end));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+}
+
+.admin-login-card h2 {
+    font-size: 1.5rem; /* 24px */
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.admin-login-card p {
+    color: var(--admin-text-secondary);
+    margin-bottom: 2.5rem;
+    font-size: 14px;
+}
+
+.admin-login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.admin-login-form .form-group {
+    position: relative;
+}
+
+.admin-login-form input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid var(--admin-border);
+    color: var(--admin-text-primary);
+    padding: 0.5rem 0;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.admin-login-form input:focus {
+    border-image: linear-gradient(90deg, var(--admin-accent-start), var(--admin-accent-end));
+    border-image-slice: 1;
+}
+
+.admin-login-form label {
+    position: absolute;
+    top: 0.5rem;
+    left: 0;
+    color: var(--admin-text-secondary);
+    pointer-events: none;
+    transition: all 0.2s ease;
+    font-size: 14px;
+}
+
+.admin-login-form input:focus + label,
+.admin-login-form input:valid + label {
+    top: -1rem;
+    font-size: 12px;
+}
+
+.admin-login-error {
+    color: var(--admin-danger);
+    font-size: 14px;
+    margin-top: -1rem;
+    min-height: 1.25rem;
+}
+
+.admin-login-form .admin-btn {
+    width: 100%;
+    margin-top: 1rem;
+}

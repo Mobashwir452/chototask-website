@@ -1,0 +1,59 @@
+:root {
+    /* Color Palette from Blueprint */
+    --admin-bg-start: #2C3E50;
+    --admin-bg-end: #00709B;
+    --admin-card-bg: #2d3748;
+    --admin-text-primary: #E2E8F0;
+    --admin-text-secondary: #A0AEC0;
+    --admin-accent-start: #00B8FF;
+    --admin-accent-end: #00FFCD;
+    --admin-border: #4A5568;
+    --admin-danger: #E53E3E;
+}
+
+/* Global Body Styles */
+.admin-body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--admin-bg-start);
+    background-image: linear-gradient(180deg, var(--admin-bg-start) 0%, var(--admin-bg-end) 100%);
+    color: var(--admin-text-primary);
+    min-height: 100vh;
+}
+
+/* Global Button Styles */
+.admin-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.admin-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Primary Button with Accent Gradient */
+.admin-btn-accent {
+    background: linear-gradient(90deg, var(--admin-accent-start), var(--admin-accent-end));
+    color: var(--admin-bg-start);
+}
+
+/* Secondary/Outline Button */
+.admin-btn-outline {
+    background-color: transparent;
+    border: 2px solid var(--admin-border);
+    color: var(--admin-text-secondary);
+}
+
+.admin-btn-outline:hover {
+    background-color: var(--admin-border);
+    color: var(--admin-text-primary);
+}
