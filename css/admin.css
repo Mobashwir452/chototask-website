@@ -166,3 +166,102 @@
 .admin-header {
     margin-bottom: 2rem;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* --- Messages Page Styles --- */
+.messages-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+.message-card {
+    background-color: #2d3748;
+    border-radius: 0.75rem;
+    border-left: 4px solid transparent;
+    padding: 1.25rem;
+    transition: box-shadow 0.2s;
+}
+
+.message-card:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* Style for new messages */
+.message-card.new {
+    border-left-color: var(--color-accent-primary);
+}
+
+/* Style for read messages */
+.message-card.read {
+    border-left-color: #4a5568;
+}
+
+.message-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #4a5568;
+}
+
+.sender-name {
+    color: #cbd5e0;
+    font-weight: 600;
+    display: block;
+}
+
+.sender-email {
+    font-size: 0.875rem;
+    color: #a0aec0;
+}
+
+.message-time {
+    font-size: 0.875rem;
+    color: #718096;
+    flex-shrink: 0;
+    margin-left: 1rem;
+}
+
+.message-subject {
+    font-weight: 600;
+    color: #e2e8f0;
+    margin-bottom: 0.5rem;
+}
+
+.message-body {
+    color: #a0aec0;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.message-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.message-actions .btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+}
+
+.btn-danger {
+    background-color: #c53030;
+    color: white;
+}
+.btn-danger:hover {
+    background-color: #9b2c2c;
+}
