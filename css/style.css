@@ -266,6 +266,7 @@ footer {
     background: var(--worker, #2c3e50);
     color: var(--color-secondary-text);
     padding: 3rem 0 1.5rem 0;
+    margin-top: 0; /* (optional) */
 }
 
 .footer-container {

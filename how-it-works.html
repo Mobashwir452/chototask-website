@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How It Works | ChotoTask</title>
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/how-it-works.css">
+</head>
+<body>
+  <header id="header-placeholder"></header>
+
+  <main>
+    <!-- Hero Title -->
+<!-- Section: Hero Intro -->
+<section class="how-hero-section">
+  <div class="container text-center">
+<!-- Hero Icon Matching Dashboard Style -->
+<div class="hero-icon">
+  <div class="hero-icon-middle">
+    <div class="hero-icon-top"></div>
+  </div>
+</div>
+
+    <h1 class="how-hero-title">How It Works</h1>
+    <p class="how-hero-subtitle">A step-by-step guide for respective workers and clients</p>
+
+  </div>
+</section>
+
+<section class="how-toggle-section">
+  <div class="container">
+    <div class="how-toggle-buttons">
+      <button class="how-tab-btn active" data-target="worker">For Workers</button>
+      <button class="how-tab-btn" data-target="client">For Clients</button>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+    <!-- Workers Flow -->
+    <section id="worker" class="how-flow-section">
+      <div class="container">
+        <div class="how-step-card">
+          <span>01</span>
+          <div>
+            <h3>Create a free Account</h3>
+            <p>Sign up in seconds using your google account</p>
+          </div>
+        </div>
+        <div class="how-step-card">
+          <span>02</span>
+          <div>
+            <h3>Explore Live Tasks</h3>
+            <p>Browse hundreds of tasks by category or payout</p>
+          </div>
+        </div>
+        <div class="how-step-card">
+          <span>03</span>
+          <div>
+            <h3>Choose one as your Wish</h3>
+            <p>Start one task by just click the start button.</p>
+          </div>
+        </div>
+        <div class="how-step-card">
+          <span>04</span>
+          <div>
+            <h3>Submit Real Proof</h3>
+            <p>Once complete the task provide the proof as screenshot or text.</p>
+          </div>
+        </div>
+        <div class="how-step-card">
+          <span>05</span>
+          <div>
+            <h3>Get Approved & Paid</h3>
+            <p>Money will be added to your wallet instantly once approved.</p>
+          </div>
+        </div>
+<!-- Force full width section (outside any .container) -->
+<section class="how-final-cta-wrapper">
+  <div class="how-final-cta-box">
+    <h3 class="how-final-title">Ready to Start?</h3>
+    <a href="/register.html" class="how-final-btn">Join as A worker</a>
+  </div>
+</section>
+
+      </div>
+    </section>
+
+
+
+
+    <!-- Clients Flow -->
+    <section id="client" class="how-flow-section how-hidden">
+      <div class="container">
+        <div class="how-step-card">
+          <span>01</span>
+          <div>
+            <h3>Create a free Account</h3>
+            <p>Sign up in seconds using your google account</p>
+          </div>
+        </div>
+        <div class="how-step-card">
+          <span>02</span>
+          <div>
+            <h3>Post a task</h3>
+            <p>Fill out simple form with your task details</p>
+          </div>
+        </div>
+        <div class="how-step-card">
+          <span>03</span>
+          <div>
+            <h3>Fund your campaign</h3>
+            <p>Deposit funds to make the task live for workers.</p>
+          </div>
+        </div>
+        <div class="how-step-card">
+          <span>04</span>
+          <div>
+            <h3>Review Submission</h3>
+            <p>Approve or reject each submitted proof with one tap.</p>
+          </div>
+        </div>
+        <div class="how-step-card">
+          <span>05</span>
+          <div>
+            <h3>Track Performance</h3>
+            <p>See completion rates and worker stats in your dashboard</p>
+          </div>
+        </div>
+
+ <!-- Force full width section (outside any .container) -->
+<section class="how-final-cta-wrapper">
+  <div class="how-final-cta-box">
+    <h3 class="how-final-title">Ready to Start?</h3>
+    <a href="/register.html" class="how-final-btn">Join as A Client</a>
+  </div>
+</section>
+    </section>
+  </main>
+
+  <footer id="footer-placeholder"></footer>
+
+  <script src="js/component-loader.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const buttons = document.querySelectorAll('.how-tab-btn');
+      const sections = document.querySelectorAll('.how-flow-section');
+
+      buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          buttons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          sections.forEach(section => section.classList.add('how-hidden'));
+
+          const target = btn.dataset.target;
+          document.getElementById(target).classList.remove('how-hidden');
+        });
+      });
+    });
+  </script>
+</body>
+</html>

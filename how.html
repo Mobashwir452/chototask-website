@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How It Works - ChotoTask</title>
+  <link rel="stylesheet" href="how-it-works.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Hero Section -->
+  <section class="how-hero-section">
+    <div class="hero-icon">
+      <div class="hero-icon-middle">
+        <div class="hero-icon-top"></div>
+      </div>
+    </div>
+    <h1 class="how-hero-title">How It Works</h1>
+    <p class="how-hero-subtitle">A step-by-step guide for respective workers and clients</p>
+  </section>
+
+  <!-- Toggle Buttons -->
+  <section class="how-toggle-section">
+    <div class="how-toggle-buttons">
+      <button id="workerBtn" class="how-tab-btn active">For Workers</button>
+      <button id="clientBtn" class="how-tab-btn">For Clients</button>
+    </div>
+  </section>
+
+  <!-- Steps Section -->
+  <section id="howSteps" class="how-flow-section" data-mode="worker">
+    <!-- JS Injected Steps -->
+  </section>
+
+  <!-- Final CTA -->
+  <section class="how-final-cta-wrapper">
+    <div class="how-final-cta-box">
+      <h2 class="how-final-title">Ready to Start?</h2>
+      <a id="ctaBtn" href="/register.html" class="how-final-btn">Join as A worker</a>
+    </div>
+  </section>
+
+  <script>
+    const workerBtn = document.getElementById('workerBtn');
+    const clientBtn = document.getElementById('clientBtn');
+    const ctaBtn = document.getElementById('ctaBtn');
+    const howSteps = document.getElementById('howSteps');
+
+    const workerSteps = [
+      { number: '01', title: 'Create a free Account', text: 'Sign up in seconds using your google account' },
+      { number: '02', title: 'Explore Live Tasks', text: 'Browse hundreds of tasks by category or payout' },
+      { number: '03', title: 'Choose one as your Wish', text: 'Start one task by just click the start button.' },
+      { number: '04', title: 'Submit Real Proof', text: 'Once complete the task provide the proof as screenshot or text.' },
+      { number: '05', title: 'Get Approved & Paid', text: 'Money will be added to your wallet instantly once approved.' }
+    ];
+
+    const clientSteps = [
+      { number: '01', title: 'Post Your Task', text: 'Create task with your requirements, payout and deadline.' },
+      { number: '02', title: 'Review Submissions', text: 'Check the proof and quality submitted by workers.' },
+      { number: '03', title: 'Approve & Pay', text: 'Only approve the valid work, we handle the payment.' },
+      { number: '04', title: 'Track & Repost', text: 'Track task performance and repost any time if needed.' },
+      { number: '05', title: 'Grow your Business', text: 'Get your work done at scale by real workers.' }
+    ];
+
+    function renderSteps(data, mode) {
+      howSteps.innerHTML = data.map((step, index) => `
+        <div class="how-step-card">
+          <span class="number-circle">${step.number}</span>
+          <div class="step-text">
+            <h3>${step.title}</h3>
+            <p>${step.text}</p>
+          </div>
+        </div>
+      `).join('');
+      howSteps.setAttribute('data-mode', mode);
+    }
+
+    renderSteps(workerSteps, 'worker');
+
+    workerBtn.onclick = () => {
+      workerBtn.classList.add('active');
+      clientBtn.classList.remove('active');
+      renderSteps(workerSteps, 'worker');
+      ctaBtn.textContent = 'Join as A worker';
+    };
+
+    clientBtn.onclick = () => {
+      clientBtn.classList.add('active');
+      workerBtn.classList.remove('active');
+      renderSteps(clientSteps, 'client');
+      ctaBtn.textContent = 'Get Started as Client';
+    };
+  </script>
+</body>
+</html>
