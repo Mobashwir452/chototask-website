@@ -140,7 +140,37 @@
 .header-icon-btn:hover { color: var(--admin-text-primary); }
 
 .notification-wrapper { position: relative; }
-.notification-badge { position: absolute; top: 0; right: 0; background-color: var(--admin-danger); color: white; font-size: 10px; font-weight: 600; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.notification-badge { 
+    position: absolute; 
+    top: 0; 
+    right: 0; 
+    background-color: var(--admin-danger); 
+    color: white; 
+    font-size: 10px; 
+    font-weight: 600; 
+    width: 16px; 
+    height: 16px; 
+    border-radius: 50%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    display: none;
+}
+
+
+/* This class will show the badge when notifications exist */
+.notification-badge.is-visible {
+    display: flex;
+}
+
+
+/* Style for the 'no notifications' message */
+.notification-item-empty {
+    padding: 1.5rem 1rem;
+    text-align: center;
+    color: var(--admin-text-secondary);
+    font-size: 14px;
+}
 
 
 /* FILE: css/admin-global.css (Solution) */
