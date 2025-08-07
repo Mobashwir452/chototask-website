@@ -15,16 +15,22 @@
 
 .contact-help-card {
     background-color: var(--color-light-card);
-    padding: 1.5rem;
-    border-radius: 1rem;
+    padding: 2rem 1.5rem; /* Increased padding to make cards larger */
+    border-radius: 1.25rem; /* More rounded corners */
     text-align: center;
     font-weight: 600;
     text-decoration: none;
     color: var(--color-text-dark);
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    border: 2px solid transparent;
+    border: 2px solid #e5e7eb; /* Default light border */
     transition: transform 0.2s, border-color 0.2s;
 }
+
+/* This new rule styles the active card */
+.contact-help-card.active {
+    border-color: var(--color-dark-secondary);
+}
+
 
 .contact-help-card:hover {
     transform: translateY(-5px);
@@ -32,16 +38,17 @@
 }
 
 .contact-help-icon {
-    width: 48px;
-    height: 48px;
-    margin: 0 auto 0.75rem auto;
+    width: 56px; /* Larger circle */
+    height: 56px;
+    margin: 0 auto 1rem auto;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--color-dark-primary);
+    /* This applies the correct gradient */
+    background: linear-gradient(90deg, var(--color-dark-secondary), var(--color-dark-primary));
     color: var(--color-text-light);
-    font-size: 1.25rem;
+    font-size: 1.5rem;
 }
 
 /* --- Contact Form Card --- */

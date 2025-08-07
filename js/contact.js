@@ -1,61 +1,78 @@
-// FILE: js/contact.js
+// FILE: js/contact.js (Replace the entire file with this new version)
 
-// 1. IMPORT a function from our firebase-config.js file
+// 1. IMPORT from our firebase-config.js file
 import { db } from './firebase-config.js';
 
-// 2. IMPORT the necessary functions from the Firebase SDK
+// 2. IMPORT from the Firebase SDK
 import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // 3. GET references to the HTML elements
 const contactForm = document.querySelector('.contact-form');
 const formButton = contactForm.querySelector('button');
+const modal = document.getElementById('custom-modal');
+const modalIcon = document.getElementById('modal-icon');
+const modalTitle = document.getElementById('modal-title');
+const modalMessage = document.getElementById('modal-message');
+const modalCloseBtn = document.getElementById('modal-close-btn');
+
+// ========== NEW: Function to show the custom modal ==========
+const showModal = (type, title, message) => {
+    // Set the content
+    modalTitle.textContent = title;
+    modalMessage.textContent = message;
+
+    // Set the icon style
+    modalIcon.innerHTML = type === 'success' 
+        ? '<i class="fa-solid fa-check"></i>' 
+        : '<i class="fa-solid fa-xmark"></i>';
+    modalIcon.className = `modal-icon ${type}`; // Adds 'success' or 'error' class
+
+    // Make the modal visible
+    modal.classList.add('is-visible');
+};
+
+// Event listener to close the modal
+modalCloseBtn.addEventListener('click', () => {
+    modal.classList.remove('is-visible');
+});
 
 // 4. ADD an event listener to the form
 contactForm.addEventListener('submit', async (e) => {
-    // Prevent the default browser action (page reloading)
     e.preventDefault();
 
-    // Get the values from the form fields
     const name = contactForm.name.value;
     const email = contactForm.email.value;
     const subject = contactForm.subject.value;
     const message = contactForm.message.value;
 
-    // Basic validation to ensure fields are not empty
     if (!name || !email || !subject || !message) {
-        alert("Please fill out all fields.");
+        // Use the new modal for validation errors
+        showModal('error', 'Oops!', 'Please fill out all fields before sending.');
         return;
     }
 
-    // Change button text to show it's working
     formButton.textContent = "Sending...";
     formButton.disabled = true;
 
     try {
-        // 5. TRY to add a new document to our Firestore collection
-        const docRef = await addDoc(collection(db, "contact_submissions"), {
+        await addDoc(collection(db, "contact_submissions"), {
             name: name,
             email: email,
             subject: subject,
             message: message,
-            timestamp: serverTimestamp(), // Add the current time
-            status: "new" // Set the initial status
+            timestamp: serverTimestamp(),
+            status: "new"
         });
-
-        console.log("Document written with ID: ", docRef.id);
         
-        // Give success feedback to the user
-        alert("Thank you! Your message has been sent successfully.");
-        contactForm.reset(); // Clear the form fields
+        // Use the new modal for success messages
+        showModal('success', 'Thank You!', 'Your message has been sent successfully.');
+        contactForm.reset();
 
     } catch (error) {
-        // If an error occurs...
         console.error("Error adding document: ", error);
-        // Give error feedback to the user
-        alert("Sorry, there was an error sending your message. Please try again.");
+        // Use the new modal for submission errors
+        showModal('error', 'Error', 'Sorry, there was a problem sending your message. Please try again.');
     } finally {
-        // This runs whether it was a success or an error
-        // Re-enable the button and reset its text
         formButton.textContent = "Send Securely";
         formButton.disabled = false;
     }

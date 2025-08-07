@@ -15,6 +15,10 @@
     <link rel="stylesheet" href="css/how-it-works.css"> 
     <!-- New page-specific styles -->
     <link rel="stylesheet" href="css/contact.css">
+    <link rel="stylesheet" href="css/modal.css">
+
+
+    
 </head>
 <body>
     <header id="header-placeholder"></header>
@@ -39,7 +43,7 @@
                 
                 <!-- Top Help Cards -->
                 <div class="contact-help-grid">
-                    <a href="#" class="contact-help-card">
+                    <a href="#" class="contact-help-card active">
                         <div class="contact-help-icon">
                             <i class="fa-solid fa-bolt-lightning"></i>
                         </div>
@@ -86,6 +90,19 @@
     </main>
 
     <footer id="footer-placeholder"></footer>
+
+    <div id="custom-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div id="modal-icon" class="modal-icon">
+                <!-- Icon will be inserted by JavaScript -->
+            </div>
+            <h3 id="modal-title" class="modal-title"></h3>
+            <p id="modal-message" class="modal-message"></p>
+            <button id="modal-close-btn" class="btn btn-dark-accent">Got it</button>
+        </div>
+    </div>
+
+
 
     <script src="js/component-loader.js"></script>
     <script src="js/main.js"></script>
