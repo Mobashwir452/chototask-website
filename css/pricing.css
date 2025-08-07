@@ -1,0 +1,165 @@
+.pricing-section {
+    padding: 3rem 1rem 4rem 1rem;
+}
+
+.pricing-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    text-align: center;
+    color: var(--color-text-dark);
+}
+
+.pricing-subtitle {
+    max-width: 600px;
+    margin: 0.5rem auto 3rem auto;
+    text-align: center;
+    color: var(--color-text-muted);
+}
+
+.pricing-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (min-width: 768px) {
+    .pricing-grid {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 800px;
+        margin: 0 auto;
+    }
+}
+
+.pricing-card {
+    background-color: var(--color-light-card);
+    padding: 2rem;
+    border-radius: 1.25rem;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.07);
+    border: 2px solid #e5e7eb;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.pricing-card.premium {
+    border-style: dashed;
+    border-color: var(--color-dark-secondary);
+    transform: scale(1.05); /* Makes it stand out */
+}
+
+.card-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 1rem auto;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(90deg, var(--color-dark-secondary), var(--color-dark-primary));
+    color: white;
+    font-size: 1.5rem;
+}
+
+.pricing-card h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.card-description {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    margin-bottom: 1.5rem;
+}
+
+.price {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--color-dark-primary);
+    margin-bottom: 2rem;
+}
+
+.features-list {
+    list-style: none;
+    text-align: left;
+    margin-bottom: 2.5rem;
+    flex-grow: 1; /* Pushes button to bottom */
+}
+
+.features-list li {
+    margin-bottom: 1rem;
+    padding-left: 2rem;
+    position: relative;
+}
+
+.features-list li::before {
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    position: absolute;
+    left: 0;
+    top: 2px;
+}
+
+.features-list li.included::before {
+    content: "\f058"; /* Font Awesome check-circle icon */
+    color: var(--admin-success);
+}
+
+.features-list li.excluded::before {
+    content: "\f057"; /* Font Awesome times-circle icon */
+    color: #e0e0e0;
+}
+
+/* --- Business Model Section --- */
+.business-model-section {
+    padding: 4rem 1rem;
+    background-color: #f0f4f8;
+}
+
+.section-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    text-align: center;
+    color: var(--color-text-dark);
+}
+
+.model-list {
+    max-width: 800px;
+    margin: 3rem auto 0 auto;
+    display: grid;
+    gap: 1rem;
+}
+
+.model-item {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    background-color: var(--color-light-card);
+    padding: 1.5rem;
+    border-radius: 1rem;
+    text-align: left;
+}
+
+.model-icon {
+    flex-shrink: 0;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(90deg, var(--color-dark-secondary), var(--color-dark-primary));
+    color: white;
+    font-size: 1.25rem;
+}
+
+.model-text h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.model-text p {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+}

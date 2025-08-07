@@ -1,0 +1,66 @@
+.privacy-section {
+    padding: 4rem 1rem;
+    margin-top: -3rem; /* Pulls the card up to overlap the hero section */
+}
+
+.privacy-card {
+    position: relative;
+    background-color: var(--color-light-card);
+    padding: 3.5rem 1.5rem 2rem 1.5rem;
+    border-radius: 1.25rem;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.privacy-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2.5rem;
+    background: linear-gradient(90deg, var(--color-dark-secondary), var(--color-dark-primary));
+    border-top-left-radius: 1.25rem;
+    border-top-right-radius: 1.25rem;
+}
+
+.privacy-icon {
+    position: absolute;
+    top: -2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    background: linear-gradient(90deg, var(--color-dark-secondary), var(--color-dark-primary));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    border: 4px solid var(--color-light-bg);
+}
+
+.privacy-content h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text-dark);
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+}
+
+.privacy-content h3:first-child {
+    margin-top: 0;
+}
+
+.privacy-content p {
+    color: var(--color-text-muted);
+    line-height: 1.8;
+    margin-bottom: 1rem;
+}
+
+.privacy-content .last-updated {
+    margin-top: 3rem;
+    text-align: center;
+    font-size: 0.9rem;
+    font-style: italic;
+}
