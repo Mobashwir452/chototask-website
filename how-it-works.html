@@ -151,23 +151,36 @@
   <footer id="footer-placeholder"></footer>
 
   <script src="js/component-loader.js"></script>
-  <script>
+<!-- FILE: how-it-works.html (Replace the script at the bottom) -->
+
+<script>
     document.addEventListener('DOMContentLoaded', () => {
-      const buttons = document.querySelectorAll('.how-tab-btn');
-      const sections = document.querySelectorAll('.how-flow-section');
+        const buttons = document.querySelectorAll('.how-tab-btn');
+        const sections = document.querySelectorAll('.how-flow-section');
 
-      buttons.forEach(btn => {
-        btn.addEventListener('click', () => {
-          buttons.forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // First, remove all active styles from all buttons
+                buttons.forEach(b => {
+                    b.classList.remove('active');
+                    b.classList.remove('client-active');
+                });
 
-          sections.forEach(section => section.classList.add('how-hidden'));
+                const target = btn.dataset.target;
 
-          const target = btn.dataset.target;
-          document.getElementById(target).classList.remove('how-hidden');
+                // Apply the correct active style based on the button clicked
+                if (target === 'client') {
+                    btn.classList.add('client-active'); // Add gradient style for Client
+                } else {
+                    btn.classList.add('active'); // Add dark style for Worker
+                }
+
+                // Show the correct content section
+                sections.forEach(section => section.classList.add('how-hidden'));
+                document.getElementById(target).classList.remove('how-hidden');
+            });
         });
-      });
     });
-  </script>
+</script>
 </body>
 </html>

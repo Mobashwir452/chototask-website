@@ -40,10 +40,9 @@
   transition: background-color 0.2s, color 0.2s;
 }
 
-.how-tab-btn.active {
-  background: var(--color-dark-primary);
-  color: white;
-}
+/* FILE: css/how-it-works.css (Corrected) */
+
+
 
 .how-flow-section {
   padding: 2rem 1rem;
@@ -259,7 +258,7 @@
   font-size: 1rem;
   font-weight: 600;
   color: white;
-  background: #2C3E50;
+   background: linear-gradient(90deg, var(--color-dark-secondary), var(--color-dark-primary));
   border-radius: 999px;
   text-decoration: none;
   box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.25);
@@ -303,8 +302,10 @@
   transition: background-color 0.2s, color 0.2s;
 }
 
+/* FILE: css/how-it-works.css (Corrected) */
+
 .how-tab-btn.active {
-  background: var(--color-dark-primary);
+  background: linear-gradient(90deg, var(--color-dark-secondary), var(--color-dark-primary));
   color: white;
 }
 
@@ -317,6 +318,28 @@
 }
 
 
+
+
+/* FILE: css/how-it-works.css (Add this new rule) */
+
+.how-tab-btn.client-active {
+    background: linear-gradient(to right, var(--color-accent-primary), var(--color-accent-secondary));
+    color: var(--color-dark-primary);
+    font-weight: 700;
+}
+
+
+/* FILE: css/how-it-works.css (Add this new rule) */
+
+/* This rule targets every second step card and reverses its layout */
+.how-step-card:nth-child(even) {
+    flex-direction: row-reverse;
+}
+
+/* This ensures the text in the reversed cards is aligned to the right */
+.how-step-card:nth-child(even) > div {
+    text-align: right;
+}
 
 
 
