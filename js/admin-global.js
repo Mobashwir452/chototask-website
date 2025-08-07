@@ -1,7 +1,13 @@
+// FILE: js/admin-global.js (Updated)
+
+import { auth } from './firebase-config.js';
+import { signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
 // This function loads reusable components for the admin panel
 const loadAdminComponents = async () => {
     const components = {
         '#admin-sidebar-placeholder': '../components/admin-sidebar.html',
+        '#admin-header-placeholder': '../components/admin-header.html',
     };
 
     await Promise.all(Object.entries(components).map(async ([id, url]) => {
@@ -24,7 +30,35 @@ const loadAdminComponents = async () => {
 
 // This function initializes event listeners after components are ready
 const initializeAdminPage = () => {
-    // Logout functionality
+    // --- Sidebar Toggle Functionality ---
+    const toggleBtn = document.getElementById('sidebar-toggle-btn');
+    const adminWrapper = document.getElementById('admin-wrapper');
+
+    if (toggleBtn && adminWrapper) {
+        toggleBtn.addEventListener('click', () => {
+            adminWrapper.classList.toggle('sidebar-collapsed');
+        });
+    }
+    
+    // --- Notification Dropdown Functionality ---
+    const notificationBtn = document.getElementById('notification-btn');
+    const notificationDropdown = document.getElementById('notification-dropdown');
+
+    if (notificationBtn && notificationDropdown) {
+        notificationBtn.addEventListener('click', (event) => {
+            event.stopPropagation(); // Prevents the window click listener from firing immediately
+            notificationDropdown.classList.toggle('show');
+        });
+    }
+
+    // Close dropdown if clicked outside
+    window.addEventListener('click', (event) => {
+        if (notificationDropdown && !notificationDropdown.contains(event.target) && !notificationBtn.contains(event.target)) {
+            notificationDropdown.classList.remove('show');
+        }
+    });
+
+    // --- Logout Functionality ---
     const logoutButton = document.getElementById('admin-logout-btn');
     if (logoutButton) {
         logoutButton.addEventListener('click', () => {

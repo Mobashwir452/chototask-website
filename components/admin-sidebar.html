@@ -1,15 +1,20 @@
 <div class="admin-sidebar-content">
-    <h1 class="admin-sidebar-logo">ChotoTask</h1>
+    <div class="admin-sidebar-header">
+        <h1 class="admin-sidebar-logo">ChotoTask</h1>
+        <span class="logo-abbr">CT</span>
+    </div>
     <nav class="admin-nav">
-        <a href="/admin/" class="admin-nav-link active">
+        <a href="/admin/" class="admin-nav-link active" title="Dashboard">
             <i class="fa-solid fa-tachometer-alt"></i>
             <span>Dashboard</span>
         </a>
-        <a href="/admin/messages.html" class="admin-nav-link">
+        <a href="/admin/messages.html" class="admin-nav-link" title="Messages">
             <i class="fa-solid fa-inbox"></i>
             <span>Messages</span>
         </a>
-        <!-- Add other links like Users, Tasks, etc. here later -->
     </nav>
-    <button id="admin-logout-btn" class="admin-btn admin-btn-outline">Logout</button>
+    <a href="#" id="admin-logout-btn" class="admin-nav-link logout-btn" title="Logout">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <span>Logout</span>
+    </a>
 </div>
