@@ -1,10 +1,9 @@
-// FILE: js/firebase-config.js
+// FILE: js/firebase-config.js (Corrected)
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-// PASTE YOUR FIREBASE CONFIG OBJECT HERE
 const firebaseConfig = {
     apiKey: "AIzaSyB4sz5Kw4iGwyuRtSlLps_jxzzeLJZaftk",
     authDomain: "chototask.firebaseapp.com",
@@ -15,9 +14,9 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const auth = firebase.auth();
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
 // Export the services so we can use them in other files
 export { db, auth };
