@@ -274,14 +274,14 @@ footer {
 }
 
 /* The main navigation container */
+/* FILE: css/style.css (Corrected version) */
+
 .mobile-menu-nav {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem; /* Links will have a small gap between them */
+    gap: 0.5rem;
     flex-grow: 1;
-    background-color: var(--color-light-card); /* Solid background for the whole list */
-    padding: 0.75rem; /* Padding around the list */
-    border-radius: 1rem; /* Rounded corners for the whole list */
+    /* The background, padding, and border-radius have been removed */
 }
 
 /* Styling for each link (<a> tag) */
