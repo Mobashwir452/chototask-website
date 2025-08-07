@@ -1,11 +1,11 @@
-<!-- FILE: components/header-public.html (Final, Guaranteed Fix) -->
+<!-- FILE: components/header-public.html (Final, Corrected Version) -->
 
-<!-- This invisible checkbox will control the menu's state -->
+<!-- This invisible checkbox is the new, reliable controller for the menu -->
 <input type="checkbox" id="menu-toggle" class="menu-toggle-input">
 
 <nav class="header-nav container">
     <div class="header-left">
-        <!-- The menu button is now a label for the checkbox -->
+        <!-- The hamburger button is now a 'label' that toggles the checkbox -->
         <label for="menu-toggle" class="menu-button">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="icon">
               <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
@@ -19,56 +19,52 @@
     </div>
 </nav>
 
-<!-- Mobile Menu Structure -->
+<!-- The Mobile Menu Container -->
 <div class="mobile-menu-container">
     <div class="mobile-menu-content">
         <div class="mobile-menu-header">
             <h2>Menu</h2>
-            <!-- The close button is also a label for the checkbox -->
-            <label for="menu-toggle" class="close-menu-btn">
+            <!-- The close button is also a 'label' that untoggles the checkbox -->
+            <label for="menu-toggle" class="menu-close-btn">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon">
                     <path fill-rule="evenodd" d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z" clip-rule="evenodd" />
                 </svg>
             </label>
         </div>
-<!-- FILE: components/header-public.html (Solution) -->
-
-<!-- FILE: components/header-public.html (Solution) -->
-
-<nav class="mobile-menu-nav">
-    <a class="mobile-menu-link" href="/">
-        <div class="nav-icon-wrapper"><i class="fa-solid fa-house"></i></div>
-        <span>Home</span>
-    </a>
-    <a class="mobile-menu-link" href="/tasks.html">
-        <div class="nav-icon-wrapper"><i class="fa-solid fa-list-check"></i></div>
-        <span>Explore Tasks</span>
-    </a>
-    <a class="mobile-menu-link" href="/faq.html">
-        <div class="nav-icon-wrapper"><i class="fa-solid fa-circle-question"></i></div>
-        <span>FAQ</span>
-    </a>
-    <a class="mobile-menu-link" href="/how-it-works.html">
-        <div class="nav-icon-wrapper"><i class="fa-solid fa-lightbulb"></i></div>
-        <span>How It Works</span>
-    </a>
-    <a class="mobile-menu-link" href="/pricing.html">
-        <div class="nav-icon-wrapper"><i class="fa-solid fa-tags"></i></div>
-        <span>Pricing</span>
-    </a>
-    <a class="mobile-menu-link" href="/contact.html">
-        <div class="nav-icon-wrapper"><i class="fa-solid fa-envelope"></i></div>
-        <span>Contact Us</span>
-    </a>
-    <a class="mobile-menu-link" href="/terms.html">
-        <div class="nav-icon-wrapper"><i class="fa-solid fa-file-contract"></i></div>
-        <span>Terms</span>
-    </a>
-    <a class="mobile-menu-link" href="/privacy.html">
-        <div class="nav-icon-wrapper"><i class="fa-solid fa-shield-halved"></i></div>
-        <span>Privacy Policy</span>
-    </a>
-    <a href="/register.html" class="btn btn-accent get-started-btn">Get Started</a>
-</nav>
+        <nav class="mobile-menu-nav">
+            <a class="mobile-menu-link" href="/">
+                <div class="nav-icon-wrapper"><i class="fa-solid fa-house"></i></div>
+                <span>Home</span>
+            </a>
+            <a class="mobile-menu-link" href="/tasks.html">
+                <div class="nav-icon-wrapper"><i class="fa-solid fa-list-check"></i></div>
+                <span>Explore Tasks</span>
+            </a>
+            <a class="mobile-menu-link" href="/faq.html">
+                <div class="nav-icon-wrapper"><i class="fa-solid fa-circle-question"></i></div>
+                <span>FAQ</span>
+            </a>
+            <a class="mobile-menu-link" href="/how-it-works.html">
+                <div class="nav-icon-wrapper"><i class="fa-solid fa-lightbulb"></i></div>
+                <span>How It Works</span>
+            </a>
+            <a class="mobile-menu-link" href="/pricing.html">
+                <div class="nav-icon-wrapper"><i class="fa-solid fa-tags"></i></div>
+                <span>Pricing</span>
+            </a>
+            <a class="mobile-menu-link" href="/contact.html">
+                <div class="nav-icon-wrapper"><i class="fa-solid fa-envelope"></i></div>
+                <span>Contact Us</span>
+            </a>
+            <a class="mobile-menu-link" href="/terms.html">
+                <div class="nav-icon-wrapper"><i class="fa-solid fa-file-contract"></i></div>
+                <span>Terms</span>
+            </a>
+            <a class="mobile-menu-link" href="/privacy.html">
+                <div class="nav-icon-wrapper"><i class="fa-solid fa-shield-halved"></i></div>
+                <span>Privacy Policy</span>
+            </a>
+            <a href="/register.html" class="btn btn-accent get-started-btn">Get Started</a>
+        </nav>
     </div>
 </div>
