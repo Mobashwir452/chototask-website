@@ -38,7 +38,7 @@ body {
 
 header { 
     background-color: rgba(255, 255, 255, 0.9); 
-    backdrop-filter: blur(10px); 
+    /* The backdrop-filter has been removed to fix the menu height */
     position: sticky; 
     top: 0; 
     z-index: 50; 
