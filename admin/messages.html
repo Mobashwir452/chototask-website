@@ -5,54 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Messages | Admin Panel</title>
     
-    <!-- Fonts & Icons -->
-    <link href="[https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap](https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap)" rel="stylesheet">
-    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css)">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <!-- Styles -->
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/admin-global.css">
+    <link rel="stylesheet" href="../css/admin-messages.css">
 </head>
 <body class="admin-body">
 
-    <!-- Page Protection Script -->
     <script type="module" src="../js/admin-auth.js"></script>
 
-    <div class="admin-wrapper">
-        <!-- Admin Sidebar -->
-        <aside class="admin-sidebar">
-            <h1 class="admin-logo">ChotoTask</h1>
-            <nav class="admin-nav">
-                <a href="/admin/" class="admin-nav-link">
-                    <i class="fa-solid fa-tachometer-alt"></i>
-                    <span>Dashboard</span>
-                </a>
-                <a href="/admin/messages.html" class="admin-nav-link active">
-                    <i class="fa-solid fa-inbox"></i>
-                    <span>Messages</span>
-                </a>
-                <!-- Other links will go here -->
-            </nav>
-            <button id="admin-logout-btn" class="btn btn-outline">Logout</button>
-        </aside>
+    <input type="checkbox" id="admin-menu-toggle" class="menu-toggle-input">
 
-        <!-- Main Content -->
+    <aside id="admin-sidebar-placeholder" class="admin-sidebar"></aside>
+
+    <div class="admin-main-container">
+        <header id="admin-header-placeholder"></header>
+
         <main class="admin-main-content">
-            <header class="admin-header">
+            <div id="page-title-container" class="admin-header">
                 <h2>Contact Form Messages</h2>
-            </header>
+            </div>
             <div class="admin-content">
-                <!-- Messages will be dynamically inserted here by JavaScript -->
                 <div id="messages-container" class="messages-grid">
-                    <!-- Loading message -->
                     <p>Loading messages...</p>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- Firebase and page-specific scripts -->
     <script type="module" src="../js/firebase-config.js"></script>
+    <script type="module" src="../js/admin-global.js"></script>
     <script type="module" src="../js/admin-messages.js"></script>
 
 </body>
