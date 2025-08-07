@@ -1,4 +1,3 @@
-// Import the necessary functions from our config and the SDK
 import { auth } from './firebase-config.js';
 import { signInWithEmailAndPassword } from "[https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js](https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js)";
 
