@@ -1,3 +1,5 @@
+/* FILE: css/admin-global.css (Final, Corrected Version) */
+
 :root {
     /* Color Palette from Blueprint */
     --admin-bg: #1A202C;
@@ -12,7 +14,7 @@
     --admin-success: #38A169;
 }
 
-/* Global Body Styles */
+/* --- GLOBAL STYLES --- */
 .admin-body {
     font-family: 'Poppins', sans-serif;
     background-color: var(--admin-bg);
@@ -20,8 +22,14 @@
     margin: 0;
 }
 
+/* --- LAYOUT & PURE CSS MENU LOGIC --- */
 
+/* Hide the checkbox that controls the menu */
+.menu-toggle-input {
+    display: none;
+}
 
+/* The slide-out sidebar is hidden off-screen by default */
 .admin-sidebar {
     position: fixed;
     top: 0;
@@ -29,12 +37,25 @@
     width: 260px;
     height: 100%;
     background-color: var(--admin-sidebar-bg);
-    z-index: 100;
+    z-index: 200; /* High z-index to be on top */
     border-right: 1px solid var(--admin-border);
-    transform: translateX(-100%); /* Hidden by default */
+    transform: translateX(-100%);
     transition: transform 0.3s ease-in-out;
 }
 
+/* When the checkbox is checked, slide the sidebar in */
+.menu-toggle-input:checked ~ .admin-sidebar {
+    transform: translateX(0);
+}
+
+/* The main container for all page content */
+.admin-main-container {
+    width: 100%;
+    min-height: 100vh;
+}
+
+
+/* --- SIDEBAR STYLES --- */
 .admin-sidebar-content {
     padding: 1.5rem;
     display: flex;
@@ -44,7 +65,9 @@
 }
 
 .admin-sidebar-header {
-    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 2.5rem;
 }
 
@@ -55,8 +78,6 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
-
-.logo-abbr { display: none; } /* Hidden by default */
 
 .admin-nav {
     display: flex;
@@ -74,50 +95,19 @@
     color: var(--admin-text-secondary);
     text-decoration: none;
     font-weight: 500;
-    white-space: nowrap;
     transition: background-color 0.2s, color 0.2s;
 }
-
 .admin-nav-link:hover { background-color: var(--admin-border); color: var(--admin-text-primary); }
 .admin-nav-link.active { background: linear-gradient(90deg, #00709B, #2C3E50); color: white; }
-.admin-nav-link i { width: 20px; text-align: center; font-size: 16px; flex-shrink: 0; }
+.admin-nav-link i { width: 20px; text-align: center; font-size: 16px; }
 .logout-btn { margin-top: 1rem; }
 
-/* --- Collapsed Sidebar Styles --- */
-.admin-wrapper.sidebar-collapsed .admin-sidebar { width: 80px; }
-.admin-wrapper.sidebar-collapsed .admin-sidebar-logo { opacity: 0; visibility: hidden; height: 0; }
-.admin-wrapper.sidebar-collapsed .logo-abbr { display: block; /* Show abbreviation */ }
-.admin-wrapper.sidebar-collapsed .admin-nav-link span { opacity: 0; visibility: hidden; }
 
-/* This is the main content area that now takes up the full screen */
-.admin-main-container {
-    width: 100%;
-    min-height: 100vh;
-    padding: 2rem; /* Move the padding here */
-    box-sizing: border-box; /* Ensures padding is calculated correctly */
-}
-
-/* --- The Pure CSS Toggle Logic --- */
-.menu-toggle-input {
-    display: none;
-}
-
-/* When the checkbox is checked, slide the sidebar in */
-.menu-toggle-input:checked ~ .admin-sidebar {
-    transform: translateX(0);
-}
-
-.admin-wrapper.sidebar-collapsed .admin-main-container { width: calc(100% - 80px); }
-
-
-/* FILE: css/admin-global.css (Update this rule) */
-
+/* --- HEADER STYLES --- */
 .admin-header {
     background-color: var(--admin-sidebar-bg);
     padding: 1rem 2rem;
     border-bottom: 1px solid var(--admin-border);
-    position: relative; /* This is required for z-index to work */
-    z-index: 10;      /* This puts the header on a high layer */
 }
 
 .admin-header-content {
@@ -135,62 +125,31 @@
     font-size: 20px;
     cursor: pointer;
     padding: 0.5rem;
-    transition: color 0.2s;
 }
 .header-icon-btn:hover { color: var(--admin-text-primary); }
 
+/* --- NOTIFICATION STYLES --- */
 .notification-wrapper { position: relative; }
 .notification-badge { 
     position: absolute; 
-    top: 0; 
-    right: 0; 
+    top: 0; right: 0; 
     background-color: var(--admin-danger); 
-    color: white; 
-    font-size: 10px; 
-    font-weight: 600; 
-    width: 16px; 
-    height: 16px; 
-    border-radius: 50%; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    display: none;
+    color: white; font-size: 10px; font-weight: 600; 
+    width: 16px; height: 16px; border-radius: 50%; 
+    display: none; /* Hidden by default */
+    align-items: center; justify-content: center; 
 }
-
-
-/* This class will show the badge when notifications exist */
-.notification-badge.is-visible {
-    display: flex;
+.notification-badge.is-visible { display: flex; }
+.notification-dropdown { 
+    display: none; 
+    position: absolute; 
+    top: 150%; right: 0; 
+    background: var(--admin-sidebar-bg); 
+    border: 1px solid var(--admin-border); 
+    border-radius: 0.5rem; width: 320px; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
+    z-index: 50; /* Needs z-index to appear over content */
 }
-
-
-/* Style for the 'no notifications' message */
-.notification-item-empty {
-    padding: 1.5rem 1rem;
-    text-align: center;
-    color: var(--admin-text-secondary);
-    font-size: 14px;
-}
-
-
-/* FILE: css/admin-global.css (Solution) */
-
-.notification-dropdown {
-    display: none;
-    position: absolute;
-    top: 150%;
-    right: 0;
-    background: var(--admin-sidebar-bg);
-    border: 1px solid var(--admin-border);
-    border-radius: 0.5rem;
-    width: 320px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    z-index: 999; /* Add this line */
-}
-
-
-
-
 .notification-dropdown.show { display: block; }
 .dropdown-header { padding: 1rem; font-weight: 600; border-bottom: 1px solid var(--admin-border); }
 .notification-item { display: flex; gap: 1rem; padding: 1rem; text-decoration: none; color: var(--admin-text-primary); transition: background-color 0.2s; }
@@ -201,29 +160,7 @@
 .dropdown-footer { padding: 0.5rem; text-align: center; border-top: 1px solid var(--admin-border); }
 .dropdown-footer a { font-size: 14px; text-decoration: none; color: var(--admin-accent-end); }
 
-/* FILE: css/admin-global.css (Solution) */
-
-/* FILE: css/admin-global.css (Update this rule) */
-
+/* --- MAIN CONTENT AREA STYLES --- */
 .admin-main-content {
-    flex-grow: 1;
-    position: relative; /* Add this line */
-    z-index: 1;       /* Add this line to place it below the header */
-}
-
-
-
-/* FILE: css/admin-global.css (Add this new rule) */
-
-.menu-close-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0.5rem;
-    color: var(--admin-text-secondary);
-    font-size: 24px; /* Makes the 'X' icon larger */
-    line-height: 1; /* Aligns the icon properly */
-}
-.menu-close-btn:hover {
-    color: var(--admin-text-primary);
+    padding: 2rem; /* The padding for the content area */
 }
