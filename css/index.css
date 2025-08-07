@@ -79,13 +79,13 @@
 }
 
 .section-light {
-    padding: 4rem 1rem;
+    text-align: center;
 }
 
 .section-dark {
     background: linear-gradient(145deg, var(--color-dark-primary) 0%, var(--color-dark-secondary) 100%);
     color: var(--color-text-light);
-    padding: 4rem 1rem;
+    text-align: center;
 }
 
 .section-subtitle {
@@ -230,6 +230,9 @@
     display: none;
 }
 
+
+
+
 /* New styling for each card to match the design */
 .testimonial-card {
     position: relative; /* Needed for the top accent bar */
@@ -313,4 +316,13 @@
         margin-left: auto;
         margin-right: auto;
     }
+}
+
+
+/* FILE: css/index.css (Add this new rule) */
+
+/* This new class will control the gap between all sections */
+.section-spacing {
+    padding-top: 4rem;    /* 64px top padding */
+    padding-bottom: 4rem; /* 64px bottom padding */
 }

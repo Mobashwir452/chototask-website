@@ -28,9 +28,9 @@ header { background-color: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px)
 .header-nav { display: flex; justify-content: space-between; align-items: center; height: 70px; }
 .header-left { display: flex; align-items: center; gap: 1rem; flex-grow: 1; }
 .logo { 
-    font-size: 1.5rem; 
+    font-size: 1rem; 
     font-weight: 700; 
-    background: white; 
+    background: linear-gradient(90deg, var(--color-dark-secondary), var(--color-dark-primary));
     -webkit-background-clip: text; 
     -webkit-text-fill-color: 
     transparent; text-decoration: none; 
@@ -63,18 +63,18 @@ footer {
     border-image-slice: 1;
 }
 
-.footer-about .logo {
+.footer-logo {
     font-family: "Poppins-Bold", sans-serif;
     font-size: 20px;
     font-weight: 700;
+    color: var(--background, #f8f9fa); /* This makes the text white */
     position: relative;
     display: inline-block;
     padding-bottom: 8px; /* Space for the line */
-    color: var(--background, #f8f9fa); /* This makes the text white */
+    text-decoration: none;
 }
 
-/* The accent line under the logo */
-.footer-about .logo::after {
+.footer-logo::after {
     content: '';
     position: absolute;
     left: 0;
