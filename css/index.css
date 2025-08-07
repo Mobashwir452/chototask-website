@@ -125,10 +125,7 @@
     color: white;
 }
 
-.feature-icon-wrapper .icon {
-    width: 2rem;
-    height: 2rem;
-}
+
 
 .join-grid {
     display: grid;
@@ -159,9 +156,12 @@
     color: white;
 }
 
-.join-icon-wrapper .icon {
-    width: 2rem;
-    height: 2rem;
+/* FILE: css/index.css (Corrected version) */
+
+/* This rule now correctly sizes the Font Awesome icons */
+.feature-icon-wrapper i,
+.join-icon-wrapper i {
+    font-size: 2rem; /* 32px */
 }
 
 .join-card h3 {
