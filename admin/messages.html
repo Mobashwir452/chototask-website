@@ -5,17 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Messages | Admin Panel</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Fonts & Icons -->
+    <link href="[https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap](https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap)" rel="stylesheet">
+    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css)">
 
+    <!-- Styles -->
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/admin.css">
 </head>
 <body class="admin-body">
 
+    <!-- Page Protection Script -->
     <script type="module" src="../js/admin-auth.js"></script>
 
     <div class="admin-wrapper">
+        <!-- Admin Sidebar -->
         <aside class="admin-sidebar">
             <h1 class="admin-logo">ChotoTask</h1>
             <nav class="admin-nav">
@@ -27,21 +31,27 @@
                     <i class="fa-solid fa-inbox"></i>
                     <span>Messages</span>
                 </a>
-                </nav>
+                <!-- Other links will go here -->
+            </nav>
             <button id="admin-logout-btn" class="btn btn-outline">Logout</button>
         </aside>
 
+        <!-- Main Content -->
         <main class="admin-main-content">
             <header class="admin-header">
                 <h2>Contact Form Messages</h2>
             </header>
             <div class="admin-content">
+                <!-- Messages will be dynamically inserted here by JavaScript -->
                 <div id="messages-container" class="messages-grid">
-                    </div>
+                    <!-- Loading message -->
+                    <p>Loading messages...</p>
+                </div>
             </div>
         </main>
     </div>
 
+    <!-- Firebase and page-specific scripts -->
     <script type="module" src="../js/firebase-config.js"></script>
     <script type="module" src="../js/admin-messages.js"></script>
 

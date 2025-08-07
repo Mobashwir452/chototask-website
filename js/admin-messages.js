@@ -16,7 +16,7 @@ const unsubscribe = onSnapshot(q, (querySnapshot) => {
         return;
     }
 
-    querySnapshot.forEach((doc) => { // Changed 'document' to 'doc' to avoid conflict
+    querySnapshot.forEach((doc) => {
         const messageData = doc.data();
         const messageId = doc.id;
 
@@ -30,13 +30,13 @@ const unsubscribe = onSnapshot(q, (querySnapshot) => {
         card.innerHTML = `
             <div class="message-header">
                 <div>
-                    <strong class="sender-name">${messageData.name}</strong>
-                    <span class="sender-email">${messageData.email}</span>
+                    <strong class="sender-name">${escapeHTML(messageData.name)}</strong>
+                    <span class="sender-email">${escapeHTML(messageData.email)}</span>
                 </div>
                 <span class="message-time">${date}</span>
             </div>
-            <div class="message-subject">${messageData.subject}</div>
-            <p class="message-body">${messageData.message}</p>
+            <div class="message-subject">${escapeHTML(messageData.subject)}</div>
+            <p class="message-body">${escapeHTML(messageData.message)}</p>
             <div class="message-actions">
                 <a href="mailto:${messageData.email}" class="btn btn-outline">Reply</a>
                 ${messageData.status === 'new' ? `<button class="btn-mark-read btn btn-outline" data-id="${messageId}">Mark as Read</button>` : ''}
@@ -51,16 +51,31 @@ const unsubscribe = onSnapshot(q, (querySnapshot) => {
     addEventListeners();
 });
 
+// A simple function to prevent XSS attacks by escaping HTML
+function escapeHTML(str) {
+    return str.replace(/[&<>'"]/g, 
+      tag => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          "'": '&#39;',
+          '"': '&quot;'
+        }[tag] || tag)
+    );
+}
+
 function addEventListeners() {
     // Event listener for all "Mark as Read" buttons
     document.querySelectorAll('.btn-mark-read').forEach(button => {
         button.addEventListener('click', async (e) => {
             const docId = e.target.dataset.id;
             const docRef = doc(db, "contact_submissions", docId);
-            await updateDoc(docRef, {
-                status: "read"
-            });
-            console.log(`Message ${docId} marked as read.`);
+            try {
+                await updateDoc(docRef, { status: "read" });
+                console.log(`Message ${docId} marked as read.`);
+            } catch (error) {
+                console.error("Error updating document: ", error);
+            }
         });
     });
 
@@ -69,8 +84,12 @@ function addEventListeners() {
         button.addEventListener('click', async (e) => {
             const docId = e.target.dataset.id;
             if (confirm("Are you sure you want to delete this message permanently?")) {
-                await deleteDoc(doc(db, "contact_submissions", docId));
-                console.log(`Message ${docId} deleted.`);
+                try {
+                    await deleteDoc(doc(db, "contact_submissions", docId));
+                    console.log(`Message ${docId} deleted.`);
+                } catch (error) {
+                    console.error("Error deleting document: ", error);
+                }
             }
         });
     });
