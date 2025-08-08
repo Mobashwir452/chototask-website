@@ -71,7 +71,8 @@
 }
 
 .hero-buttons .btn-dark {
-    background: var(--color-worker, #2c3e50);
+    background: linear-gradient(90deg, var(--color-dark-secondary), var(--color-dark-primary));
+    color: var(--color-text-light);
 }
 
 .hero-buttons .btn-accent {
@@ -152,8 +153,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--color-dark-primary);
-    color: white;
+    background: linear-gradient(90deg, var(--color-dark-secondary), var(--color-dark-primary));
+    color: var(--color-text-light);
 }
 
 /* FILE: css/index.css (Corrected version) */
@@ -306,8 +307,9 @@
 
 @media (min-width: 768px) {
     .hero-content h1 {
-        font-size: 3.5rem;
-        line-height: 1.2;
+            font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
     }
     .hero-buttons {
         flex-direction: row;
@@ -326,10 +328,3 @@
 }
 
 
-/* FILE: css/index.css (Add this new rule) */
-
-/* This new class will control the gap between all sections */
-.section-spacing {
-    padding-top: 4rem;    /* 64px top padding */
-    padding-bottom: 4rem; /* 64px bottom padding */
-}

@@ -11,6 +11,11 @@
     --color-worker: #2c3e50;
     --color-secondary-text: #eaecef;
     --white: #ffffff;
+    --gap-sm: clamp(16px, 2.5vw, 28px);
+    --gap-md: clamp(24px, 4vw, 48px);    /* default section→section */
+    --gap-lg: clamp(40px, 6vw, 96px);
+    .block--hero + .block { margin-block-start: var(--gap-md); }
+
 }
 
 * { 
@@ -31,6 +36,21 @@ body {
     margin: 0 auto; 
     padding: 0 1rem; 
 }
+
+/* Every major content area must be wrapped in .block */
+.block + .block{
+  margin-block-start: var(--gap-md);
+}
+
+/* Larger gap specifically after hero */
+.block--hero + .block{
+  margin-block-start: var(--gap-hero);
+}
+
+/* Optional overrides for rare cases */
+.block.gap-tight { --gap-md: var(--gap-sm); }
+.block.gap-loose { --gap-md: var(--gap-lg); }
+.block.gap-none  { margin-block-start: 0 !important; }
 
 /* =================================== */
 /* Header & General Button Styles      */
@@ -91,8 +111,8 @@ header {
 }
 
 .btn-dark { 
-    background-color: var(--color-dark-primary); 
-    color: var(--color-text-light); 
+    background: linear-gradient(90deg, var(--color-dark-secondary), var(--color-dark-primary));
+    color: var(--color-text-light);
 }
 
 .btn-dark-accent { 
@@ -106,8 +126,8 @@ header {
 }
 
 .btn-light { 
-    background-color: var(--color-light-card); 
-    color: var(--color-dark-primary); 
+background: linear-gradient(90deg, var(--color-dark-secondary), var(--color-dark-primary));
+    color: var(--color-text-light);
 }
 
 /* --- Final CTA Section Styles --- */
@@ -115,6 +135,7 @@ header {
     background: linear-gradient(145deg, var(--color-dark-primary) 0%, var(--color-dark-secondary) 100%);
     color: var(--color-text-light);
     text-align: center;
+    padding: 4rem 1rem;
 }
 
 .section-subtitle-light {
