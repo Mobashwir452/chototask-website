@@ -1,104 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Terms and Service | ChotoTask</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terms of Service | ChotoTask</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/how-it-works.css"> 
-    <link rel="stylesheet" href="css/terms.css">
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
+  <!-- reuses hero + toggle styles to keep pages consistent -->
+  <link rel="stylesheet" href="css/how-it-works.css">
+  <link rel="stylesheet" href="css/terms.css">
 </head>
 <body>
-    <header id="header-placeholder"></header>
+  <header id="header-placeholder"></header>
 
-    <main>
-        <section class="how-hero-section">
-            <div class="container text-center">
-                <div class="hero-icon"><div class="hero-icon-middle"><div class="hero-icon-top"></div></div></div>
-                <h1 class="how-hero-title">Terms And Service</h1>
-                <p class="how-hero-subtitle">Please read carefully before using our platform</p>
+  <main>
+    <!-- Hero -->
+    <div class="block block--hero">
+      <section class="how-hero-section">
+        <div class="container text-center">
+          <div class="hero-icon">
+            <div class="hero-icon-middle">
+              <div class="hero-icon-top"></div>
             </div>
-        </section>
+          </div>
+          <h1 class="how-hero-title">Terms of Service</h1>
+          <p class="how-hero-subtitle">Please read carefully before using our platform</p>
+        </div>
+      </section>
+    </div>
 
-        <section class="how-toggle-section">
-            <div class="container">
-                <div class="how-toggle-buttons">
-                    <button class="how-tab-btn active" data-target="worker-terms">For Workers</button>
-                    <button class="how-tab-btn" data-target="client-terms">For Clients</button>
-                </div>
+    <!-- Toggle -->
+    <div class="block block--tabs">
+      <section class="how-toggle-section">
+        <div class="container">
+          <div class="how-toggle-buttons">
+            <button class="how-tab-btn active" data-target="worker-terms">For Workers</button>
+            <button class="how-tab-btn" data-target="client-terms">For Clients</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Terms Card -->
+    <div class="block">
+      <section class="terms-section">
+        <div class="container">
+          <div class="terms-card">
+            <div class="terms-icon">
+              <i class="fa-solid fa-file-contract"></i>
             </div>
-        </section>
 
-        <section class="terms-section">
-            <div class="container">
-                <div class="terms-card">
-                    <div class="terms-icon">
-                        <i class="fa-solid fa-file-contract"></i>
-                    </div>
+            <!-- Worker Terms (default visible) -->
+            <div id="worker-terms" class="terms-content">
+              <h3>1. Account Responsibility</h3>
+              <p>You are responsible for maintaining the security of your account (Google sign‑in). All activity under your account is your responsibility.</p>
 
-                    <div id="worker-terms" class="terms-content">
-                        <h3>1. Account Responsibility</h3>
-                        <p>You are responsible for maintaining the security of your account, which is linked to your Google account. You are responsible for all activities that occur under the account and any other actions taken in connection with it.</p>
-                        
-                        <h3>2. Task Submission Rules</h3>
-                        <p>All proof submitted must be genuine and directly related to the completed task. Submitting false, fraudulent, or irrelevant proof is strictly prohibited and will result in account suspension.</p>
-                        <ul>
-                            <li>Do not use bots or automated scripts.</li>
-                            <li>Do not submit the same proof for multiple tasks.</li>
-                            <li>Ensure your proof meets all requirements listed in the task details.</li>
-                        </ul>
+              <h3>2. Task Submission Rules</h3>
+              <p>All proof must be genuine and directly related to the task.</p>
+              <ul>
+                <li>No bots or automated scripts.</li>
+                <li>Do not reuse the same proof across different tasks.</li>
+                <li>Follow every proof requirement listed in the task details.</li>
+              </ul>
 
-                        <h3>3. Payment Conditions</h3>
-                        <p>Payment for a completed task is credited to your wallet only after the client approves your submitted proof. We are not responsible for delays in approval by the client.</p>
-                    </div>
-
-                    <div id="client-terms" class="terms-content how-hidden">
-                        <h3>1. Job Posting Guidelines</h3>
-                        <p>You are responsible for creating clear, concise, and honest task descriptions. Any job that violates our platform policies, including but not limited to illegal activities or requests for personal information, will be rejected.</p>
-                        
-                        <h3>2. Proof Review Policy</h3>
-                        <p>You are required to review worker submissions in a timely manner. You must have a valid and clear reason for rejecting any submission. Abusing the rejection system may lead to a temporary or permanent suspension of your account.</p>
-                        
-                        <h3>3. Funding and Refunds</h3>
-                        <p>All campaigns must be fully funded before they can go live. Funds are held in escrow and paid to workers upon your approval of their work. Refunds for unused funds in a campaign can be requested and will be processed according to our refund policy, minus any applicable transaction fees.</p>
-                    </div>
-                </div>
+              <h3>3. Payment Conditions</h3>
+              <p>Payments are added to your wallet after the client approves your submission. Approval time is controlled by the client.</p>
             </div>
-        </section>
-    </main>
 
-    <footer id="footer-placeholder"></footer>
+            <!-- Client Terms (hidden initially) -->
+            <div id="client-terms" class="terms-content how-hidden">
+              <h3>1. Job Posting Guidelines</h3>
+              <p>Provide clear, honest task descriptions. Jobs violating platform policy (illegal activity, requests for personal data, etc.) will be rejected.</p>
 
-    <script src="js/component-loader.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const buttons = document.querySelectorAll('.how-tab-btn');
-            const sections = document.querySelectorAll('.terms-content');
+              <h3>2. Proof Review Policy</h3>
+              <p>Review submissions on time. Rejections must include a valid reason. Abuse of the rejection system can lead to suspension.</p>
 
-            buttons.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    buttons.forEach(b => {
-                        b.classList.remove('active');
-                        b.classList.remove('client-active');
-                    });
+              <h3>3. Funding & Refunds</h3>
+              <p>Campaigns must be funded before going live. Funds are held and released to workers on approval. Unused funds can be refunded per the refund policy (minus fees).</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
 
-                    const target = btn.dataset.target;
+  <footer id="footer-placeholder"></footer>
 
-                    if (target === 'client-terms') {
-                        btn.classList.add('client-active');
-                    } else {
-                        btn.classList.add('active');
-                    }
+  <script src="js/component-loader.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const buttons = document.querySelectorAll('.how-tab-btn');
+      const sections = document.querySelectorAll('.terms-content');
 
-                    sections.forEach(section => section.classList.add('how-hidden'));
-                    document.getElementById(target).classList.remove('how-hidden');
-                });
-            });
+      function showTab(targetId) {
+        // button state
+        buttons.forEach(b => {
+          const isClient = b.dataset.target === 'client-terms';
+          b.classList.toggle('active', b.dataset.target === targetId && !isClient);
+          b.classList.toggle('client-active', b.dataset.target === targetId && isClient);
         });
-    </script>
+        // content state
+        sections.forEach(s => s.classList.add('how-hidden'));
+        document.getElementById(targetId).classList.remove('how-hidden');
+      }
+
+      buttons.forEach(btn => btn.addEventListener('click', () => showTab(btn.dataset.target)));
+      showTab('worker-terms');
+    });
+  </script>
 </body>
 </html>

@@ -1,0 +1,16 @@
+/* FILE: /css/admin-index.css */
+
+.a-grid { display: grid; gap: 1rem; margin-top: 1rem; }
+.a-card { background: var(--admin-surface); border: 1px solid var(--admin-border); border-radius: 1rem; padding: 1rem; }
+.a-card-head { display:flex; align-items:center; justify-content:space-between; gap:.75rem; margin-bottom:.75rem; }
+.a-card-head h3 { display:flex; gap:.5rem; align-items:center; font-size:1rem; }
+
+.a-table { overflow:auto; border-radius:.75rem; border:1px solid var(--admin-border); }
+.a-table table { width:100%; border-collapse: collapse; }
+.a-table th, .a-table td { padding:.75rem; border-bottom:1px solid var(--admin-border); font-size:.92rem; }
+.a-table th { color: var(--admin-text-muted); text-align:left; }
+.a-empty { text-align:center; color: var(--admin-text-muted); }
+
+@media (min-width: 900px){
+  .a-grid { grid-template-columns: 1fr 1fr; }
+}

@@ -1,22 +1,24 @@
 :root {
-    --color-dark-primary: #2C3E50;
-    --color-dark-secondary: #00709B;
-    --color-accent-primary: #00FFCD;
-    --color-accent-secondary: #00B8FF;
-    --color-light-bg: #F7F8FA;
-    --color-light-card: #FFFFFF;
-    --color-text-dark: #333333;
-    --color-text-light: #FFFFFF;
-    --color-text-muted: #6B7280;
-    --color-worker: #2c3e50;
-    --color-secondary-text: #eaecef;
-    --white: #ffffff;
-    --gap-sm: clamp(16px, 2.5vw, 28px);
-    --gap-md: clamp(24px, 4vw, 48px);    /* default section→section */
-    --gap-lg: clamp(40px, 6vw, 96px);
-    .block--hero + .block { margin-block-start: var(--gap-md); }
+  --color-dark-primary: #2C3E50;
+  --color-dark-secondary: #00709B;
+  --color-accent-primary: #00FFCD;
+  --color-accent-secondary: #00B8FF;
+  --color-light-bg: #F7F8FA;
+  --color-light-card: #FFFFFF;
+  --color-text-dark: #333333;
+  --color-text-light: #FFFFFF;
+  --color-text-muted: #6B7280;
+  --color-worker: #2c3e50;
+  --color-secondary-text: #eaecef;
+  --white: #ffffff;
 
+  /* spacing tokens */
+  --gap-sm: clamp(16px, 2.5vw, 28px);
+  --gap-md: clamp(24px, 4vw, 48px);  /* default section gap */
+  --gap-lg: clamp(40px, 6vw, 96px);
+  --gap-hero: clamp(56px, 8vw, 0px); /* hero → next block */
 }
+
 
 * { 
     margin: 0; 
@@ -445,4 +447,17 @@ footer {
         justify-content: space-between;
         gap: 4rem;
     }
+}
+
+
+
+/* If a page ends with a CTA, remove the default gap before footer */
+main.has-end-cta > .block:last-child { 
+  margin-bottom: 0;
+}
+
+
+/* Ensure no gap for any end-CTA block, even if hidden */
+main.has-end-cta > .block.block--end-cta {
+  margin-bottom: 0 !important;
 }

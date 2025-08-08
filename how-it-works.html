@@ -16,171 +16,190 @@
 <body>
   <header id="header-placeholder"></header>
 
-  <main>
-    <!-- Hero Title -->
-<!-- Section: Hero Intro -->
-<section class="how-hero-section">
-  <div class="container text-center">
-<!-- Hero Icon Matching Dashboard Style -->
-<div class="hero-icon">
-  <div class="hero-icon-middle">
-    <div class="hero-icon-top"></div>
-  </div>
-</div>
+  <main class="has-end-cta">
+    <!-- Hero -->
+    <div class="block block--hero">
+      <section class="how-hero-section">
+        <div class="container text-center">
+          <div class="hero-icon">
+            <div class="hero-icon-middle">
+              <div class="hero-icon-top"></div>
+            </div>
+          </div>
 
-    <h1 class="how-hero-title">How It Works</h1>
-    <p class="how-hero-subtitle">A step-by-step guide for respective workers and clients</p>
-
-  </div>
-</section>
-
-<section class="how-toggle-section">
-  <div class="container">
-    <div class="how-toggle-buttons">
-      <button class="how-tab-btn active" data-target="worker">For Workers</button>
-      <button class="how-tab-btn" data-target="client">For Clients</button>
+          <h1 class="how-hero-title">How It Works</h1>
+          <p class="how-hero-subtitle">A step-by-step guide for respective workers and clients</p>
+        </div>
+      </section>
     </div>
-  </div>
-</section>
 
-
-
-
+    <!-- Toggle -->
+    <div class="block block--tabs">
+      <section class="how-toggle-section">
+        <div class="container">
+          <div class="how-toggle-buttons">
+            <button class="how-tab-btn active" data-target="worker">For Workers</button>
+            <button class="how-tab-btn" data-target="client">For Clients</button>
+          </div>
+        </div>
+      </section>
+    </div>
 
     <!-- Workers Flow -->
-    <section id="worker" class="how-flow-section">
-      <div class="container">
-        <div class="how-step-card">
-          <span>01</span>
-          <div>
-            <h3>Create a free Account</h3>
-            <p>Sign up in seconds using your google account</p>
+    <div class="block block--flow gap-tight" id="worker-block">
+      <section id="worker-flow" class="how-flow-section">
+        <div class="container">
+          <div class="how-step-card">
+            <span>01</span>
+            <div>
+              <h3>Create a free Account</h3>
+              <p>Sign up in seconds using your google account</p>
+            </div>
+          </div>
+          <div class="how-step-card">
+            <span>02</span>
+            <div>
+              <h3>Explore Live Tasks</h3>
+              <p>Browse hundreds of tasks by category or payout</p>
+            </div>
+          </div>
+          <div class="how-step-card">
+            <span>03</span>
+            <div>
+              <h3>Choose one as your Wish</h3>
+              <p>Start one task by just click the start button.</p>
+            </div>
+          </div>
+          <div class="how-step-card">
+            <span>04</span>
+            <div>
+              <h3>Submit Real Proof</h3>
+              <p>Once complete the task provide the proof as screenshot or text.</p>
+            </div>
+          </div>
+          <div class="how-step-card">
+            <span>05</span>
+            <div>
+              <h3>Get Approved & Paid</h3>
+              <p>Money will be added to your wallet instantly once approved.</p>
+            </div>
           </div>
         </div>
-        <div class="how-step-card">
-          <span>02</span>
-          <div>
-            <h3>Explore Live Tasks</h3>
-            <p>Browse hundreds of tasks by category or payout</p>
-          </div>
-        </div>
-        <div class="how-step-card">
-          <span>03</span>
-          <div>
-            <h3>Choose one as your Wish</h3>
-            <p>Start one task by just click the start button.</p>
-          </div>
-        </div>
-        <div class="how-step-card">
-          <span>04</span>
-          <div>
-            <h3>Submit Real Proof</h3>
-            <p>Once complete the task provide the proof as screenshot or text.</p>
-          </div>
-        </div>
-        <div class="how-step-card">
-          <span>05</span>
-          <div>
-            <h3>Get Approved & Paid</h3>
-            <p>Money will be added to your wallet instantly once approved.</p>
-          </div>
-        </div>
-<!-- Force full width section (outside any .container) -->
-<section class="how-final-cta-wrapper">
-  <div class="how-final-cta-box">
-    <h3 class="how-final-title">Ready to Start?</h3>
-    <a href="/register.html" class="how-final-btn">Join as A worker</a>
-  </div>
-</section>
+      </section>
+    </div>
 
-      </div>
-    </section>
+    <!-- Workers CTA (end-CTA) -->
+    <div class="block block--flow gap-tight block--end-cta" id="worker-cta">
+      <section class="how-final-cta-wrapper">
+        <div class="how-final-cta-box">
+          <h3 class="how-final-title">Ready to Start?</h3>
+          <a href="/register.html" class="how-final-btn">Join as A worker</a>
+        </div>
+      </section>
+    </div>
 
-
-
-
-    <!-- Clients Flow -->
-    <section id="client" class="how-flow-section how-hidden">
-      <div class="container">
-        <div class="how-step-card">
-          <span>01</span>
-          <div>
-            <h3>Create a free Account</h3>
-            <p>Sign up in seconds using your google account</p>
+    <!-- Clients Flow (hidden by default) -->
+    <div class="block block--flow gap-tight how-hidden" id="client-block">
+      <section id="client-flow" class="how-flow-section">
+        <div class="container">
+          <div class="how-step-card">
+            <span>01</span>
+            <div>
+              <h3>Create a free Account</h3>
+              <p>Sign up in seconds using your google account</p>
+            </div>
+          </div>
+          <div class="how-step-card">
+            <span>02</span>
+            <div>
+              <h3>Post a task</h3>
+              <p>Fill out simple form with your task details</p>
+            </div>
+          </div>
+          <div class="how-step-card">
+            <span>03</span>
+            <div>
+              <h3>Fund your campaign</h3>
+              <p>Deposit funds to make the task live for workers.</p>
+            </div>
+          </div>
+          <div class="how-step-card">
+            <span>04</span>
+            <div>
+              <h3>Review Submission</h3>
+              <p>Approve or reject each submitted proof with one tap.</p>
+            </div>
+          </div>
+          <div class="how-step-card">
+            <span>05</span>
+            <div>
+              <h3>Track Performance</h3>
+              <p>See completion rates and worker stats in your dashboard</p>
+            </div>
           </div>
         </div>
-        <div class="how-step-card">
-          <span>02</span>
-          <div>
-            <h3>Post a task</h3>
-            <p>Fill out simple form with your task details</p>
-          </div>
-        </div>
-        <div class="how-step-card">
-          <span>03</span>
-          <div>
-            <h3>Fund your campaign</h3>
-            <p>Deposit funds to make the task live for workers.</p>
-          </div>
-        </div>
-        <div class="how-step-card">
-          <span>04</span>
-          <div>
-            <h3>Review Submission</h3>
-            <p>Approve or reject each submitted proof with one tap.</p>
-          </div>
-        </div>
-        <div class="how-step-card">
-          <span>05</span>
-          <div>
-            <h3>Track Performance</h3>
-            <p>See completion rates and worker stats in your dashboard</p>
-          </div>
-        </div>
+      </section>
+    </div>
 
- <!-- Force full width section (outside any .container) -->
-<section class="how-final-cta-wrapper">
-  <div class="how-final-cta-box">
-    <h3 class="how-final-title">Ready to Start?</h3>
-    <a href="/register.html" class="how-final-btn">Join as A Client</a>
-  </div>
-</section>
-    </section>
+    <!-- Clients CTA (end-CTA, hidden by default) -->
+    <div class="block block--flow gap-tight block--end-cta how-hidden" id="client-cta">
+      <section class="how-final-cta-wrapper">
+        <div class="how-final-cta-box">
+          <h3 class="how-final-title">Ready to Start?</h3>
+          <a href="/register.html" class="how-final-btn">Join as A Client</a>
+        </div>
+      </section>
+    </div>
   </main>
 
   <footer id="footer-placeholder"></footer>
 
   <script src="js/component-loader.js"></script>
-<!-- FILE: how-it-works.html (Replace the script at the bottom) -->
 
-<script>
+  <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const buttons = document.querySelectorAll('.how-tab-btn');
-        const sections = document.querySelectorAll('.how-flow-section');
+      const buttons = document.querySelectorAll('.how-tab-btn');
 
-        buttons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                // First, remove all active styles from all buttons
-                buttons.forEach(b => {
-                    b.classList.remove('active');
-                    b.classList.remove('client-active');
-                });
+      const flows = {
+        worker: document.getElementById('worker-flow'),
+        client: document.getElementById('client-flow')
+      };
+      const blocks = {
+        worker: document.getElementById('worker-block'),
+        client: document.getElementById('client-block')
+      };
+      const ctas = {
+        worker: document.getElementById('worker-cta'),
+        client: document.getElementById('client-cta')
+      };
 
-                const target = btn.dataset.target;
-
-                // Apply the correct active style based on the button clicked
-                if (target === 'client') {
-                    btn.classList.add('client-active'); // Add gradient style for Client
-                } else {
-                    btn.classList.add('active'); // Add dark style for Worker
-                }
-
-                // Show the correct content section
-                sections.forEach(section => section.classList.add('how-hidden'));
-                document.getElementById(target).classList.remove('how-hidden');
-            });
+      function showTab(tab) {
+        // buttons
+        buttons.forEach(b => {
+          b.classList.toggle('active', b.dataset.target === tab && tab === 'worker');
+          b.classList.toggle('client-active', b.dataset.target === tab && tab === 'client');
         });
+
+        // flows
+        Object.keys(flows).forEach(key => {
+          flows[key].classList.toggle('how-hidden', key !== tab);
+          blocks[key].classList.toggle('how-hidden', key !== tab);
+        });
+
+        // CTAs (keep only the active one visible)
+        Object.keys(ctas).forEach(key => {
+          ctas[key].classList.toggle('how-hidden', key !== tab);
+        });
+      }
+
+      // wire up
+      buttons.forEach(btn => {
+        btn.addEventListener('click', () => showTab(btn.dataset.target));
+      });
+
+      // initial state
+      showTab('worker');
     });
-</script>
+  </script>
 </body>
 </html>

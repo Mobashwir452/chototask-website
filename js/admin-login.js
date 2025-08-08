@@ -1,24 +1,63 @@
-// FILE: js/admin-login.js (Corrected)
+// FILE: /js/admin-login.js
+import { auth, db } from '/js/firebase-config.js';
+import {
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-import { auth } from './firebase-config.js';
-import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+const form = document.getElementById('adminLoginForm');
+const errEl = document.getElementById('err');
+const forgotBtn = document.getElementById('forgotBtn');
+const emailInput = document.getElementById('email');
+const passInput = document.getElementById('password');
 
-const loginForm = document.getElementById('admin-login-form');
-const errorMessage = document.getElementById('error-message');
+function showErr(msg){
+  errEl.textContent = msg;
+  errEl.style.display = 'block';
+}
 
-loginForm.addEventListener('submit', (e) => {
-    e.preventDefault();
+async function isAdmin(uid){
+  const snap = await getDoc(doc(db, 'users', uid));
+  return snap.exists() && snap.data().isAdmin === true;
+}
 
-    const email = loginForm.email.value;
-    const password = loginForm.password.value;
+form?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  errEl.style.display = 'none';
+  try {
+    const { user } = await signInWithEmailAndPassword(auth, emailInput.value.trim(), passInput.value);
+    if (await isAdmin(user.uid)) {
+      window.location.href = '/admin/index.html';
+    } else {
+      await signOut(auth);
+      showErr('This account is not an admin. Ask an admin to set isAdmin: true in Firestore.');
+    }
+  } catch (err) {
+    showErr(err.message || 'Sign in failed.');
+  }
+});
 
-    signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-            console.log("Admin logged in successfully:", userCredential.user.email);
-            window.location.href = '/admin/';
-        })
-        .catch((error) => {
-            console.error("Admin login error:", error.message);
-            errorMessage.textContent = "Invalid email or password. Please try again.";
-        });
+forgotBtn?.addEventListener('click', async () => {
+  errEl.style.display = 'none';
+  const email = emailInput.value.trim();
+  if (!email) return showErr('Enter your email first, then click "Forgot Password".');
+  try {
+    await sendPasswordResetEmail(auth, email);
+    showErr('Password reset email sent. Check your inbox.');
+  } catch (err) {
+    showErr(err.message || 'Could not send reset email.');
+  }
+});
+
+// If already signed in and admin, auto-redirect
+onAuthStateChanged(auth, async (user) => {
+  if (!user) return;
+  try {
+    if (await isAdmin(user.uid)) {
+      window.location.href = '/admin/index.html';
+    }
+  } catch {}
 });

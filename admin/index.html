@@ -1,57 +1,92 @@
-<!-- FILE: admin/index.html (Final, Corrected Version) -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard | ChotoTask</title>
-    
-    <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Admin • Dashboard | ChotoTask</title>
 
-    <!-- Styles -->
-    <link rel="stylesheet" href="../css/admin-global.css">
-    <link rel="stylesheet" href="../css/admin-dashboard.css">
+  <!-- Poppins + Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Brand + Admin styles -->
+  <link rel="stylesheet" href="/css/style.css"><!-- (for button gradients) -->
+  <link rel="stylesheet" href="/css/admin.css"><!-- global admin theme -->
+  <link rel="stylesheet" href="/css/admin-index.css"><!-- page-specific -->
 </head>
-<body class="admin-body">
+<body class="admin">
+  <!-- Components -->
+  <header id="admin-header"></header>
+  <aside id="admin-sidebar"></aside>
 
-    <!-- Security Script -->
-    <script type="module" src="../js/admin-auth.js"></script>
+  <!-- Main -->
+  <main id="admin-main">
+    <div class="a-container">
+      <div class="a-breadcrumbs">Admin / Dashboard</div>
 
-    <!-- This invisible checkbox now controls the admin menu -->
-    <input type="checkbox" id="admin-menu-toggle" class="menu-toggle-input">
+      <!-- KPI grid -->
+      <section class="a-kpis">
+        <div class="a-kpi"><h4>Total Users</h4><div id="kpi-users">—</div></div>
+        <div class="a-kpi"><h4>Workers</h4><div id="kpi-workers">—</div></div>
+        <div class="a-kpi"><h4>Clients</h4><div id="kpi-clients">—</div></div>
+        <div class="a-kpi warn"><h4>Jobs Pending Review</h4><div id="kpi-jobs-pending">—</div></div>
+        <div class="a-kpi info"><h4>Deposits Pending</h4><div id="kpi-deposits">—</div></div>
+        <div class="a-kpi warn"><h4>Withdrawals Pending</h4><div id="kpi-withdrawals">—</div></div>
+        <div class="a-kpi"><h4>Submissions Today</h4><div id="kpi-submissions-today">—</div></div>
+        <div class="a-kpi danger"><h4>Disputes Open</h4><div id="kpi-disputes">—</div></div>
+      </section>
 
-    <!-- Sidebar is now a separate component that will overlay the content -->
-    <aside id="admin-sidebar-placeholder" class="admin-sidebar"></aside>
+      <!-- Tables -->
+      <section class="a-grid">
+        <div class="a-card">
+          <div class="a-card-head">
+            <h3><i class="fa-solid fa-briefcase"></i> Jobs Pending Approval</h3>
+            <a class="btn btn-dark" href="/admin/jobs.html">Review All</a>
+          </div>
+          <div class="a-table" id="table-jobs-pending">
+            <table>
+              <thead><tr><th>Job</th><th>Client</th><th>Budget</th><th>Created</th><th>Status</th></tr></thead>
+              <tbody id="tbody-jobs-pending"><tr><td colspan="5" class="a-empty">Loading…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
 
-    <!-- Main Content Area -->
-    <div class="admin-main-container">
-        <!-- Header placeholder -->
-        <header id="admin-header-placeholder"></header>
+        <div class="a-card">
+          <div class="a-card-head">
+            <h3><i class="fa-solid fa-circle-arrow-down"></i> Recent Deposits</h3>
+            <a class="btn btn-accent" href="/admin/finance/deposits.html">Verify</a>
+          </div>
+          <div class="a-table" id="table-deposits">
+            <table>
+              <thead><tr><th>Client</th><th>Amount</th><th>Method</th><th>Requested</th><th>Status</th></tr></thead>
+              <tbody id="tbody-deposits"><tr><td colspan="5" class="a-empty">Loading…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
 
-        <main class="admin-main-content">
-            <div class="admin-content">
-                <!-- Statistics Cards -->
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon users"><i class="fa-solid fa-users"></i></div>
-                        <div class="stat-info">
-                            <span class="stat-title">Total Users</span>
-                            <span class="stat-number">1,250</span>
-                            <span class="stat-change">+15 this week</span>
-                        </div>
-                    </div>
-                    <!-- ... other stat cards ... -->
-                </div>
-            </div>
-        </main>
+        <div class="a-card">
+          <div class="a-card-head">
+            <h3><i class="fa-solid fa-circle-arrow-up"></i> Withdrawals Queue</h3>
+            <a class="btn btn-dark" href="/admin/finance/withdrawals.html">Process</a>
+          </div>
+          <div class="a-table" id="table-withdrawals">
+            <table>
+              <thead><tr><th>Worker</th><th>Amount</th><th>Method</th><th>Requested</th><th>Status</th></tr></thead>
+              <tbody id="tbody-withdrawals"><tr><td colspan="5" class="a-empty">Loading…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
     </div>
+  </main>
 
-    <!-- Global Admin Scripts -->
-    <script type="module" src="../js/firebase-config.js"></script>
-    <script type="module" src="../js/admin-global.js"></script>
+  <footer id="admin-footer"></footer>
 
+  <!-- Firebase + Admin scripts -->
+  <script type="module" src="/js/firebase-config.js"></script>
+  <script type="module" src="/js/admin-loader.js"></script>
+  <script type="module" src="/js/admin-guard.js"></script>
+  <script type="module" src="/js/admin-kpis.js"></script>
+  <script type="module" src="/js/admin-index.js"></script>
 </body>
 </html>

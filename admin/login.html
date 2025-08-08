@@ -1,43 +1,44 @@
+<!-- FILE: /admin/login.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login | ChotoTask</title>
-    
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Admin • Sign In | ChotoTask</title>
 
-    <!-- Styles -->
-    <!-- We no longer need style.css, only the admin-specific stylesheets -->
-    <link rel="stylesheet" href="../css/admin-global.css">
-    <link rel="stylesheet" href="../css/admin-login.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css"><!-- for button gradients -->
+  <link rel="stylesheet" href="/css/admin.css">
 </head>
-<body class="admin-body">
+<body class="admin">
+  <main class="a-auth-wrap">
+    <section class="a-auth-card">
+      <div class="a-auth-head">
+        <div class="a-auth-logo">ChotoTask Admin</div>
+        <div class="a-auth-sub">Sign in with your admin email</div>
+      </div>
 
-    <main class="admin-login-container">
-        <div class="admin-login-card">
-            <h1 class="admin-login-logo">ChotoTask</h1>
-            <h2>Admin Panel Login</h2>
-            <p>Please enter your credentials to proceed.</p>
-            <form id="admin-login-form" class="admin-login-form">
-                <div class="form-group">
-                    <input type="email" id="email" required autocomplete="email">
-                    <label for="email">Email Address</label>
-                </div>
-                <div class="form-group">
-                    <input type="password" id="password" required autocomplete="current-password">
-                    <label for="password">Password</label>
-                </div>
-                <p id="error-message" class="admin-login-error"></p>
-                <button type="submit" class="admin-btn admin-btn-accent">Login Securely</button>
-            </form>
+      <form id="adminLoginForm" class="a-form">
+        <div style="display:grid; gap:.75rem;">
+          <input id="email" type="email" placeholder="Email" required
+                 style="background:var(--admin-surface-2);border:1px solid var(--admin-border);border-radius:.75rem;color:var(--admin-text);padding:.85rem .9rem;">
+          <input id="password" type="password" placeholder="Password" required
+                 style="background:var(--admin-surface-2);border:1px solid var(--admin-border);border-radius:.75rem;color:var(--admin-text);padding:.85rem .9rem;">
+          <button class="btn btn-dark" type="submit">Sign In</button>
         </div>
-    </main>
+      </form>
 
-    <!-- Firebase Scripts -->
-    <script type="module" src="../js/firebase-config.js"></script>
-    <script type="module" src="../js/admin-login.js"></script>
+      <div class="a-divider">or</div>
+      <button id="forgotBtn" class="btn btn-accent" type="button">Forgot Password</button>
 
+      <div id="err" class="a-err" style="display:none;"></div>
+      <p class="a-note">This account must have <code>isAdmin: true</code> in <code>users/{uid}</code>.</p>
+
+      <div class="a-auth-foot">© 2025 ChotoTask</div>
+    </section>
+  </main>
+
+  <script type="module" src="/js/firebase-config.js"></script>
+  <script type="module" src="/js/admin-login.js"></script>
 </body>
 </html>

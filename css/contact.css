@@ -1,8 +1,10 @@
 /* FILE: contact.css */
 
+/* FILE: contact.css */
 .contact-main-section {
-    padding: 2rem 1rem 4rem 1rem;
+    padding: 2rem 1rem; /* was: 2rem 1rem 4rem 1rem */
 }
+
 
 /* --- Top Help Cards --- */
 .contact-help-grid {

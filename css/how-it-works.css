@@ -45,8 +45,9 @@
 
 
 .how-flow-section {
-  padding: 2rem 1rem;
+  padding: 0 1rem 0rem; /* top=0: no stacking with .block gap */
 }
+
 
 
 .how-step {
@@ -233,7 +234,7 @@
   margin-left: calc(-50vw + 50%);
   background: linear-gradient(to bottom, #2C3E50, #00709B);
   padding: 3rem 1.5rem 4rem 1.5rem;
-  margin-bottom: -2rem;
+  margin-bottom: 0rem;
   box-sizing: border-box;
 }
 
@@ -342,6 +343,23 @@
 }
 
 
+/* FAQ-only: make the space under the toggle minimal */
+.how-toggle-section { padding-bottom: 0 !important; }
+.how-toggle-section { padding-top: 0 !important; }
 
 
 
+/* Worker CTA (dark theme) */
+#worker-cta .how-final-btn {
+  background: linear-gradient(90deg, var(--color-dark-secondary), var(--color-dark-primary));
+  color: #fff;
+  font-weight: 700;
+}
+
+/* Client CTA (accent theme) */
+#client-cta .how-final-btn {
+  background: linear-gradient(to right, var(--color-accent-primary), var(--color-accent-secondary));
+  color: var(--color-dark-primary);
+  font-weight: 700;
+  box-shadow: none; /* optional: removes inset shadow */
+}

@@ -1,8 +1,10 @@
 .faq-section {
-    padding: 2rem 1rem;
+    padding: 0 1rem 2rem;   /* top = 0 so only .block controls the gap */
     max-width: 720px;
     margin: 0 auto;
 }
+
+
 
 .faq-item {
     background-color: white;
@@ -44,10 +46,11 @@
     border-top: 1px solid #e5e7eb;
 }
 
-/* --- CTA Section --- */
 .faq-cta-section {
-    padding: 4rem 1rem;
+    padding: 0 1rem 4rem;   /* remove top gap; keep bottom breathing inside the card */
 }
+
+
 
 .faq-cta-card {
     position: relative;
@@ -112,3 +115,7 @@
         justify-content: center;
     }
 }
+
+
+
+.block--cta { margin-block-end: 0; }

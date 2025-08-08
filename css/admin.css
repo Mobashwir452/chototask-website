@@ -1,0 +1,87 @@
+/* FILE: css/admin.css */
+
+/* Brand (reuse your tokens) + Admin theme */
+:root {
+  --admin-bg: #0E1720;
+  --admin-surface: #162431;
+  --admin-surface-2: #1D2E3F;
+  --admin-border: #213547;
+  --admin-text: #E8EEF5;
+  --admin-text-muted: #AAB8C7;
+  --admin-success: #22C55E;
+  --admin-danger: #EF4444;
+  --admin-warning: #F59E0B;
+  --admin-info: #38BDF8;
+}
+
+body.admin {
+  background: var(--admin-bg);
+  color: var(--admin-text);
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Centered auth card */
+.a-auth-wrap {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 2rem 1rem;
+}
+.a-auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: 1.25rem;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+}
+.a-auth-head {
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+.a-auth-logo {
+  font-weight: 700;
+  letter-spacing: .3px;
+  background: linear-gradient(90deg, var(--color-dark-secondary), var(--color-dark-primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 1.25rem;
+}
+.a-auth-sub {
+  color: var(--admin-text-muted);
+  font-size: .9rem;
+  margin-top: .25rem;
+}
+.a-auth-btns {
+  display: grid;
+  gap: .75rem;
+  margin-top: 1rem;
+}
+.a-divider {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: .75rem;
+  color: var(--admin-text-muted);
+  font-size: .85rem;
+  margin: 1rem 0;
+}
+.a-divider::before,
+.a-divider::after { content: ""; height: 1px; background: var(--admin-border); }
+
+/* Reuse your public button gradients to keep brand consistency */
+.btn { 
+  display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
+  padding:.8rem 1rem; border-radius: 999px; font-weight:600; font-size:.95rem;
+  border:none; cursor:pointer; text-decoration:none; transition:transform .2s;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn-dark { background: linear-gradient(90deg, var(--color-dark-secondary), var(--color-dark-primary)); color:#fff; }
+.btn-accent { background: linear-gradient(90deg, var(--color-accent-secondary), var(--color-accent-primary)); color: var(--color-dark-primary); }
+
+.a-note { color: var(--admin-text-muted); font-size:.85rem; text-align:center; margin-top: .75rem; }
+.a-err  { color: var(--admin-danger); font-size:.9rem; text-align:center; margin-top:.5rem; }
+
+/* Small footer */
+.a-auth-foot { margin-top: 1.25rem; text-align: center; color: var(--admin-text-muted); font-size: .85rem; }
