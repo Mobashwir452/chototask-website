@@ -1,0 +1,271 @@
+/* FILE: /css/auth.css (REVISED) */
+
+/* Page Background and Layout */
+body.auth-page-bg {
+  /* Gradient from your design blueprint */
+  background: linear-gradient(160deg, var(--color-dark-primary) 0%, var(--color-dark-secondary) 100%);
+  background-attachment: fixed;
+  color: var(--color-text-light);
+  line-height: 1.5;
+}
+
+.auth-container {
+  padding: 1rem;
+  min-height: calc(100vh - 70px); /* Full height minus header */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* New Auth Header */
+.auth-header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  height: 70px;
+}
+
+/* FILE: /css/auth.css (REVISED SECTION) */
+
+/* FILE: /css/auth.css (REVISED HEADER SECTION) */
+
+/* New Auth Header */
+.auth-header-wrapper {
+  height: 70px; /* Match standard header height */
+  display: flex;
+  align-items: center;
+  background-color: var(--color-light-bg); /* Use the standard light background */
+  border-bottom: 1px solid #e5e7eb;      /* Add a subtle separator line */
+}
+
+/* This targets the .container div */
+.auth-header-wrapper .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.auth-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  background-color: #FFFFFF;
+  border: 1px solid #e5e7eb;
+  color: var(--color-text-dark); /* Change text to dark */
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+.auth-back-btn:hover {
+  background-color: #f8f9fa;
+}
+
+.auth-logo {
+  font-weight: 700;
+  font-size: 1.25rem;
+  /* Use the logo gradient defined in your main style.css */
+  background: linear-gradient(90deg, var(--color-dark-secondary), var(--color-dark-primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Auth Card Styling */
+.auth-card {
+  width: 100%;
+  max-width: 480px;
+  background-color: var(--color-light-card);
+  color: var(--color-text-dark);
+  border-radius: 1.5rem; /* More rounded */
+  padding: 1.5rem;
+  position: relative;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+}
+
+/* FILE: /css/auth.css (REVISED .auth-container) */
+
+.auth-container {
+  /* We add 70px padding to the top to offset the header's height */
+  padding: 70px 1rem 3rem 1rem;
+  min-height: 100vh; /* Ensure container fills the screen vertically */
+  box-sizing: border-box; /* Important for padding to work with height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-card-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.auth-icon-wrapper {
+  width: 64px;
+  height: 64px;
+  margin: -4rem auto 1rem auto;
+  border-radius: 50%;
+  background: var(--color-light-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  border: 4px solid var(--color-dark-secondary);
+}
+
+.auth-icon-wrapper i {
+  font-size: 1.75rem;
+  color: var(--color-dark-primary);
+}
+
+.auth-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.auth-subtitle {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+/* New Role Toggle Buttons */
+.role-toggle {
+  display: flex;
+  background-color: #e9ecef;
+  border-radius: 999px;
+  padding: 0.3rem;
+  margin-bottom: 1.5rem;
+}
+
+.role-btn {
+  flex: 1;
+  padding: 0.6rem 0;
+  border: none;
+  border-radius: 999px;
+  background-color: transparent;
+  color: var(--color-text-muted);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.role-btn.active {
+  background: linear-gradient(90deg, var(--color-dark-secondary), var(--color-dark-primary));
+  color: var(--color-text-light);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+}
+
+/* Form Styling */
+.form-group {
+  margin-bottom: 1rem;
+}
+.form-group label {
+  font-weight: 500;
+  font-size: 0.85rem;
+  margin-bottom: 0.4rem;
+  display: block;
+}
+.form-control {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  width: 100%;
+}
+.form-control::placeholder {
+  color: #adb5bd;
+}
+
+/* Checkbox */
+.form-group-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 1.5rem 0;
+}
+.form-group-checkbox input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+.form-group-checkbox label {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+.form-group-checkbox a {
+  color: var(--color-dark-secondary);
+  font-weight: 600;
+  text-decoration: none;
+}
+.form-group-checkbox a:hover {
+  text-decoration: underline;
+}
+
+/* Button & Separator */
+.auth-btn {
+  width: 100%;
+  padding-top: 0.8rem;
+  padding-bottom: 0.8rem;
+}
+
+.auth-separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #ced4da;
+  margin: 1.5rem 0;
+}
+.auth-separator::before, .auth-separator::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #e9ecef;
+}
+.auth-separator span {
+  padding: 0 1rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #adb5bd;
+}
+
+.auth-link {
+  text-align: center;
+  font-size: 0.9rem;
+}
+.auth-link a {
+  color: var(--color-dark-secondary);
+  font-weight: 600;
+  text-decoration: none;
+}
+.auth-link a:hover {
+  text-decoration: underline;
+}
+
+/* Error Message (no changes needed from before) */
+#error-message {
+  padding: 0.75rem 1rem;
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  border-radius: 0.5rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+  display: none;
+}
+
+
+/* Desktop Styles */
+@media (min-width: 768px) {
+  .auth-container::before {
+    display: block; /* Show dotted border on desktop */
+  }
+  .auth-card {
+    padding: 2.5rem;
+  }
+  .auth-title {
+    font-size: 1.75rem;
+  }
+}

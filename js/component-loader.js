@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const components = {
         '#header-placeholder': 'components/header-public.html',
         '#footer-placeholder': 'components/footer.html',
+        '#auth-header-placeholder': 'components/header-auth.html', // <-- ADD THIS LINE
     };
 
     const loadComponent = async (id, url) => {

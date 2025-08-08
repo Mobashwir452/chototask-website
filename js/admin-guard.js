@@ -11,6 +11,7 @@ onAuthStateChanged(auth, async (user) => {
     await signOut(auth);
     return go('/admin/login.html');
   }
+  document.dispatchEvent(new Event('adminReady'));
   // After components are loaded, mark active link + sidebar toggle
   document.addEventListener('adminComponentsLoaded', () => {
     const path = location.pathname;
