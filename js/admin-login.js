@@ -61,3 +61,15 @@ onAuthStateChanged(auth, async (user) => {
     }
   } catch {}
 });
+
+
+
+// BEFORE signInWithEmailAndPassword:
+const btn = document.querySelector('.auth-submit');
+const btnText = btn?.querySelector('.btn-text');
+const spinner = btn?.querySelector('.btn-spinner');
+if (btn){ btn.disabled = true; btnText.textContent = 'Signing in…'; spinner.style.display = 'inline-block'; }
+
+// AFTER success/failure (in both branches):
+if (btn){ btn.disabled = false; btnText.textContent = 'Sign In'; spinner.style.display = 'none'; }
+

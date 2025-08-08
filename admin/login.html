@@ -1,4 +1,3 @@
-<!-- FILE: /admin/login.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,38 +5,80 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Admin • Sign In | ChotoTask</title>
 
+  <!-- Fonts & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css"><!-- for button gradients -->
+  <!-- Remove integrity to avoid mismatch errors (or use the correct hash for your exact version) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Styles -->
   <link rel="stylesheet" href="/css/admin.css">
+  <link rel="stylesheet" href="/css/admin-login.css">
 </head>
 <body class="admin">
-  <main class="a-auth-wrap">
-    <section class="a-auth-card">
-      <div class="a-auth-head">
-        <div class="a-auth-logo">ChotoTask Admin</div>
-        <div class="a-auth-sub">Sign in with your admin email</div>
+  <main class="auth-wrap">
+    <section class="auth-card" role="dialog" aria-labelledby="authTitle">
+      <header class="auth-head">
+        <div class="auth-badge"><i class="fa-solid fa-shield-halved"></i></div>
+        <div class="auth-logo">ChotoTask Admin</div>
+        <h1 id="authTitle" class="auth-title">Sign in</h1>
+        <p class="auth-sub">Use your admin email & password</p>
+      </header>
+
+      <div class="auth-body">
+        <form id="adminLoginForm" class="auth-form" novalidate>
+          <div class="field">
+            <input id="email" type="email" placeholder=" " required autocomplete="email" />
+            <label for="email">Email</label>
+            <i class="fa-regular fa-envelope icon-left" aria-hidden="true"></i>
+          </div>
+
+          <div class="field">
+            <input id="password" type="password" placeholder=" " required autocomplete="current-password" />
+            <label for="password">Password</label>
+            <button type="button" class="toggle-pass" aria-label="Show password">
+              <i class="fa-regular fa-eye"></i>
+            </button>
+            <i class="fa-regular fa-lock icon-left" aria-hidden="true"></i>
+          </div>
+
+          <button class="btn btn-dark auth-submit" type="submit">
+            <span class="btn-text">Sign In</span>
+            <span class="btn-spinner" aria-hidden="true"></span>
+          </button>
+
+          <div class="auth-row">
+            <button id="forgotBtn" class="btn btn-accent btn-small" type="button">Forgot Password</button>
+            <span class="auth-note">Account must have <code>isAdmin: true</code> in <code>users/{uid}</code>.</span>
+          </div>
+
+          <div id="err" class="auth-error" role="alert" aria-live="polite"></div>
+        </form>
       </div>
 
-      <form id="adminLoginForm" class="a-form">
-        <div style="display:grid; gap:.75rem;">
-          <input id="email" type="email" placeholder="Email" required
-                 style="background:var(--admin-surface-2);border:1px solid var(--admin-border);border-radius:.75rem;color:var(--admin-text);padding:.85rem .9rem;">
-          <input id="password" type="password" placeholder="Password" required
-                 style="background:var(--admin-surface-2);border:1px solid var(--admin-border);border-radius:.75rem;color:var(--admin-text);padding:.85rem .9rem;">
-          <button class="btn btn-dark" type="submit">Sign In</button>
-        </div>
-      </form>
-
-      <div class="a-divider">or</div>
-      <button id="forgotBtn" class="btn btn-accent" type="button">Forgot Password</button>
-
-      <div id="err" class="a-err" style="display:none;"></div>
-      <p class="a-note">This account must have <code>isAdmin: true</code> in <code>users/{uid}</code>.</p>
-
-      <div class="a-auth-foot">© 2025 ChotoTask</div>
+      <footer class="auth-foot">© <span id="year"></span> ChotoTask</footer>
     </section>
   </main>
 
+  <!-- Scripts (MODULAR) -->
+  <script>
+    // year
+    document.getElementById('year').textContent = new Date().getFullYear();
+    // password eye toggle
+    document.addEventListener('DOMContentLoaded', () => {
+      const pass = document.getElementById('password');
+      const btn = document.querySelector('.toggle-pass');
+      if (btn && pass) {
+        btn.addEventListener('click', () => {
+          const show = pass.type === 'password';
+          pass.type = show ? 'text' : 'password';
+          btn.innerHTML = show ? '<i class="fa-regular fa-eye-slash"></i>' : '<i class="fa-regular fa-eye"></i>';
+          btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+        });
+      }
+    });
+  </script>
+
+  <!-- Load Firebase modules correctly -->
   <script type="module" src="/js/firebase-config.js"></script>
   <script type="module" src="/js/admin-login.js"></script>
 </body>
