@@ -349,3 +349,57 @@ body.admin a:hover{ text-decoration:none; }
 @media (max-width: 900px){
   .a-sidebar{ inset:58px 0 0 0; width:min(80vw,320px); }
 }
+
+
+
+
+
+/* Add this to /css/admin.css */
+
+/* Tab Styles */
+.a-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--a-border);
+}
+.a-tab-btn {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  background: transparent;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--a-text-muted);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transform: translateY(1px);
+}
+.a-tab-btn.active {
+  color: var(--color-dark-primary);
+  border-bottom-color: var(--color-dark-secondary);
+}
+
+/* Action Button Styles */
+.a-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.a-action-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid var(--a-border);
+  background-color: transparent;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background-color 0.2s;
+}
+.a-action-btn:hover {
+  background-color: #f4f5f7;
+}
+.a-action-btn.view { color: #0284C7; }
+.a-action-btn.edit { color: #D97706; }
+.a-action-btn.ban { color: #9A3412; }
+.a-action-btn.delete { color: #DC2626; }

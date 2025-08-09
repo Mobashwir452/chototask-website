@@ -10,7 +10,7 @@
 
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/admin.css">
-  </head>
+</head>
 <body class="admin">
   <header id="admin-header"></header>
   <aside id="admin-sidebar"></aside>
@@ -19,10 +19,18 @@
     <div class="a-container">
       <div class="a-breadcrumbs">Admin / Users</div>
 
+      <div class="a-card-head" style="margin-bottom: 1rem; flex-wrap: wrap; padding: 0;">
+        <h3><i class="fa-solid fa-users"></i> User Management</h3>
+        <input type="search" id="user-search" class="a-search" placeholder="Search by name or email...">
+      </div>
+      
+      <div class="a-tabs">
+        <button class="a-tab-btn active" data-role="all">All Users</button>
+        <button class="a-tab-btn" data-role="worker">Workers</button>
+        <button class="a-tab-btn" data-role="client">Clients</button>
+      </div>
+
       <section class="a-card">
-          <div class="a-card-head">
-            <h3><i class="fa-solid fa-users"></i> All Registered Users</h3>
-            </div>
           <div class="a-table" id="table-users">
             <table>
               <thead>
@@ -32,15 +40,14 @@
                   <th>Role</th>
                   <th>Joined On</th>
                   <th>Status</th>
-                </tr>
+                  <th>Actions</th> </tr>
               </thead>
               <tbody id="tbody-users">
-                <tr><td colspan="5" class="a-empty">Loading users…</td></tr>
+                <tr><td colspan="6" class="a-empty">Loading users…</td></tr>
               </tbody>
             </table>
           </div>
       </section>
-
     </div>
   </main>
 
@@ -48,7 +55,5 @@
   <script type="module" src="/js/admin-loader.js"></script>
   <script type="module" src="/js/admin-shell.js"></script>
   <script type="module" src="/js/admin-guard.js"></script>
-  <script type="module" src="/js/admin-users.js"></script>
-
-</body>
+  <script type="module" src="/js/admin-users.js"></script> </body>
 </html>

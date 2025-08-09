@@ -360,6 +360,16 @@ async function handleRegister(e) {
             status: 'active'
         });
 
+
+        const walletDocRef = doc(db, "wallets", user.uid); // Use the same UID for the wallet ID
+        await setDoc(walletDocRef, {
+            balance: 0.00,
+            currency: 'BDT', // Or your site's currency
+            totalEarned: 0.00, // For Workers
+            totalSpent: 0.00, // For Clients
+            lastUpdated: serverTimestamp()
+        });
+
         await sendEmailVerification(user);
 
     // Update the success message
