@@ -7,6 +7,7 @@ import {
     sendPasswordResetEmail,
     verifyPasswordResetCode, // <-- IMPORT NEW
     confirmPasswordReset,    // <-- IMPORT NEW
+    sendEmailVerification,
     setPersistence,
     browserLocalPersistence,
     browserSessionPersistence,
@@ -96,6 +97,9 @@ async function handlePasswordResetPage() {
     const resetForm = document.getElementById('resetPasswordForm');
     const statusMessage = document.getElementById('reset-status-message');
     const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('verified')) {
+        showModal('Email Verified!', 'Your email address has been successfully verified. You can now log in.', 'success');
+    }
     const oobCode = urlParams.get('oobCode');
 
     if (!oobCode) {
@@ -233,6 +237,11 @@ async function handleLogin(e) {
         
         const userCredential = await signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value);
         const user = userCredential.user;
+
+        if (!user.emailVerified) {
+            await signOut(auth); // Sign out the unverified user
+            throw new Error("auth/email-not-verified");
+        }
         const userDoc = await getDoc(doc(db, "users", user.uid));
 
         if (userDoc.exists()) {
@@ -264,8 +273,16 @@ async function handleLogin(e) {
 
     } catch (error) {
         let friendlyMessage = "Invalid email or password. Please try again.";
+
+          if (error.code === "auth/email-not-verified") { // NEW: Handle this specific error
+            friendlyMessage = "Your email is not verified. Please check your inbox for the verification link.";
+        }
+
         if (error.message === "role-mismatch") {
             friendlyMessage = "Login failed. You have selected the wrong role for this account.";
+
+      
+
         } else if (error.message === "User data not found.") {
             friendlyMessage = "Could not find your user data. Please contact support.";
         }
@@ -343,12 +360,19 @@ async function handleRegister(e) {
             status: 'active'
         });
 
-        showModal('Registration Successful!', `Welcome, ${firstNameInput.value}! Redirecting...`, 'success');
-        const redirectToDashboard = () => {
-            window.location.href = roleInput.value === 'worker' ? '/worker/dashboard.html' : '/client/dashboard.html';
-        };
-        modalCloseBtn.onclick = redirectToDashboard;
-        setTimeout(redirectToDashboard, 3000);
+        await sendEmailVerification(user);
+
+    // Update the success message
+        showModal(
+            'Account Created!', 
+            'We have sent a verification link to your email address. Please verify your account before logging in.', 
+            'success'
+        );
+
+    // Redirect to login page after user clicks "OK" or after a delay
+        const redirectToLogin = () => window.location.href = '/login.html';
+        modalCloseBtn.onclick = redirectToLogin;
+        setTimeout(redirectToLogin, 5000); // Increased timeout to allow reading the message
 
     } catch (error) {
         let friendlyMessage = "An unexpected error occurred. Please try again.";

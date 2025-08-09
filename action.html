@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Processing... | ChotoTask</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/auth.css">
+</head>
+<body class="auth-page-bg">
+  <main class="auth-container">
+    <div class="auth-card">
+      <div class="auth-card-header">
+        <div class="auth-icon-wrapper">
+          <i class="fa-solid fa-spinner fa-spin"></i>
+        </div>
+        <h1 class="auth-title" id="action-title">Processing your request...</h1>
+        <p class="auth-subtitle" id="action-message">Please wait a moment.</p>
+      </div>
+    </div>
+  </main>
+  <script type="module" src="/js/firebase-config.js"></script>
+  <script type="module" src="/js/action-handler.js"></script>
+</body>
+</html>
