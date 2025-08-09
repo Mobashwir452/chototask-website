@@ -269,3 +269,45 @@ body.auth-page-bg {
     font-size: 1.75rem;
   }
 }
+
+
+
+/* FILE: /css/auth.css (add to the end) */
+
+/* Style for highlighting invalid form fields */
+.form-control.is-invalid {
+  border-color: #dc3545; /* A standard error red */
+  background-color: #fff6f7;
+}
+
+.form-group-checkbox label.is-invalid {
+    color: #dc3545; /* Highlight the terms label if not checked */
+}
+
+
+
+/* FILE: /css/auth.css (add to the end) */
+
+/* New styles for 'Remember Me' and 'Forgot Password' */
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: -0.5rem 0 1.5rem 0; /* Adjust spacing */
+}
+
+.forgot-password-link {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-dark-secondary);
+  text-decoration: none;
+}
+
+.forgot-password-link:hover {
+  text-decoration: underline;
+}
+
+/* Style for the "Sign UP" link at the bottom */
+.auth-link strong {
+  color: var(--color-dark-secondary);
+}
