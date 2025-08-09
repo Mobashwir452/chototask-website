@@ -95,28 +95,34 @@ document.addEventListener('DOMContentLoaded', () => {
 async function handlePasswordResetPage() {
     const resetForm = document.getElementById('resetPasswordForm');
     const statusMessage = document.getElementById('reset-status-message');
-    
-    // 1. Get the action code from the URL
     const urlParams = new URLSearchParams(window.location.search);
     const oobCode = urlParams.get('oobCode');
 
     if (!oobCode) {
-        statusMessage.textContent = 'Invalid or missing reset link. Please request a new one.';
+        statusMessage.textContent = 'Error: Invalid or missing reset link. Please request a new one.';
         return;
     }
 
-    // 2. Verify the code is valid
+    // Verify the code is valid
     try {
+        console.log("Attempting to verify password reset code...");
         await verifyPasswordResetCode(auth, oobCode);
-        // If successful, show the form
+        
+        // If successful, log it and show the form
+        console.log("Code verified successfully!");
         statusMessage.style.display = 'none';
         resetForm.style.display = 'block';
+
     } catch (error) {
-        statusMessage.textContent = 'The password reset link is invalid or has expired. Please request a new one.';
+        // THIS IS THE IMPORTANT PART: Log the specific error to the console
+        console.error("Firebase password reset verification failed:", error);
+        
+        // Display a more informative error to the user
+        statusMessage.textContent = `Error: The link is invalid or has expired. Please try again. (Code: ${error.code})`;
         return;
     }
 
-    // 3. Handle the form submission
+    // Handle the form submission (no changes here)
     resetForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const newPassword = document.getElementById('newPassword').value;
