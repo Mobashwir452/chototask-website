@@ -1,14 +1,30 @@
 // FILE: /js/admin-users.js (REVISED)
 import { db } from '/js/firebase-config.js';
-import { collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { collection, query, orderBy, getDocs, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // --- DOM ELEMENTS ---
 const tbody = document.getElementById('tbody-users');
 const searchInput = document.getElementById('user-search');
 const tabContainer = document.querySelector('.a-tabs');
+const adminModal = document.getElementById('admin-modal');
+const modalTitle = document.getElementById('admin-modal-title');
+const modalBody = document.getElementById('admin-modal-body');
+const modalCloseBtn = document.getElementById('admin-modal-close-btn');
 
 // --- STATE ---
 let allUsers = []; // This will store all users fetched from Firestore to avoid re-fetching
+
+
+// --- MODAL CONTROLS ---
+const showAdminModal = () => adminModal.style.display = 'flex';
+const hideAdminModal = () => adminModal.style.display = 'none';
+modalCloseBtn.addEventListener('click', hideAdminModal);
+adminModal.addEventListener('click', (e) => {
+    if (e.target === adminModal) hideAdminModal();
+});
+
+
+
 
 // --- RENDER FUNCTION ---
 // Renders a given list of users into the table
@@ -43,6 +59,105 @@ const renderUsers = (users) => {
         tbody.insertAdjacentHTML('beforeend', row);
     });
 };
+
+// --- ACTION HANDLERS ---
+// EDIT
+
+const handleEdit = async (userId) => {
+    const user = allUsers.find(u => u.uid === userId);
+    modalTitle.textContent = `Edit User: ${user.fullName}`;
+    modalBody.innerHTML = `
+        <form id="edit-user-form">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="edit-fullName" class="form-control" value="${user.fullName}">
+            </div>
+            <div class="form-group">
+                <label>Role</label>
+                <select id="edit-role" class="form-control">
+                    <option value="worker" ${user.role === 'worker' ? 'selected' : ''}>Worker</option>
+                    <option value="client" ${user.role === 'client' ? 'selected' : ''}>Client</option>
+                </select>
+            </div>
+            <div class="a-modal-footer">
+                <button type="button" class="btn btn-outline" id="edit-cancel-btn">Cancel</button>
+                <button type="submit" class="btn btn-dark">Save Changes</button>
+            </div>
+        </form>
+    `;
+    showAdminModal();
+
+    document.getElementById('edit-cancel-btn').addEventListener('click', hideAdminModal);
+    document.getElementById('edit-user-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const newFullName = document.getElementById('edit-fullName').value;
+        const newRole = document.getElementById('edit-role').value;
+        
+        await updateDoc(doc(db, "users", userId), { fullName: newFullName, role: newRole });
+        
+        // Update local data and re-render
+        user.fullName = newFullName;
+        user.role = newRole;
+        filterAndRender();
+        hideAdminModal();
+    });
+};
+
+
+
+// SUSPEND
+const handleSuspend = (userId) => {
+    const user = allUsers.find(u => u.uid === userId);
+    const newStatus = user.status === 'active' ? 'suspended' : 'active';
+    modalTitle.textContent = `${newStatus === 'active' ? 'Reactivate' : 'Suspend'} User`;
+    modalBody.innerHTML = `
+        <p>Are you sure you want to change this user's status to <strong>${newStatus}</strong>?</p>
+        <div class="a-modal-footer">
+            <button type="button" class="btn btn-outline" id="suspend-cancel-btn">Cancel</button>
+            <button type="button" class="btn btn-dark" id="suspend-confirm-btn">Confirm</button>
+        </div>
+    `;
+    showAdminModal();
+
+    document.getElementById('suspend-cancel-btn').addEventListener('click', hideAdminModal);
+    document.getElementById('suspend-confirm-btn').addEventListener('click', async () => {
+        await updateDoc(doc(db, "users", userId), { status: newStatus });
+        user.status = newStatus;
+        filterAndRender();
+        hideAdminModal();
+    });
+};
+
+
+
+// DELETE
+const handleDelete = (userId) => {
+    modalTitle.textContent = 'Delete User';
+    modalBody.innerHTML = `
+        <p><strong>Warning:</strong> This is a dangerous action.</p>
+        <p>For security, deleting a user completely requires a backend function. This action will perform a "soft delete" by changing their status to 'deleted', which hides them from the system. Are you sure you want to proceed?</p>
+        <div class="a-modal-footer">
+            <button type="button" class="btn btn-outline" id="delete-cancel-btn">Cancel</button>
+            <button type="button" class="btn btn-danger" id="delete-confirm-btn">Yes, Soft Delete</button>
+        </div>
+    `;
+    showAdminModal();
+
+    document.getElementById('delete-cancel-btn').addEventListener('click', hideAdminModal);
+    document.getElementById('delete-confirm-btn').addEventListener('click', async () => {
+        // This is a "soft delete". A true delete needs a backend function.
+        await updateDoc(doc(db, "users", userId), { status: 'deleted' });
+        
+        // Remove from the view
+        allUsers = allUsers.filter(u => u.uid !== userId);
+        filterAndRender();
+        hideAdminModal();
+    });
+};
+
+
+
+
 
 // --- FILTER & SEARCH LOGIC ---
 const filterAndRender = () => {
@@ -80,7 +195,7 @@ tabContainer.addEventListener('click', (e) => {
 // Listen for input in the search bar
 searchInput.addEventListener('input', filterAndRender);
 
-// Placeholder for action button clicks
+// --- MAIN EVENT LISTENER FOR ACTIONS ---
 tbody.addEventListener('click', (e) => {
     const actionButton = e.target.closest('.a-action-btn');
     if (!actionButton) return;
@@ -88,13 +203,11 @@ tbody.addEventListener('click', (e) => {
     const userId = actionButton.dataset.userid;
 
     if (actionButton.classList.contains('edit')) {
-        alert(`EDIT action for user ID: ${userId}. You would open a modal here.`);
+        handleEdit(userId);
     } else if (actionButton.classList.contains('ban')) {
-        alert(`SUSPEND action for user ID: ${userId}. You would update their status in Firestore.`);
+        handleSuspend(userId);
     } else if (actionButton.classList.contains('delete')) {
-        if (confirm(`Are you sure you want to DELETE user ID: ${userId}? This cannot be undone.`)) {
-            alert('This would trigger a secure delete function.');
-        }
+        handleDelete(userId);
     }
 });
 
