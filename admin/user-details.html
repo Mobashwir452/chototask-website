@@ -2,8 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Details | ChotoTask Admin</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="/css/admin-user-details.css">
 </head>
 <body class="admin">
     <header id="admin-header"></header>
@@ -11,13 +17,22 @@
 
     <main id="admin-main">
         <div class="a-container" id="user-details-container">
-            <div class="a-breadcrumbs"><a href="/admin/users.html">Users</a> / Details</div>
-            <div class="a-card">
-                <h2>Loading user details...</h2>
+            <div class="a-breadcrumbs">
+                <a href="/admin/users.html">Users</a> / Loading...
+            </div>
+            
+            <div class="a-card" id="details-card">
+                <div class="a-loading-spinner">
+                    <i class="fa-solid fa-spinner fa-spin"></i> Loading user details...
+                </div>
             </div>
         </div>
     </main>
 
+    <script type="module" src="/js/firebase-config.js"></script>
+    <script type="module" src="/js/admin-loader.js"></script>
+    <script type="module" src="/js/admin-shell.js"></script>
+    <script type="module" src="/js/admin-guard.js"></script>
     <script type="module" src="/js/admin-user-details.js"></script>
 </body>
 </html>
