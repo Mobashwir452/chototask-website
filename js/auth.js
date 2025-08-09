@@ -5,6 +5,8 @@ import {
     createUserWithEmailAndPassword, 
     signInWithEmailAndPassword,
     sendPasswordResetEmail,
+    verifyPasswordResetCode, // <-- IMPORT NEW
+    confirmPasswordReset,    // <-- IMPORT NEW
     setPersistence,
     browserLocalPersistence,
     browserSessionPersistence,
@@ -55,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
     const forgotPasswordForm = document.getElementById('forgotPasswordForm'); // <-- GET NEW FORM
+    const resetPasswordForm = document.getElementById('resetPasswordForm'); // <-- GET NEW FORM
     const roleToggle = document.querySelector('.role-toggle');
 
     // FIX #1: Attach toggle logic if the element exists on the page
@@ -79,7 +82,76 @@ document.addEventListener('DOMContentLoaded', () => {
     if (forgotPasswordForm) { // <-- ATTACH NEW HANDLER
         forgotPasswordForm.addEventListener('submit', handleForgotPassword);
     }
+    if (resetPasswordForm) { 
+        handlePasswordResetPage(); 
+    }
 });
+
+
+
+// ===============================================
+//           NEW: PASSWORD RESET PAGE HANDLER
+// ===============================================
+async function handlePasswordResetPage() {
+    const resetForm = document.getElementById('resetPasswordForm');
+    const statusMessage = document.getElementById('reset-status-message');
+    
+    // 1. Get the action code from the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const oobCode = urlParams.get('oobCode');
+
+    if (!oobCode) {
+        statusMessage.textContent = 'Invalid or missing reset link. Please request a new one.';
+        return;
+    }
+
+    // 2. Verify the code is valid
+    try {
+        await verifyPasswordResetCode(auth, oobCode);
+        // If successful, show the form
+        statusMessage.style.display = 'none';
+        resetForm.style.display = 'block';
+    } catch (error) {
+        statusMessage.textContent = 'The password reset link is invalid or has expired. Please request a new one.';
+        return;
+    }
+
+    // 3. Handle the form submission
+    resetForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+        const btnText = document.getElementById('btn-text');
+        const btnLoader = document.getElementById('btn-loader');
+
+        if (newPassword.length < 6) {
+            return showModal('Weak Password', 'Your new password must be at least 6 characters long.', 'error');
+        }
+        if (newPassword !== confirmNewPassword) {
+            return showModal('Passwords Do Not Match', 'Please ensure both password fields are identical.', 'error');
+        }
+
+        btnText.style.display = 'none';
+        btnLoader.style.display = 'inline-block';
+        
+        try {
+            // 4. Confirm the password reset with the new password
+            await confirmPasswordReset(auth, oobCode, newPassword);
+            showModal('Password Updated!', 'Your password has been successfully reset. You can now log in.', 'success');
+            
+            // Redirect to login page after user clicks "OK" or after a delay
+            const redirectToLogin = () => window.location.href = '/login.html';
+            modalCloseBtn.onclick = redirectToLogin;
+            setTimeout(redirectToLogin, 3000);
+
+        } catch (error) {
+            showModal('Error', 'Failed to reset password. The link may have expired.', 'error');
+        } finally {
+            btnText.style.display = 'inline-block';
+            btnLoader.style.display = 'none';
+        }
+    });
+}
 
 
 
