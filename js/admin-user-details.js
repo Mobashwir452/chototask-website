@@ -1,62 +1,75 @@
-// FILE: /js/admin-user-details.js (REVISED)
+// FILE: /js/admin-user-details.js (FINAL VERSION)
 import { db } from '/js/firebase-config.js';
 import { doc, getDoc, collection, query, where, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const detailsCard = document.getElementById('details-card');
 const breadcrumbs = document.querySelector('.a-breadcrumbs');
+const CURRENCY_SYMBOL = '৳'; // <-- CHANGE CURRENCY HERE
 
 // --- RENDER FUNCTION ---
 const renderUserDetails = (user, wallet, activity) => {
-    // Update breadcrumbs for context
     breadcrumbs.innerHTML = `<a href="/admin/users.html">Users</a> / ${user.fullName}`;
-
-    const joinedDate = user.createdAt ? new Date(user.createdAt.seconds * 1000).toLocaleString() : 'N/A';
     
-    // Determine which stats to show based on role
+    // --- Helper functions for cleaner rendering ---
+    const formatDate = (timestamp) => timestamp ? new Date(timestamp.seconds * 1000).toLocaleString() : 'N/A';
+    const formatAddress = (address) => address ? `${address.street}, ${address.city}, ${address.country}` : 'Not provided';
+    
+    const getKycBadge = (status) => {
+        const statusMap = { 'Verified': 'verified', 'Pending': 'pending', 'Not Submitted': 'free' };
+        const badgeClass = statusMap[status] || 'free';
+        return `<span class="status-badge ${badgeClass}">${status || 'N/A'}</span>`;
+    };
+    
+    const getPlanBadge = (plan) => {
+        const badgeClass = plan === 'Premium' ? 'premium' : 'free';
+        return `<span class="status-badge ${badgeClass}">${plan || 'N/A'}</span>`;
+    };
+
     const kpiCards = user.role === 'worker' ? `
-        <div class="details-kpi"><h4>Balance</h4><p>$${wallet.balance.toFixed(2)}</p></div>
+        <div class="details-kpi"><h4>Balance</h4><p>${CURRENCY_SYMBOL}${wallet.balance.toFixed(2)}</p></div>
         <div class="details-kpi"><h4>Jobs Completed</h4><p>${user.jobsCompleted || 0}</p></div>
-        <div class="details-kpi"><h4>Total Earned</h4><p>$${wallet.totalEarned.toFixed(2)}</p></div>
+        <div class="details-kpi"><h4>Total Earned</h4><p>${CURRENCY_SYMBOL}${wallet.totalEarned.toFixed(2)}</p></div>
     ` : `
-        <div class="details-kpi"><h4>Balance</h4><p>$${wallet.balance.toFixed(2)}</p></div>
+        <div class="details-kpi"><h4>Balance</h4><p>${CURRENCY_SYMBOL}${wallet.balance.toFixed(2)}</p></div>
         <div class="details-kpi"><h4>Jobs Posted</h4><p>${user.jobsPosted || 0}</p></div>
-        <div class="details-kpi"><h4>Total Spent</h4><p>$${wallet.totalSpent.toFixed(2)}</p></div>
+        <div class="details-kpi"><h4>Total Spent</h4><p>${CURRENCY_SYMBOL}${wallet.totalSpent.toFixed(2)}</p></div>
     `;
 
-    // Generate recent activity list
     const activityList = activity.length > 0
-        ? activity.map(item => `<li>${item.description} - <strong>${new Date(item.date.seconds * 1000).toLocaleDateString()}</strong></li>`).join('')
+        ? activity.map(item => `<li><span>${item.description}</span><span class="date">${new Date(item.date.seconds * 1000).toLocaleDateString()}</span></li>`).join('')
         : '<li>No recent activity found.</li>';
 
+    // --- Final HTML Structure ---
     const html = `
         <div class="details-header">
             <div class="details-header-info">
                 <h2>${user.fullName}</h2>
                 <p>${user.email}</p>
             </div>
-            <div class="a-actions">
-                </div>
         </div>
 
         <div class="details-kpi-grid">${kpiCards}</div>
         
-        <div class="details-section-grid">
+        <div class="details-main-grid">
             <div class="details-section">
                 <h4>Account Information</h4>
-                <p><span>User ID (UID)</span> <strong>${user.uid}</strong></p>
-                <p><span>Role</span> <strong>${user.role}</strong></p>
-                <p><span>Status</span> <strong>${user.status}</strong></p>
-                <p><span>Joined On</span> <strong>${joinedDate}</strong></p>
+                <div class="info-row"><span>User ID (UID)</span> <strong>${user.uid}</strong></div>
+                <div class="info-row"><span>Username</span> <strong>${user.username || 'Not set'}</strong></div>
+                <div class="info-row"><span>Role</span> <strong>${user.role}</strong></div>
+                <div class="info-row"><span>Account Status</span> <strong>${user.status}</strong></div>
+                <div class="info-row"><span>Subscription Plan</span> <strong>${getPlanBadge(user.plan)}</strong></div>
+                <div class="info-row"><span>KYC Status</span> <strong>${getKycBadge(user.kycStatus)}</strong></div>
+                <div class="info-row"><span>Joined On</span> <strong>${formatDate(user.createdAt)}</strong></div>
+                <div class="info-row"><span>Address</span> <strong>${formatAddress(user.address)}</strong></div>
             </div>
             <div class="details-section">
                 <h4>Recent Activity</h4>
-                <ul>${activityList}</ul>
+                <ul class="recent-activity-list">${activityList}</ul>
             </div>
         </div>
     `;
     detailsCard.innerHTML = html;
 };
-
 // --- DATA FETCHING ---
 (async () => {
     const urlParams = new URLSearchParams(window.location.search);
