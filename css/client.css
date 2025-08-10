@@ -32,20 +32,28 @@ body.client-page {
 
 
 
-/* --- CLIENT HEADER --- */
-/* FIX 1: New wrapper gets the background color and is full-width */
-.client-header-wrapper {
+/* --- CLIENT HEADER (FINAL FIX) --- */
+
+/* FIX: We now target the main <header> tag where the component is loaded.
+  Making it "sticky" forces it to the top of the viewport and makes it full-width.
+*/
+header#client-header-placeholder {
+    position: sticky;
+    top: 0;
     width: 100%;
-    background-color: #2C3E50; /* As seen in the screenshot */
+    z-index: 1100; /* High z-index to stay on top */
+    background-color: #2C3E50; /* The dark background color */
 }
+
+/* The nav inside the header aligns the content */
 .client-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    /* The nav itself is now transparent */
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
 }
+
 .client-header__left, .client-header__right {
     display: flex;
     align-items: center;
@@ -59,7 +67,7 @@ body.client-page {
     margin-left: 0.5rem;
 }
 .client-header__menu-btn, .client-header__icon-btn {
-    width: 44px;  /* Profile icon size */
+    width: 44px;
     height: 44px;
     border-radius: 50%;
     background: var(--client-accent-gradient);
@@ -73,7 +81,7 @@ body.client-page {
     flex-shrink: 0;
 }
 .client-header__balance {
-    background: var(--client-card-bg);
+    background: rgba(0,0,0,0.2);
     padding: 0.6rem 1rem;
     border-radius: 20px;
     border: 1px solid var(--client-card-border);
@@ -81,16 +89,13 @@ body.client-page {
 .client-header__balance strong {
     font-size: 1rem;
     font-weight: 600;
+    color: #fff;
 }
-/* FIX 2: Style for the smaller notification icon */
 .client-header__icon-btn--small {
     width: 36px;
     height: 36px;
     font-size: 1rem;
 }
-
-
-
 
 
 
