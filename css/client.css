@@ -28,7 +28,15 @@ body.client-page {
     padding: 0.75rem 1rem;
     background-color: var(--client-bg-start);
     border-bottom: 1px solid var(--client-card-border);
+    gap: 1rem; /* Adds consistent spacing */
 }
+
+
+.menu-btn {
+    font-size: 1.25rem; /* Slightly smaller for better balance */
+}
+
+
 .menu-btn, .notification-btn {
     background: none;
     border: none;
@@ -36,17 +44,34 @@ body.client-page {
     font-size: 1.5rem;
     cursor: pointer;
 }
-.app-logo { font-weight: 700; font-size: 1.25rem; }
-.header-actions { display: flex; align-items: center; gap: 0.75rem; }
+.app-logo {
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin-right: auto; /* Pushes actions to the right */
+}
+
+
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
 .balance-display {
     background: var(--client-card-bg);
     padding: 0.4rem 0.8rem;
     border-radius: 999px;
     font-weight: 600;
+    font-size: 0.9rem;
+}
+
+
+.notification-btn {
+    font-size: 1.25rem;
 }
 .profile-avatar {
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
     background: linear-gradient(45deg, var(--client-accent-start), var(--client-accent-end));
 }
@@ -58,7 +83,8 @@ body.client-page {
     left: 0;
     right: 0;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-around; /* Ensures even spacing */
+    align-items: flex-start; /* Aligns items to the top */
     background-color: var(--client-bg-start);
     border-top: 1px solid var(--client-card-border);
     padding: 0.5rem 0;
@@ -72,12 +98,18 @@ body.client-page {
     color: var(--client-text-muted);
     text-decoration: none;
     font-size: 0.75rem;
+    width: 20%; /* Gives each item an equal share of the width */
 }
-.nav-item.active { color: var(--client-text-primary); }
-.nav-item i { font-size: 1.25rem; }
+.nav-item.active {
+    color: var(--client-text-primary);
+}
+.nav-item i {
+    font-size: 1.25rem;
+}
 .nav-item.add-task {
     transform: translateY(-20px);
 }
+
 .add-task-icon {
     width: 56px;
     height: 56px;
@@ -87,44 +119,97 @@ body.client-page {
     display: grid;
     place-items: center;
     border: 4px solid var(--client-bg-start);
+    margin-bottom: 0.25rem;
 }
 
-/* --- Side Menu --- */
-.menu-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: 200;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s, visibility 0.3s;
-}
+
 .menu-overlay.visible { opacity: 1; visibility: visible; }
-.menu-content {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 80%;
-    max-width: 300px;
-    height: 100%;
-    background: var(--client-bg-start);
-    transform: translateX(-100%);
-    transition: transform 0.3s;
-    display: flex;
-    flex-direction: column;
-    padding: 1rem;
-}
+
 .menu-overlay.visible .menu-content { transform: translateX(0); }
-.menu-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
-.menu-header h3 { font-size: 1.5rem; }
+
 .menu-header button { background: none; border: none; font-size: 2rem; color: white; }
 .menu-links { display: flex; flex-direction: column; gap: 1rem; flex-grow: 1; }
 .menu-links a { color: var(--client-text-primary); text-decoration: none; font-size: 1.1rem; }
-.logout-btn {
-    background: var(--client-btn-secondary-fill);
-    color: white;
-    border: none;
-    padding: 0.8rem;
-    border-radius: 8px;
-    font-weight: 600;
+
+
+
+
+/* Add to bottom of /css/client.css */
+
+/* --- Redesigned Side Menu --- */
+.menu-overlay {
+    background: rgba(0, 0, 0, 0.6);
 }
+.menu-content {
+    background: var(--client-bg-start);
+    padding: 1.5rem;
+}
+.menu-header {
+    margin-bottom: 2rem;
+}
+.menu-header h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--client-text-primary);
+}
+.menu-close-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    color: var(--client-text-muted);
+}
+.menu-close-btn:hover {
+    color: var(--client-text-primary);
+}
+.menu-close-btn i {
+    font-size: 1.5rem;
+}
+
+.mobile-menu-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+.mobile-menu-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--client-text-primary);
+    background-color: var(--client-card-bg);
+    transition: background-color 0.2s, transform 0.2s;
+}
+.mobile-menu-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: scale(1.02);
+}
+.nav-icon-wrapper {
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--client-accent-end), var(--client-accent-start));
+    color: var(--client-bg-start);
+}
+.nav-icon-wrapper i {
+    font-size: 18px;
+}
+
+.logout-btn {
+    margin-top: auto; /* Pushes to the bottom */
+    width: 100%;
+    justify-content: center;
+    padding: 0.8rem 1.5rem;
+    background: var(--client-btn-secondary-fill);
+    border-radius: 0.75rem;
+}
+
