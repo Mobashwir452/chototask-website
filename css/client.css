@@ -1,11 +1,11 @@
-/* FILE: /css/client.css (Global Client Styles) */
+/* FILE: /css/client.css (CORRECTED) */
 :root {
     --client-bg-start: #2C3E50;
     --client-bg-end: #00709B;
     --client-accent-start: #00FFCD;
     --client-accent-end: #00B8FF;
     --client-text-primary: #FFFFFF;
-    --client-text-muted: #B0B0B0; /* Using the original muted color for better contrast on dark bg */
+    --client-text-muted: #B0B0B0;
     --client-card-bg: rgba(255, 255, 255, 0.05);
     --client-card-border: rgba(255, 255, 255, 0.1);
     --client-btn-secondary-fill: #34495E;
@@ -17,199 +17,134 @@ body.client-page {
     font-family: 'Poppins', sans-serif;
     color: var(--client-text-primary);
     margin: 0;
-    padding-bottom: 80px; /* Space for the bottom nav */
+    padding-bottom: 80px;
 }
 
-/* --- Header --- */
+/* --- Header & Menu Control --- */
+.menu-toggle-input {
+    display: none;
+}
+.app-header-wrapper {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background-color: var(--client-bg-start);
+    border-bottom: 1px solid var(--client-card-border);
+}
 .app-header-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.75rem 1rem;
-    background-color: var(--client-bg-start);
-    border-bottom: 1px solid var(--client-card-border);
-    gap: 1rem; /* Adds consistent spacing */
+    height: 70px;
 }
-
-
-.menu-btn {
-    font-size: 1.25rem; /* Slightly smaller for better balance */
-}
-
-
-.menu-btn, .notification-btn {
-    background: none;
-    border: none;
-    color: var(--client-text-primary);
-    font-size: 1.5rem;
-    cursor: pointer;
-}
-.app-logo {
-    font-weight: 700;
-    font-size: 1.25rem;
-    margin-right: auto; /* Pushes actions to the right */
-}
-
-
-
-.header-actions {
+.header-left, .header-actions {
     display: flex;
     align-items: center;
     gap: 0.75rem;
 }
+.menu-btn {
+    background: none; border: none; cursor: pointer;
+    color: var(--client-text-primary);
+    font-size: 1.5rem;
+    display: grid; place-items: center;
+}
+.app-logo { font-weight: 700; font-size: 1.25rem; }
 .balance-display {
     background: var(--client-card-bg);
     padding: 0.4rem 0.8rem;
     border-radius: 999px;
     font-weight: 600;
-    font-size: 0.9rem;
 }
-
-
 .notification-btn {
-    font-size: 1.25rem;
+    background: none; border: none; cursor: pointer;
+    color: var(--client-text-primary);
+    font-size: 1.5rem;
 }
 .profile-avatar {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
+    width: 38px; height: 38px; border-radius: 50%;
     background: linear-gradient(45deg, var(--client-accent-start), var(--client-accent-end));
+}
+
+/* --- CSS-Driven Side Menu --- */
+.mobile-menu-container {
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    z-index: 200;
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+.mobile-menu-content {
+    position: absolute; top: 0; left: 0;
+    height: 100%; width: 80%; max-width: 320px;
+    background-color: var(--client-bg-start);
+    padding: 1.5rem;
+    display: flex; flex-direction: column;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+}
+.menu-toggle-input:checked ~ .mobile-menu-container {
+    opacity: 1; visibility: visible;
+}
+.menu-toggle-input:checked ~ .mobile-menu-container .mobile-menu-content {
+    transform: translateX(0);
+}
+.mobile-menu-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 2rem;
+}
+.mobile-menu-header h3 { font-size: 1.5rem; }
+.menu-close-btn {
+    background: none; border: none; cursor: pointer;
+    font-size: 1.75rem; color: var(--client-text-muted);
+}
+.mobile-menu-nav {
+    display: flex; flex-direction: column; gap: 0.75rem;
+    flex-grow: 1; overflow-y: auto;
+}
+.mobile-menu-link {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 0.75rem; border-radius: 0.75rem;
+    font-weight: 600; text-decoration: none;
+    color: var(--client-text-primary);
+    background-color: var(--client-card-bg);
+}
+.nav-icon-wrapper {
+    width: 38px; height: 38px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: linear-gradient(135deg, var(--client-accent-end), var(--client-accent-start));
+    color: var(--client-bg-start);
+}
+.logout-btn {
+    background: var(--client-btn-secondary-fill);
+    color: white; border: none; padding: 0.8rem;
+    border-radius: 8px; font-weight: 600; margin-top: 1rem;
 }
 
 /* --- Bottom Nav --- */
 .bottom-nav-container {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: space-around; /* Ensures even spacing */
-    align-items: flex-start; /* Aligns items to the top */
+    position: fixed; bottom: 0; left: 0; right: 0;
+    display: flex; justify-content: space-around;
+    align-items: flex-start;
     background-color: var(--client-bg-start);
     border-top: 1px solid var(--client-card-border);
     padding: 0.5rem 0;
     z-index: 100;
 }
 .nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.25rem;
-    color: var(--client-text-muted);
-    text-decoration: none;
-    font-size: 0.75rem;
-    width: 20%; /* Gives each item an equal share of the width */
+    display: flex; flex-direction: column; align-items: center;
+    gap: 0.25rem; color: var(--client-text-muted);
+    text-decoration: none; font-size: 0.75rem;
+    width: 20%; /* Gives each item equal space */
 }
-.nav-item.active {
-    color: var(--client-text-primary);
-}
-.nav-item i {
-    font-size: 1.25rem;
-}
-.nav-item.add-task {
-    transform: translateY(-20px);
-}
-
+.nav-item.active { color: var(--client-text-primary); }
+.nav-item i { font-size: 1.25rem; }
+.nav-item.add-task { transform: translateY(-20px); }
 .add-task-icon {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
+    width: 56px; height: 56px; border-radius: 50%;
     background: linear-gradient(45deg, var(--client-accent-start), var(--client-accent-end));
     color: var(--client-bg-start);
-    display: grid;
-    place-items: center;
+    display: grid; place-items: center;
     border: 4px solid var(--client-bg-start);
     margin-bottom: 0.25rem;
 }
-
-
-.menu-overlay.visible { opacity: 1; visibility: visible; }
-
-.menu-overlay.visible .menu-content { transform: translateX(0); }
-
-.menu-header button { background: none; border: none; font-size: 2rem; color: white; }
-.menu-links { display: flex; flex-direction: column; gap: 1rem; flex-grow: 1; }
-.menu-links a { color: var(--client-text-primary); text-decoration: none; font-size: 1.1rem; }
-
-
-
-
-/* Add to bottom of /css/client.css */
-
-/* --- Redesigned Side Menu --- */
-.menu-overlay {
-    background: rgba(0, 0, 0, 0.6);
-}
-.menu-content {
-    background: var(--client-bg-start);
-    padding: 1.5rem;
-}
-.menu-header {
-    margin-bottom: 2rem;
-}
-.menu-header h3 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--client-text-primary);
-}
-.menu-close-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0.5rem;
-    color: var(--client-text-muted);
-}
-.menu-close-btn:hover {
-    color: var(--client-text-primary);
-}
-.menu-close-btn i {
-    font-size: 1.5rem;
-}
-
-.mobile-menu-nav {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    flex-grow: 1;
-    overflow-y: auto;
-}
-.mobile-menu-link {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 0.75rem;
-    border-radius: 0.75rem;
-    font-weight: 600;
-    text-decoration: none;
-    color: var(--client-text-primary);
-    background-color: var(--client-card-bg);
-    transition: background-color 0.2s, transform 0.2s;
-}
-.mobile-menu-link:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    transform: scale(1.02);
-}
-.nav-icon-wrapper {
-    flex-shrink: 0;
-    width: 38px;
-    height: 38px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--client-accent-end), var(--client-accent-start));
-    color: var(--client-bg-start);
-}
-.nav-icon-wrapper i {
-    font-size: 18px;
-}
-
-.logout-btn {
-    margin-top: auto; /* Pushes to the bottom */
-    width: 100%;
-    justify-content: center;
-    padding: 0.8rem 1.5rem;
-    background: var(--client-btn-secondary-fill);
-    border-radius: 0.75rem;
-}
-
