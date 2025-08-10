@@ -1,0 +1,130 @@
+/* FILE: /css/client.css (Global Client Styles) */
+:root {
+    --client-bg-start: #2C3E50;
+    --client-bg-end: #00709B;
+    --client-accent-start: #00FFCD;
+    --client-accent-end: #00B8FF;
+    --client-text-primary: #FFFFFF;
+    --client-text-muted: #B0B0B0; /* Using the original muted color for better contrast on dark bg */
+    --client-card-bg: rgba(255, 255, 255, 0.05);
+    --client-card-border: rgba(255, 255, 255, 0.1);
+    --client-btn-secondary-fill: #34495E;
+}
+
+body.client-page {
+    background: linear-gradient(160deg, var(--client-bg-start), var(--client-bg-end));
+    background-attachment: fixed;
+    font-family: 'Poppins', sans-serif;
+    color: var(--client-text-primary);
+    margin: 0;
+    padding-bottom: 80px; /* Space for the bottom nav */
+}
+
+/* --- Header --- */
+.app-header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background-color: var(--client-bg-start);
+    border-bottom: 1px solid var(--client-card-border);
+}
+.menu-btn, .notification-btn {
+    background: none;
+    border: none;
+    color: var(--client-text-primary);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+.app-logo { font-weight: 700; font-size: 1.25rem; }
+.header-actions { display: flex; align-items: center; gap: 0.75rem; }
+.balance-display {
+    background: var(--client-card-bg);
+    padding: 0.4rem 0.8rem;
+    border-radius: 999px;
+    font-weight: 600;
+}
+.profile-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, var(--client-accent-start), var(--client-accent-end));
+}
+
+/* --- Bottom Nav --- */
+.bottom-nav-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-around;
+    background-color: var(--client-bg-start);
+    border-top: 1px solid var(--client-card-border);
+    padding: 0.5rem 0;
+    z-index: 100;
+}
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--client-text-muted);
+    text-decoration: none;
+    font-size: 0.75rem;
+}
+.nav-item.active { color: var(--client-text-primary); }
+.nav-item i { font-size: 1.25rem; }
+.nav-item.add-task {
+    transform: translateY(-20px);
+}
+.add-task-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, var(--client-accent-start), var(--client-accent-end));
+    color: var(--client-bg-start);
+    display: grid;
+    place-items: center;
+    border: 4px solid var(--client-bg-start);
+}
+
+/* --- Side Menu --- */
+.menu-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 200;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+.menu-overlay.visible { opacity: 1; visibility: visible; }
+.menu-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 80%;
+    max-width: 300px;
+    height: 100%;
+    background: var(--client-bg-start);
+    transform: translateX(-100%);
+    transition: transform 0.3s;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+}
+.menu-overlay.visible .menu-content { transform: translateX(0); }
+.menu-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+.menu-header h3 { font-size: 1.5rem; }
+.menu-header button { background: none; border: none; font-size: 2rem; color: white; }
+.menu-links { display: flex; flex-direction: column; gap: 1rem; flex-grow: 1; }
+.menu-links a { color: var(--client-text-primary); text-decoration: none; font-size: 1.1rem; }
+.logout-btn {
+    background: var(--client-btn-secondary-fill);
+    color: white;
+    border: none;
+    padding: 0.8rem;
+    border-radius: 8px;
+    font-weight: 600;
+}

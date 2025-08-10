@@ -1,0 +1,98 @@
+/* FILE: /css/client-dashboard.css */
+
+/* --- Hero Section --- */
+.hero-section {
+    padding: 2rem 1rem;
+    text-align: center;
+}
+.hero-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+.hero-cta {
+    display: inline-block;
+    width: 100%;
+    max-width: 400px;
+    padding: 1rem;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--client-accent-start), var(--client-accent-end));
+    color: var(--client-bg-start);
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 1.1rem;
+    margin-top: 1rem;
+}
+
+/* --- Main Content --- */
+.dashboard-content {
+    padding: 1rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+.stat-card {
+    background: var(--client-card-bg);
+    border: 1px solid var(--client-card-border);
+    border-radius: 1rem;
+    padding: 1rem;
+}
+.stat-card.highlight {
+    border-color: var(--client-accent-start);
+}
+.stat-card h4 {
+    font-size: 0.9rem;
+    color: var(--client-text-muted);
+    margin: 0 0 0.5rem 0;
+}
+.stat-card p {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+.section-header h3 {
+    font-size: 1.25rem;
+}
+.view-all-btn {
+    color: var(--client-accent-start);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.job-list .job-item, .activity-list .activity-item {
+    background: var(--client-card-bg);
+    border: 1px solid var(--client-card-border);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+}
+.job-item h5 { font-size: 1rem; margin: 0 0 0.5rem 0; }
+.job-progress {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--client-text-muted);
+    margin-bottom: 0.5rem;
+}
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background-color: var(--client-btn-secondary-fill);
+    border-radius: 999px;
+    overflow: hidden;
+}
+.progress-bar div {
+    height: 100%;
+    background: linear-gradient(90deg, var(--client-accent-start), var(--client-accent-end));
+}

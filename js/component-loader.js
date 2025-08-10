@@ -36,3 +36,16 @@ document.addEventListener('DOMContentLoaded', () => {
         document.dispatchEvent(new Event('componentsLoaded'));
     });
 });
+
+
+
+// FILE: /js/component-loader.js (add these lines)
+document.addEventListener('DOMContentLoaded', () => {
+    const components = {
+        // ... your existing public and auth placeholders
+        '#client-header-placeholder': 'components/client-header.html',
+        '#client-bottom-nav-placeholder': 'components/client-bottom-nav.html',
+        '#client-menu-placeholder': 'components/client-menu.html',
+    };
+    // ... rest of the script is the same
+});
