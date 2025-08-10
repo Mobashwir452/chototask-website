@@ -28,19 +28,28 @@ body.client-page {
     max-width: 1200px;
 }
 
+
+
+
+
 /* --- CLIENT HEADER --- */
+/* FIX 1: New wrapper gets the background color and is full-width */
+.client-header-wrapper {
+    width: 100%;
+    background-color: #2C3E50; /* As seen in the screenshot */
+}
 .client-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding-top: 1rem;
     padding-bottom: 1rem;
-    background-color: #2C3E50; /* Match the top of the gradient */
+    /* The nav itself is now transparent */
 }
 .client-header__left, .client-header__right {
     display: flex;
     align-items: center;
-    gap: 0.75rem; /* Reduced gap */
+    gap: 1rem;
 }
 .client-header__logo {
     font-size: 1.5rem;
@@ -49,36 +58,47 @@ body.client-page {
     text-decoration: none;
     margin-left: 0.5rem;
 }
-/* THIS IS THE FIX for the header icons */
 .client-header__menu-btn, .client-header__icon-btn {
-    width: 40px;
-    height: 40px;
+    width: 44px;  /* Profile icon size */
+    height: 44px;
     border-radius: 50%;
     background: var(--client-accent-gradient);
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--client-text-dark);
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     cursor: pointer;
-    text-decoration: none; /* Ensure links don't have underlines */
+    text-decoration: none;
     flex-shrink: 0;
 }
 .client-header__balance {
     background: var(--client-card-bg);
-    padding: 0.5rem 1rem;
+    padding: 0.6rem 1rem;
     border-radius: 20px;
     border: 1px solid var(--client-card-border);
-}
-.client-header__balance span {
-    font-size: 0.8rem;
-    color: var(--client-text-secondary);
 }
 .client-header__balance strong {
     font-size: 1rem;
     font-weight: 600;
-    margin-left: 0.25rem;
 }
+/* FIX 2: Style for the smaller notification icon */
+.client-header__icon-btn--small {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 /* --- CLIENT BOTTOM NAV --- */
 .client-bottom-nav {
