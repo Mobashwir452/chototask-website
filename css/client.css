@@ -2,7 +2,7 @@
 
 /* --- CLIENT COLOR & FONT VARIABLES --- */
 :root {
-    --client-bg-gradient: linear-gradient(160deg, #2C3E50 0%, #00709B 100%);
+ --client-bg-gradient: linear-gradient(160deg, #2C3E50 0%, #00709B 100%);
     --client-accent-gradient: linear-gradient(90deg, #00FFCD 0%, #00B8FF 100%);
     --client-card-bg: rgba(4, 31, 46, 0.4);
     --client-card-border: rgba(255, 255, 255, 0.15);
@@ -37,12 +37,27 @@ body.client-page {
 /* FIX: We now target the main <header> tag where the component is loaded.
   Making it "sticky" forces it to the top of the viewport and makes it full-width.
 */
+
+/* This ensures no unwanted margins or padding on the main page */
+html, body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Ensures padding doesn't add to the width */
+}
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+
 header#client-header-placeholder {
     position: sticky;
     top: 0;
-    width: 100%;
-    z-index: 1100; /* High z-index to stay on top */
-    background-color: #2C3E50; /* The dark background color */
+    
+    /* THE FIX: Use 100vw (viewport width) instead of 100% */
+    width: 100vw; 
+
+    z-index: 1100;
+    background-color: #2C3E50;
 }
 
 /* The nav inside the header aligns the content */
@@ -50,8 +65,9 @@ header#client-header-placeholder {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
+    padding: 0.75rem 1rem; /* Use the container's standard padding */
+    max-width: 1200px; /* Standard max-width */
+    margin: 0 auto; /* Center the content */
 }
 
 .client-header__left, .client-header__right {
