@@ -1,4 +1,4 @@
-/* FILE: /css/dashboard-client.css */
+/* FILE: /css/dashboard-client.css (REVISED) */
 
 /* --- HERO SECTION --- */
 .hero-section {
@@ -14,6 +14,7 @@
     color: var(--client-text-secondary);
     margin-bottom: 1.5rem;
 }
+/* THIS IS THE FIX for the hero button */
 .btn.btn-primary-accent {
     display: inline-block;
     background: var(--client-accent-gradient);
@@ -21,15 +22,18 @@
     padding: 0.9rem 2rem;
     border-radius: 50px;
     font-weight: 600;
+    font-size: 1rem;
     text-decoration: none;
     box-shadow: 0 4px 15px rgba(0, 255, 205, 0.3);
     transition: transform 0.2s ease;
 }
 .btn.btn-primary-accent:hover {
-    transform: scale(1.03);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 255, 205, 0.3);
 }
 
 /* --- KPI SECTION --- */
+/* THIS IS THE FIX for the KPI cards */
 .kpi-section {
     padding-bottom: 2rem;
 }
@@ -41,36 +45,42 @@
 .kpi-card {
     background: var(--client-card-bg);
     border: 1px solid var(--client-card-border);
-    border-radius: 1rem;
-    padding: 1.5rem;
+    border-radius: 1rem; /* 16px */
+    padding: 1.25rem; /* 20px */
     position: relative;
     overflow: hidden;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }
 .kpi-card--highlight {
     border-color: #00FFCD;
+    box-shadow: 0 0 15px rgba(0, 255, 205, 0.2);
 }
 .kpi-card__icon {
     position: absolute;
     top: 1rem;
     right: 1rem;
-    font-size: 1.2rem;
+    font-size: 1rem;
     color: var(--client-text-secondary);
+    opacity: 0.7;
 }
 .kpi-card__title {
-    font-size: 0.9rem;
+    font-size: 0.8rem; /* 14px */
     font-weight: 500;
     color: var(--client-text-secondary);
-    margin-bottom: 0.25rem;
+    margin: 0;
 }
 .kpi-card__value {
-    font-size: 2rem;
+    font-size: 2rem; /* 32px */
     font-weight: 700;
-    margin-bottom: 0.25rem;
+    margin: 0.25rem 0;
     color: var(--client-text-primary);
+    line-height: 1.2;
 }
 .kpi-card__subtitle {
-    font-size: 0.8rem;
+    font-size: 0.75rem; /* 12px */
     color: #00FFCD; /* Accent color for this text */
+    margin: 0;
 }
 
 /* --- DESKTOP STYLES --- */
