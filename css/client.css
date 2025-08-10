@@ -199,30 +199,35 @@ header#client-header-placeholder {
     transform: scale(1.05);
 }
 
-/* --- CLIENT SIDE MENU --- */
+/* FILE: /css/client.css (REVISED MENU STYLES) */
+
+/* --- CLIENT SIDE MENU (NEW DESIGN) --- */
 .menu-toggle-input { display: none; }
+
 .client-menu-container {
     position: fixed;
     top: 0;
     left: -100%;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.5); /* Add overlay */
+    background-color: rgba(0,0,0,0.5);
     z-index: 2000;
-    transition: left 0s 0.3s, background-color 0.3s; /* Delay left transition */
+    transition: left 0s 0.3s, background-color 0.3s;
 }
 .menu-toggle-input:checked ~ .client-menu-container {
     left: 0;
-    transition: background-color 0.3s; /* Remove delay */
+    transition: background-color 0.3s;
 }
+
+/* FIX: Changed menu background to a dark color */
 .client-menu-content {
     position: absolute;
     left: -100%;
     width: 85%;
     max-width: 320px;
     height: 100%;
-    background-color: #F5F5F5;
-    color: var(--client-text-dark);
+    background-color: #34495E; /* Dark background */
+    color: var(--client-text-primary); /* Light text */
     display: flex;
     flex-direction: column;
     transition: left 0.3s ease-in-out;
@@ -230,33 +235,43 @@ header#client-header-placeholder {
 .menu-toggle-input:checked ~ .client-menu-container .client-menu-content {
     left: 0;
 }
+
 .client-menu-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1rem 1.5rem;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid var(--client-card-border);
 }
 .client-menu-header h2 { font-size: 1.25rem; }
 .client-menu-close-btn {
     font-size: 1.5rem;
-    color: #888;
+    color: var(--client-text-secondary);
     cursor: pointer;
 }
+
 .client-menu-nav { padding: 1rem; }
+
+/* FIX: Styled menu links as colored boxes */
 .client-menu-link {
     display: flex;
     align-items: center;
     gap: 1rem;
     padding: 0.75rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
     border-radius: 0.5rem;
     text-decoration: none;
-    color: var(--client-text-dark);
+    color: var(--client-text-primary);
     font-weight: 500;
-    transition: background-color 0.2s;
+    background-color: var(--client-card-bg); /* Use consistent card color */
+    border: 1px solid var(--client-card-border);
+    transition: background-color 0.2s, border-color 0.2s;
 }
-.client-menu-link:hover { background-color: #e0e0e0; }
+.client-menu-link:hover, .client-menu-link.active {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-color: #00FFCD; /* Highlight with accent color */
+}
+
 .nav-icon-wrapper {
     width: 36px;
     height: 36px;
@@ -266,7 +281,9 @@ header#client-header-placeholder {
     border-radius: 50%;
     background: var(--client-accent-gradient);
     color: var(--client-text-dark);
+    flex-shrink: 0;
 }
+
 .client-menu-footer {
     margin-top: auto;
     padding: 1.5rem;
@@ -281,4 +298,5 @@ header#client-header-placeholder {
     color: var(--client-text-primary);
     font-weight: 600;
     text-decoration: none;
+    border: 1px solid var(--client-card-border);
 }
