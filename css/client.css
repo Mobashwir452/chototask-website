@@ -115,7 +115,41 @@ header#client-header-placeholder {
 
 
 
+/* FILE: /css/client.css (Add this to the end) */
 
+/* --- MOBILE HEADER REFINEMENTS --- */
+@media (max-width: 480px) {
+
+    /* 1. Makes the "ChotoTask" text smaller on mobile */
+    .client-header__logo {
+        font-size: 1.2rem;
+    }
+
+    /* 2. Adjusts the spacing between the right-side items */
+    .client-header__left,
+    .client-header__right {
+        gap: 0.5rem; /* Reduces the gap for a less cramped look */
+    }
+    
+    .client-header__balance {
+        padding: 0.5rem 0.75rem; /* Slightly reduces padding */
+    }
+
+    /* 3. Makes the notification button even smaller */
+    .client-header__icon-btn--small {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+    }
+
+    /* Adjusts the size of the other two main icons on mobile */
+    .client-header__menu-btn,
+    .client-header__avatar {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
+}
 
 
 
