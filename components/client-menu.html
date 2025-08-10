@@ -1,49 +1,47 @@
-<div class="mobile-menu-container">
-    <div class="mobile-menu-content">
-        <div class="mobile-menu-header">
-            <h3>Menu</h3>
-            <label for="client-menu-toggle" class="menu-close-btn">
-                <i class="fa-solid fa="xmark"></i>
+<input type="checkbox" id="client-menu-toggle" class="menu-toggle-input">
+
+<div class="client-menu-container">
+    <div class="client-menu-content">
+        <div class="client-menu-header">
+            <h2>Menu</h2>
+            <label for="client-menu-toggle" class="client-menu-close-btn">
+                <i class="fa-solid fa-xmark"></i>
             </label>
         </div>
-        <nav class="mobile-menu-nav">
-            <a href="/client/dashboard.html" class="mobile-menu-link">
-                <div class="nav-icon-wrapper"><i class="fa-solid fa="house"></i></div>
+
+        <nav class="client-menu-nav">
+            <a class="client-menu-link" href="/client/dashboard.html">
+                <div class="nav-icon-wrapper"><i class="fa-solid fa-chart-pie"></i></div>
                 <span>Dashboard</span>
             </a>
-            <a href="/client/post-job.html" class="mobile-menu-link">
-                <div class="nav-icon-wrapper"><i class="fa-solid fa="circle-plus"></i></div>
+            <a class="client-menu-link" href="/client/post-job.html">
+                <div class="nav-icon-wrapper"><i class="fa-solid fa-plus-square"></i></div>
                 <span>Post a New Job</span>
             </a>
-            <a href="/client/my-jobs.html" class="mobile-menu-link">
-                <div class="nav-icon-wrapper"><i class="fa-solid fa="briefcase"></i></div>
+            <a class="client-menu-link" href="/client/my-jobs.html">
+                <div class="nav-icon-wrapper"><i class="fa-solid fa-briefcase"></i></div>
                 <span>My Jobs</span>
             </a>
-            <a href="/client/review-submissions.html" class="mobile-menu-link">
-                <div class="nav-icon-wrapper"><i class="fa-solid fa="clipboard-check"></i></div>
+            <a class="client-menu-link" href="/client/review-submissions.html">
+                <div class="nav-icon-wrapper"><i class="fa-solid fa-clipboard-check"></i></div>
                 <span>Review Submissions</span>
             </a>
-            <a href="/client/billing.html" class="mobile-menu-link">
-                <div class="nav-icon-wrapper"><i class="fa-solid fa="wallet"></i></div>
+            <a class="client-menu-link" href="/client/billing.html">
+                <div class="nav-icon-wrapper"><i class="fa-solid fa-wallet"></i></div>
                 <span>Billing & Funds</span>
             </a>
-            <a href="#" class="mobile-menu-link">
-                <div class="nav-icon-wrapper"><i class="fa-solid fa="user"></i></div>
+            <a class="client-menu-link" href="/client/profile.html">
+                <div class="nav-icon-wrapper"><i class="fa-solid fa-user-circle"></i></div>
                 <span>Profile</span>
             </a>
-            <a href="#" class="mobile-menu-link">
-                <div class="nav-icon-wrapper"><i class="fa-solid fa="receipt"></i></div>
+            <a class="client-menu-link" href="/client/transactions.html">
+                <div class="nav-icon-wrapper"><i class="fa-solid fa-receipt"></i></div>
                 <span>Transactions</span>
             </a>
-            <a href="#" class="mobile-menu-link">
-                <div class="nav-icon-wrapper"><i class="fa-solid fa="star"></i></div>
-                <span>Premium</span>
-            </a>
-            <a href="#" class="mobile-menu-link">
-                <div class="nav-icon-wrapper"><i class="fa-solid fa="headset"></i></div>
-                <span>Contact Us</span>
-            </a>
         </nav>
-        <button class="logout-btn" id="logout-btn">Logout</button>
+
+        <div class="client-menu-footer">
+            <a href="/logout" class="btn-logout">Logout</a>
+        </div>
     </div>
 </div>

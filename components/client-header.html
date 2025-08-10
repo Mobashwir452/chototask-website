@@ -1,21 +1,21 @@
-<input type="checkbox" id="client-menu-toggle" class="menu-toggle-input">
-
-<div class="app-header-wrapper">
-    <div class="container app-header-container">
-        <div class="header-left">
-            <label for="client-menu-toggle" class="menu-btn">
-                <i class="fa-solid fa="bars"></i>
-            </label>
-            <div class="app-logo">ChotoTask</div>
-        </div>
-        <div class="header-actions">
-            <div class="balance-display">
-                <span id="header-balance">৳0.00</span>
-            </div>
-            <button class="notification-btn">
-                <i class="fa-solid fa="bell"></i>
-            </button>
-            <div class="profile-avatar"></div>
-        </div>
+<nav class="client-header container">
+    <div class="client-header__left">
+        <label for="client-menu-toggle" class="client-header__menu-btn">
+            <i class="fa-solid fa-bars"></i>
+        </label>
+        <a href="/client/dashboard.html" class="client-header__logo">ChotoTask</a>
     </div>
-</div>
+
+    <div class="client-header__right">
+        <div class="client-header__balance">
+            <span>Balance:</span>
+            <strong>৳5000</strong>
+        </div>
+        <a href="#" class="client-header__icon-btn">
+            <i class="fa-solid fa-bell"></i>
+        </a>
+        <a href="#" class="client-header__icon-btn client-header__avatar">
+            <i class="fa-solid fa-user"></i>
+        </a>
+    </div>
+</nav>

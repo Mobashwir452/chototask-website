@@ -1,98 +1,81 @@
-/* FILE: /css/client-dashboard.css */
+/* FILE: /css/dashboard-client.css */
 
-/* --- Hero Section --- */
+/* --- HERO SECTION --- */
 .hero-section {
     padding: 2rem 1rem;
     text-align: center;
 }
-.hero-title {
-    font-size: 1.75rem;
+.hero-section h1 {
+    font-size: 1.8rem;
     font-weight: 700;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
 }
-.hero-cta {
+.hero-section p {
+    color: var(--client-text-secondary);
+    margin-bottom: 1.5rem;
+}
+.btn.btn-primary-accent {
     display: inline-block;
-    width: 100%;
-    max-width: 400px;
-    padding: 1rem;
-    border-radius: 999px;
-    background: linear-gradient(90deg, var(--client-accent-start), var(--client-accent-end));
-    color: var(--client-bg-start);
-    font-weight: 700;
+    background: var(--client-accent-gradient);
+    color: var(--client-text-dark);
+    padding: 0.9rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
     text-decoration: none;
-    font-size: 1.1rem;
-    margin-top: 1rem;
+    box-shadow: 0 4px 15px rgba(0, 255, 205, 0.3);
+    transition: transform 0.2s ease;
+}
+.btn.btn-primary-accent:hover {
+    transform: scale(1.03);
 }
 
-/* --- Main Content --- */
-.dashboard-content {
-    padding: 1rem;
+/* --- KPI SECTION --- */
+.kpi-section {
+    padding-bottom: 2rem;
 }
-
-.stats-grid {
+.kpi-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
-    margin-bottom: 2rem;
 }
-.stat-card {
+.kpi-card {
     background: var(--client-card-bg);
     border: 1px solid var(--client-card-border);
     border-radius: 1rem;
-    padding: 1rem;
-}
-.stat-card.highlight {
-    border-color: var(--client-accent-start);
-}
-.stat-card h4 {
-    font-size: 0.9rem;
-    color: var(--client-text-muted);
-    margin: 0 0 0.5rem 0;
-}
-.stat-card p {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin: 0;
-}
-
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-}
-.section-header h3 {
-    font-size: 1.25rem;
-}
-.view-all-btn {
-    color: var(--client-accent-start);
-    text-decoration: none;
-    font-weight: 600;
-}
-
-.job-list .job-item, .activity-list .activity-item {
-    background: var(--client-card-bg);
-    border: 1px solid var(--client-card-border);
-    border-radius: 0.75rem;
-    padding: 1rem;
-    margin-bottom: 0.75rem;
-}
-.job-item h5 { font-size: 1rem; margin: 0 0 0.5rem 0; }
-.job-progress {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.8rem;
-    color: var(--client-text-muted);
-    margin-bottom: 0.5rem;
-}
-.progress-bar {
-    width: 100%;
-    height: 8px;
-    background-color: var(--client-btn-secondary-fill);
-    border-radius: 999px;
+    padding: 1.5rem;
+    position: relative;
     overflow: hidden;
 }
-.progress-bar div {
-    height: 100%;
-    background: linear-gradient(90deg, var(--client-accent-start), var(--client-accent-end));
+.kpi-card--highlight {
+    border-color: #00FFCD;
+}
+.kpi-card__icon {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.2rem;
+    color: var(--client-text-secondary);
+}
+.kpi-card__title {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--client-text-secondary);
+    margin-bottom: 0.25rem;
+}
+.kpi-card__value {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    color: var(--client-text-primary);
+}
+.kpi-card__subtitle {
+    font-size: 0.8rem;
+    color: #00FFCD; /* Accent color for this text */
+}
+
+/* --- DESKTOP STYLES --- */
+@media (min-width: 768px) {
+    .kpi-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
 }

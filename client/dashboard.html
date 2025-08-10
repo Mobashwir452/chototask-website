@@ -3,78 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | ChotoTask</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>Client Dashboard | ChotoTask</title>
     
-    <!-- CSS Files -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <link rel="stylesheet" href="/css/client.css">
-    <link rel="stylesheet" href="/css/client-dashboard.css">
+    <link rel="stylesheet" href="/css/dashboard-client.css">
 </head>
 <body class="client-page">
     
-    <!-- Reusable Components -->
     <header id="client-header-placeholder"></header>
     <div id="client-menu-placeholder"></div>
 
     <main>
-        <!-- Hero Section -->
-        <section class="hero-section">
-            <h1 class="hero-title">Welcome Back, [Client Name]!</h1>
-            <a href="/client/post-job.html" class="hero-cta">🚀 Post a New Job</a>
+        <section class="hero-section container">
+            <h1>Welcome Back, Client!</h1>
+            <p>Here's a quick overview of your account.</p>
+            <a href="/client/post-job.html" class="btn btn-primary-accent">
+                🚀 Post a New Job
+            </a>
         </section>
 
-        <!-- Main Dashboard Content -->
-        <div class="dashboard-content">
-            <!-- Stats Grid -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <h4>Available Funds</h4>
-                    <p id="stat-funds">৳0.00</p>
+        <section class="kpi-section container">
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-card__icon"><i class="fa-solid fa-wallet"></i></div>
+                    <p class="kpi-card__title">Available Funds</p>
+                    <h2 class="kpi-card__value">৳5000</h2>
+                    <p class="kpi-card__subtitle">Ready to be used for jobs</p>
                 </div>
-                <div class="stat-card highlight">
-                    <h4>Pending Submissions</h4>
-                    <p id="stat-pending">0</p>
+                <div class="kpi-card kpi-card--highlight">
+                    <div class="kpi-card__icon"><i class="fa-solid fa-hourglass-half"></i></div>
+                    <p class="kpi-card__title">Pending Submissions</p>
+                    <h2 class="kpi-card__value">15</h2>
+                    <p class="kpi-card__subtitle">Awaiting your approval</p>
                 </div>
-                <div class="stat-card">
-                    <h4>Active Jobs</h4>
-                    <p id="stat-active-jobs">0</p>
+                <div class="kpi-card">
+                    <div class="kpi-card__icon"><i class="fa-solid fa-briefcase"></i></div>
+                    <p class="kpi-card__title">Active Jobs</p>
+                    <h2 class="kpi-card__value">4</h2>
+                    <p class="kpi-card__subtitle">Currently live for workers</p>
                 </div>
-                <div class="stat-card">
-                    <h4>Total Spent</h4>
-                    <p id="stat-total-spent">৳0.00</p>
+                <div class="kpi-card">
+                    <div class="kpi-card__icon"><i class="fa-solid fa-receipt"></i></div>
+                    <p class="kpi-card__title">Total Spent</p>
+                    <h2 class="kpi-card__value">৳25000</h2>
+                    <p class="kpi-card__subtitle">Lifetime spending</p>
                 </div>
             </div>
+        </section>
+        
+        </main>
 
-            <!-- Active Jobs Section -->
-            <div class="section-header">
-                <h3>My Active Jobs</h3>
-                <a href="/client/my-jobs.html" class="view-all-btn">View All →</a>
-            </div>
-            <div class="job-list" id="job-list">
-                <!-- Job items will be loaded here by JS -->
-                <p>Loading jobs...</p>
-            </div>
+    <div id="client-bottom-nav-placeholder"></div>
 
-            <!-- Recent Activity Section -->
-            <div class="section-header" style="margin-top: 2rem;">
-                <h3>Recent Activity</h3>
-                <a href="#" class="view-all-btn">View All →</a>
-            </div>
-            <div class="activity-list" id="activity-list">
-                <!-- Activity items will be loaded here by JS -->
-                <p>Loading activity...</p>
-            </div>
-        </div>
-    </main>
-
-    <!-- Bottom Navigation -->
-    <footer id="client-bottom-nav-placeholder"></footer>
-
-    <!-- Scripts -->
     <script src="/js/component-loader.js"></script>
-    <script type="module" src="/js/firebase-config.js"></script>
-    <script type="module" src="/js/client-shell.js"></script>
-    <script type="module" src="/js/client-dashboard.js"></script>
 </body>
 </html>

@@ -1,150 +1,196 @@
-/* FILE: /css/client.css (CORRECTED) */
+/* FILE: /css/client.css */
+
+/* --- CLIENT COLOR & FONT VARIABLES --- */
 :root {
-    --client-bg-start: #2C3E50;
-    --client-bg-end: #00709B;
-    --client-accent-start: #00FFCD;
-    --client-accent-end: #00B8FF;
-    --client-text-primary: #FFFFFF;
-    --client-text-muted: #B0B0B0;
-    --client-card-bg: rgba(255, 255, 255, 0.05);
+    --client-bg-gradient: linear-gradient(160deg, #2C3E50 0%, #00709B 100%);
+    --client-accent-gradient: linear-gradient(90deg, #00FFCD 0%, #00B8FF 100%);
+    --client-card-bg: rgba(0, 0, 0, 0.2);
     --client-card-border: rgba(255, 255, 255, 0.1);
-    --client-btn-secondary-fill: #34495E;
+    --client-text-primary: #FFFFFF;
+    --client-text-secondary: #B0B0B0;
+    --client-text-dark: #34495E;
+    --font-family-base: 'Poppins', sans-serif;
 }
 
+/* --- GLOBAL STYLES --- */
 body.client-page {
-    background: linear-gradient(160deg, var(--client-bg-start), var(--client-bg-end));
-    background-attachment: fixed;
-    font-family: 'Poppins', sans-serif;
+    font-family: var(--font-family-base);
+    background: var(--client-bg-gradient);
     color: var(--client-text-primary);
-    margin: 0;
-    padding-bottom: 80px;
+    padding-bottom: 80px; /* Space for the bottom nav */
 }
 
-/* --- Header & Menu Control --- */
-.menu-toggle-input {
-    display: none;
+.container {
+    width: 100%;
+    padding: 0 1rem;
+    margin: 0 auto;
+    max-width: 1200px;
 }
-.app-header-wrapper {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    background-color: var(--client-bg-start);
-    border-bottom: 1px solid var(--client-card-border);
-}
-.app-header-container {
+
+/* --- CLIENT HEADER --- */
+.client-header {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    height: 70px;
+    align-items: center;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    background-color: #2C3E50;
 }
-.header-left, .header-actions {
+.client-header__left, .client-header__right {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 1rem;
 }
-.menu-btn {
-    background: none; border: none; cursor: pointer;
-    color: var(--client-text-primary);
+.client-header__logo {
     font-size: 1.5rem;
-    display: grid; place-items: center;
+    font-weight: 700;
+    color: var(--client-text-primary);
+    text-decoration: none;
 }
-.app-logo { font-weight: 700; font-size: 1.25rem; }
-.balance-display {
+.client-header__menu-btn, .client-header__icon-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--client-accent-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--client-text-dark);
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+.client-header__balance {
     background: var(--client-card-bg);
-    padding: 0.4rem 0.8rem;
-    border-radius: 999px;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    border: 1px solid var(--client-card-border);
+}
+.client-header__balance span {
+    font-size: 0.8rem;
+    color: var(--client-text-secondary);
+}
+.client-header__balance strong {
+    font-size: 1rem;
     font-weight: 600;
-}
-.notification-btn {
-    background: none; border: none; cursor: pointer;
-    color: var(--client-text-primary);
-    font-size: 1.5rem;
-}
-.profile-avatar {
-    width: 38px; height: 38px; border-radius: 50%;
-    background: linear-gradient(45deg, var(--client-accent-start), var(--client-accent-end));
+    margin-left: 0.25rem;
 }
 
-/* --- CSS-Driven Side Menu --- */
-.mobile-menu-container {
-    position: fixed; top: 0; left: 0;
-    width: 100%; height: 100%;
-    background-color: rgba(0,0,0,0.6);
-    z-index: 200;
-    opacity: 0; visibility: hidden;
-    transition: opacity 0.3s, visibility 0.3s;
-}
-.mobile-menu-content {
-    position: absolute; top: 0; left: 0;
-    height: 100%; width: 80%; max-width: 320px;
-    background-color: var(--client-bg-start);
-    padding: 1.5rem;
-    display: flex; flex-direction: column;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-}
-.menu-toggle-input:checked ~ .mobile-menu-container {
-    opacity: 1; visibility: visible;
-}
-.menu-toggle-input:checked ~ .mobile-menu-container .mobile-menu-content {
-    transform: translateX(0);
-}
-.mobile-menu-header {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 2rem;
-}
-.mobile-menu-header h3 { font-size: 1.5rem; }
-.menu-close-btn {
-    background: none; border: none; cursor: pointer;
-    font-size: 1.75rem; color: var(--client-text-muted);
-}
-.mobile-menu-nav {
-    display: flex; flex-direction: column; gap: 0.75rem;
-    flex-grow: 1; overflow-y: auto;
-}
-.mobile-menu-link {
-    display: flex; align-items: center; gap: 1rem;
-    padding: 0.75rem; border-radius: 0.75rem;
-    font-weight: 600; text-decoration: none;
-    color: var(--client-text-primary);
-    background-color: var(--client-card-bg);
-}
-.nav-icon-wrapper {
-    width: 38px; height: 38px; border-radius: 50%;
-    display: grid; place-items: center;
-    background: linear-gradient(135deg, var(--client-accent-end), var(--client-accent-start));
-    color: var(--client-bg-start);
-}
-.logout-btn {
-    background: var(--client-btn-secondary-fill);
-    color: white; border: none; padding: 0.8rem;
-    border-radius: 8px; font-weight: 600; margin-top: 1rem;
-}
-
-/* --- Bottom Nav --- */
-.bottom-nav-container {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    display: flex; justify-content: space-around;
-    align-items: flex-start;
-    background-color: var(--client-bg-start);
+/* --- CLIENT BOTTOM NAV --- */
+.client-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background-color: #34495E;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1000;
     border-top: 1px solid var(--client-card-border);
-    padding: 0.5rem 0;
-    z-index: 100;
 }
-.nav-item {
-    display: flex; flex-direction: column; align-items: center;
-    gap: 0.25rem; color: var(--client-text-muted);
-    text-decoration: none; font-size: 0.75rem;
-    width: 20%; /* Gives each item equal space */
+.bottom-nav__link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    color: var(--client-text-secondary);
+    text-decoration: none;
+    font-size: 0.75rem;
+    transition: color 0.2s;
 }
-.nav-item.active { color: var(--client-text-primary); }
-.nav-item i { font-size: 1.25rem; }
-.nav-item.add-task { transform: translateY(-20px); }
-.add-task-icon {
-    width: 56px; height: 56px; border-radius: 50%;
-    background: linear-gradient(45deg, var(--client-accent-start), var(--client-accent-end));
-    color: var(--client-bg-start);
-    display: grid; place-items: center;
-    border: 4px solid var(--client-bg-start);
-    margin-bottom: 0.25rem;
+.bottom-nav__link.active, .bottom-nav__link:hover {
+    color: var(--client-text-primary);
+}
+.bottom-nav__link--cta {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--client-accent-gradient);
+    color: var(--client-text-dark);
+    font-size: 1.75rem;
+    margin-top: -30px; /* Pulls it up */
+    border: 4px solid #34495E;
+    box-shadow: 0 0 15px rgba(0, 255, 205, 0.4);
+}
+.bottom-nav__link--cta:hover {
+    transform: scale(1.05);
+}
+
+/* --- CLIENT SIDE MENU --- */
+.menu-toggle-input { display: none; }
+.client-menu-container {
+    position: fixed;
+    top: 0;
+    left: -100%; /* Hidden by default */
+    width: 100%;
+    height: 100%;
+    z-index: 2000;
+    transition: left 0.3s ease-in-out;
+}
+.menu-toggle-input:checked ~ .client-menu-container {
+    left: 0; /* Show when checkbox is checked */
+}
+.client-menu-content {
+    width: 85%;
+    max-width: 320px;
+    height: 100%;
+    background-color: #F5F5F5;
+    color: var(--client-text-dark);
+    display: flex;
+    flex-direction: column;
+}
+.client-menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+.client-menu-header h2 { font-size: 1.25rem; }
+.client-menu-close-btn {
+    font-size: 1.5rem;
+    color: #888;
+    cursor: pointer;
+}
+.client-menu-nav { padding: 1rem; }
+.client-menu-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    color: var(--client-text-dark);
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+.client-menu-link:hover { background-color: #e0e0e0; }
+.nav-icon-wrapper {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--client-accent-gradient);
+    color: var(--client-text-dark);
+}
+.client-menu-footer {
+    margin-top: auto;
+    padding: 1.5rem;
+}
+.btn-logout {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    background: #2C3E50;
+    color: var(--client-text-primary);
+    font-weight: 600;
+    text-decoration: none;
 }
