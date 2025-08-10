@@ -1,7 +1,8 @@
-// FILE: /js/client-dashboard.js
+// FILE: /js/client-dashboard.js (REVISED WITH LIVE DATA)
+
 import { auth, db } from '/js/firebase-config.js';
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { doc, getDoc, collection, query, where, getCountFromServer, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 // --- DOM Elements ---
 const statFunds = document.getElementById('stat-funds');
@@ -10,35 +11,48 @@ const statActiveJobs = document.getElementById('stat-active-jobs');
 const statTotalSpent = document.getElementById('stat-total-spent');
 const jobList = document.getElementById('job-list');
 const activityList = document.getElementById('activity-list');
-const headerBalance = document.getElementById('header-balance');
+const headerBalance = document.getElementById('header-balance'); 
 
 const CURRENCY = '৳';
 
 // --- Functions to update UI ---
+// --- Functions to update UI ---
 const updateStats = (wallet, stats) => {
-    statFunds.textContent = `${CURRENCY}${wallet.balance.toFixed(2)}`;
-    headerBalance.textContent = `${CURRENCY}${wallet.balance.toFixed(2)}`; // Also update header
-    statPending.textContent = stats.pendingSubmissions || 0;
-    statActiveJobs.textContent = stats.activeJobs || 0;
-    statTotalSpent.textContent = `${CURRENCY}${wallet.totalSpent.toFixed(2)}`;
+    // THIS IS THE FALLBACK LOGIC: If wallet.balance is missing, it will use 0.
+    const walletBalance = wallet?.balance ?? 0;
+    const totalSpent = wallet?.totalSpent ?? 0;
+    const pendingSubmissions = stats?.pendingSubmissions ?? 0;
+    const activeJobs = stats?.activeJobs ?? 0;
+
+    statFunds.textContent = `${CURRENCY}${walletBalance.toLocaleString()}`;
+    if (headerBalance) {
+        // Assuming header-balance is just the amount
+        headerBalance.textContent = `${CURRENCY}${walletBalance.toLocaleString()}`;
+    }
+    statPending.textContent = pendingSubmissions;
+    statActiveJobs.textContent = activeJobs;
+    statTotalSpent.textContent = `${CURRENCY}${totalSpent.toLocaleString()}`;
 };
 
 const renderJobs = (jobs) => {
+    if (!jobList) return;
     if (jobs.length === 0) {
-        jobList.innerHTML = '<p>You have no active jobs.</p>';
+        jobList.innerHTML = '<p class="empty-list-message">You have no active jobs.</p>';
         return;
     }
     jobList.innerHTML = jobs.map(job => {
-        const progress = (job.completed / job.total) * 100;
+        const completed = job.submissionsCompleted || 0;
+        const total = job.workersNeeded || 0;
+        const progress = total > 0 ? (completed / total) * 100 : 0;
         return `
-            <div class="job-item">
+            <div class="list-item-card">
                 <h5>${job.title}</h5>
                 <div class="job-progress">
-                    <span>${job.completed}/${job.total} Submissions</span>
+                    <span>${completed}/${total} Submissions</span>
                     <span>${progress.toFixed(0)}%</span>
                 </div>
                 <div class="progress-bar">
-                    <div style="width: ${progress}%;"></div>
+                    <div class="progress-bar__fill" style="width: ${progress}%;"></div>
                 </div>
             </div>
         `;
@@ -46,30 +60,53 @@ const renderJobs = (jobs) => {
 };
 
 // --- Main Logic ---
+// --- Main Logic ---
 onAuthStateChanged(auth, async (user) => {
     if (user) {
-        // User is signed in, fetch their data
-        const walletDocRef = doc(db, "wallets", user.uid);
-        const walletDoc = await getDoc(walletDocRef);
-        
-        if (walletDoc.exists()) {
-            // Dummy data for now - replace with real queries later
-            const dummyStats = { pendingSubmissions: 15, activeJobs: 4 };
-            const dummyJobs = [
-                { title: 'Social Media Engagement', completed: 150, total: 200 },
-                { title: 'Data Entry Task', completed: 50, total: 500 },
-                { title: 'Image Tagging Project', completed: 800, total: 1000 },
-            ];
+        try {
+            // 1. Fetch Wallet Document
+            const walletDocRef = doc(db, "wallets", user.uid);
+            const walletDoc = await getDoc(walletDocRef);
+            
+            // THIS IS THE FALLBACK LOGIC: If wallet document doesn't exist, create a default object.
+            const walletData = walletDoc.exists() ? walletDoc.data() : { balance: 0, totalSpent: 0 };
 
-            updateStats(walletDoc.data(), dummyStats);
-            renderJobs(dummyJobs);
-            // You would also fetch and render recent activity here
-            activityList.innerHTML = '<p>Activity feed is under construction.</p>';
-        } else {
-            console.error("Wallet document not found for user:", user.uid);
+            // 2. Fetch STATS (Pending Submissions & Active Jobs)
+            const submissionsRef = collection(db, "submissions");
+            const jobsRef = collection(db, "jobs");
+            const pendingQuery = query(submissionsRef, where("clientId", "==", user.uid), where("status", "==", "pending"));
+            const activeJobsQuery = query(jobsRef, where("clientId", "==", user.uid), where("status", "==", "active"));
+            
+            const [pendingSnapshot, activeJobsSnapshot] = await Promise.all([
+                getCountFromServer(pendingQuery),
+                getCountFromServer(activeJobsQuery)
+            ]);
+            
+            const liveStats = {
+                pendingSubmissions: pendingSnapshot.data().count,
+                activeJobs: activeJobsSnapshot.data().count
+            };
+            // 3. Fetch recent jobs for the list
+            const recentJobsQuery = query(jobsRef, where("clientId", "==", user.uid), where("status", "==", "active"), orderBy("createdAt", "desc"), limit(3));
+            const jobsSnapshot = await getDocs(recentJobsQuery);
+            const recentJobs = jobsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+            // 4. Update the entire UI at once
+            updateStats(walletData, liveStats);
+            renderJobs(recentJobs);
+            
+            // Placeholder for recent activity
+            if(activityList) {
+                activityList.innerHTML = '<p class="empty-list-message">Recent activity feed is under construction.</p>';
+            }
+
+        } catch (error) {
+            console.error("Error loading dashboard:", error);
+            // Handle errors, maybe show a message to the user
         }
     } else {
         // User is signed out, redirect to login
+        console.log("User is not signed in. Redirecting to login.");
         window.location.href = '/login.html';
     }
 });

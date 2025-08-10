@@ -1,61 +1,118 @@
-/* FILE: /css/dashboard-client.css (REVISED) */
+/* FILE: /css/client-dashboard.css (CORRECTED PAGE-SPECIFIC STYLES) */
 
-/* --- HERO SECTION --- */
-.hero-section {
-    padding: 2rem 1rem;
+/* --- DASHBOARD PAGE HERO --- */
+.page-hero {
+    padding: 2.5rem 1rem;
     text-align: center;
-}
-.hero-section h1 {
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-}
-.hero-section p {
-    color: var(--client-text-secondary);
-    margin-bottom: 1.5rem;
-}
-/* THIS IS THE FIX for the hero button */
-.btn.btn-primary-accent {
-    display: inline-block;
-    background: var(--client-accent-gradient);
-    color: var(--client-text-dark);
-    padding: 0.9rem 2rem;
-    border-radius: 50px;
-    font-weight: 600;
-    font-size: 1rem;
-    text-decoration: none;
-    box-shadow: 0 4px 15px rgba(0, 255, 205, 0.3);
-    transition: transform 0.2s ease;
-}
-.btn.btn-primary-accent:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 255, 205, 0.3);
+    position: relative;
 }
 
-/* --- KPI SECTION --- */
-/* THIS IS THE FIX for the KPI cards */
+.page-hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    
+    /* FIX: Align the stroke to the left edge */
+    left: 0; 
+    
+    /* FIX: Set the width to 100% of the hero section */
+    width: 100%; 
+
+    /* REMOVED: No longer need transform or max-width */
+    height: 3px;
+    background: var(--client-accent-gradient);
+}
+
+.page-hero__icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    margin: 0 auto 1.5rem auto;
+    position: relative; /* Establishes the positioning context for the layers */
+}
+
+
+/* Base style for all layers */
+.icon-layer {
+    position: absolute;
+    border-radius: 50%;
+    /* This trick perfectly centers each layer */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+/* Bottom Layer (White) */
+.icon-layer--bottom {
+    width: 71px;
+    height: 71px;
+    background-color: #FFFFFF;
+    z-index: 1;
+}
+
+
+/* Middle Layer (#34495E) - Symmetrical sizing */
+.icon-layer--middle {
+    width: 62px; /* 64px - 16px = 8px border */
+    height: 62px;
+    background-color: #34495E;
+    z-index: 2;
+}
+
+
+/* Top Layer (Gradient) - Symmetrical sizing */
+.icon-layer--top {
+    width: 49px; /* 48px - 16px = 8px border */
+    height: 49px;
+    background: var(--client-accent-gradient);
+    z-index: 3;
+}
+
+
+
+.page-hero__title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--client-text-primary);
+    margin: 0 0 0.5rem 0;
+}
+
+.page-hero__subtitle {
+    font-size: 1rem;
+    color: var(--client-text-secondary);
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+
+/* --- DASHBOARD KPI CARDS --- */
 .kpi-section {
     padding-bottom: 2rem;
 }
+
 .kpi-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    /* FIX: Defaults to a single column for mobile */
+    grid-template-columns: 1fr;
     gap: 1rem;
 }
+
 .kpi-card {
     background: var(--client-card-bg);
     border: 1px solid var(--client-card-border);
-    border-radius: 1rem; /* 16px */
-    padding: 1.25rem; /* 20px */
+    border-radius: 1rem;
+    padding: 1.25rem;
     position: relative;
     overflow: hidden;
     backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
 }
+
 .kpi-card--highlight {
     border-color: #00FFCD;
     box-shadow: 0 0 15px rgba(0, 255, 205, 0.2);
 }
+
 .kpi-card__icon {
     position: absolute;
     top: 1rem;
@@ -64,28 +121,30 @@
     color: var(--client-text-secondary);
     opacity: 0.7;
 }
+
 .kpi-card__title {
-    font-size: 0.8rem; /* 14px */
+    font-size: 0.8rem;
     font-weight: 500;
     color: var(--client-text-secondary);
     margin: 0;
 }
+
 .kpi-card__value {
-    font-size: 2rem; /* 32px */
+    font-size: 2rem;
     font-weight: 700;
     margin: 0.25rem 0;
     color: var(--client-text-primary);
     line-height: 1.2;
 }
+
 .kpi-card__subtitle {
-    font-size: 0.75rem; /* 12px */
-    color: #00FFCD; /* Accent color for this text */
+    font-size: 0.75rem;
+    color: #00FFCD;
     margin: 0;
 }
-
-/* --- DESKTOP STYLES --- */
 @media (min-width: 768px) {
     .kpi-grid {
-        grid-template-columns: repeat(4, 1fr);
+        /* FIX: Changes to a two-column grid on desktop */
+        grid-template-columns: repeat(2, 1fr);
     }
 }
