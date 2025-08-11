@@ -132,12 +132,20 @@ header#client-header-placeholder {
     padding: 0.6rem 1rem;
     border-radius: 20px;
     border: 1px solid var(--client-card-border);
+    /* FIX: Added styles for the link */
+    text-decoration: none;
+    transition: background-color 0.2s ease;
 }
+
+.client-header__balance:hover {
+    background-color: rgba(0,0,0,0.4); /* Darkens slightly on hover */
+}
+
 .client-header__balance strong {
     font-size: 1rem;
     font-weight: 600;
     color: #fff;
-    white-space: nowrap; /* Prevents breaking into two lines */
+    white-space: nowrap;
 }
 .client-header__icon-btn--small {
     width: 36px;

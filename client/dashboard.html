@@ -16,76 +16,75 @@
     <header id="client-header-placeholder"></header>
     <div id="client-menu-placeholder"></div>
 
-<main>
-    <div class="block">
-        <section class="page-hero">
-            <div class="page-hero__icon">
-                <div class="icon-layer icon-layer--bottom"></div>
-                <div class="icon-layer icon-layer--middle"></div>
-                <div class="icon-layer icon-layer--top"></div>
-            </div>
-            <h1 class="page-hero__title">Dashboard</h1>
-            <p class="page-hero__subtitle">Here's a quick overview of your account</p>
-        </section>
-    </div>
+    <main>
+        <div class="block">
+            <section class="page-hero">
+                <div class="page-hero__icon">
+                    <div class="icon-layer icon-layer--bottom"></div>
+                    <div class="icon-layer icon-layer--middle"></div>
+                    <div class="icon-layer icon-layer--top"></div>
+                </div>
+                <h1 class="page-hero__title">Dashboard</h1>
+                <p class="page-hero__subtitle">Here's a quick overview of your account</p>
+            </section>
+        </div>
 
-    <div class="block">
-        <section class="kpi-section container">
-            <div class="kpi-grid">
-                <div class="kpi-card">
-                    <div class="kpi-card__icon"><i class="fa-solid fa-wallet"></i></div>
-                    <p class="kpi-card__title">Available Funds</p>
-                    <h2 class="kpi-card__value" id="stat-funds">৳...</h2>
-                    <p class="kpi-card__subtitle">Ready to be used for jobs</p>
+        <div class="block">
+            <section class="kpi-section container">
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-card__icon"><i class="fa-solid fa-wallet"></i></div>
+                        <p class="kpi-card__title">Available Funds</p>
+                        <h2 class="kpi-card__value" id="stat-funds">৳...</h2>
+                        <p class="kpi-card__subtitle">Ready to be used for jobs</p>
+                    </div>
+                    <div class="kpi-card kpi-card--highlight">
+                        <div class="kpi-card__icon"><i class="fa-solid fa-hourglass-half"></i></div>
+                        <p class="kpi-card__title">Pending Submissions</p>
+                        <h2 class="kpi-card__value" id="stat-pending">...</h2>
+                        <p class="kpi-card__subtitle">Awaiting your approval</p>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-card__icon"><i class="fa-solid fa-briefcase"></i></div>
+                        <p class="kpi-card__title">Active Jobs</p>
+                        <h2 class="kpi-card__value" id="stat-active-jobs">...</h2>
+                        <p class="kpi-card__subtitle">Currently live for workers</p>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-card__icon"><i class="fa-solid fa-receipt"></i></div>
+                        <p class="kpi-card__title">Total Spent</p>
+                        <h2 class="kpi-card__value" id="stat-total-spent">৳...</h2>
+                        <p class="kpi-card__subtitle">Lifetime spending</p>
+                    </div>
                 </div>
-                <div class="kpi-card kpi-card--highlight">
-                    <div class="kpi-card__icon"><i class="fa-solid fa-hourglass-half"></i></div>
-                    <p class="kpi-card__title">Pending Submissions</p>
-                    <h2 class="kpi-card__value" id="stat-pending">...</h2>
-                    <p class="kpi-card__subtitle">Awaiting your approval</p>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-card__icon"><i class="fa-solid fa-briefcase"></i></div>
-                    <p class="kpi-card__title">Active Jobs</p>
-                    <h2 class="kpi-card__value" id="stat-active-jobs">...</h2>
-                    <p class="kpi-card__subtitle">Currently live for workers</p>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-card__icon"><i class="fa-solid fa-receipt"></i></div>
-                    <p class="kpi-card__title">Total Spent</p>
-                    <h2 class="kpi-card__value" id="stat-total-spent">৳...</h2>
-                    <p class="kpi-card__subtitle">Lifetime spending</p>
-                </div>
-            </div>
-        </section>
-    </div>
+            </section>
+        </div>
 
-    <div class="block">
-        <section class="list-section container">
-            <div class="list-header">
-                <h3>My Active Jobs</h3>
-                <a href="/client/my-jobs.html">View All &rarr;</a>
-            </div>
-            <div class="list-content" id="job-list">
+        <div class="block">
+            <section class="list-section container">
+                <div class="list-header">
+                    <h3>My Active Jobs</h3>
+                    <a href="/client/my-jobs.html">View All &rarr;</a>
                 </div>
-        </section>
-    </div>
-    <div class="block">
-        <section class="list-section container">
-            <div class="list-header">
-                <h3>Recent Activity</h3>
-            </div>
-            <div class="list-content" id="activity-list">
+                <div class="list-content" id="job-list">
+                    </div>
+            </section>
+        </div>
+        <div class="block">
+            <section class="list-section container">
+                <div class="list-header">
+                    <h3>Recent Activity</h3>
                 </div>
-        </section>
-    </div>
-</main>
+                <div class="list-content" id="activity-list">
+                    </div>
+            </section>
+        </div>
+    </main>
+
     <div id="client-bottom-nav-placeholder"></div>
-
-
 
     <script src="/js/component-loader.js"></script>
     <script src="/js/client-dashboard.js" type="module"></script>
-    <script src="/js/firebase-config.js"></script> 
+
 </body>
 </html>
