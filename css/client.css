@@ -60,6 +60,97 @@ html, body {
 }
 
 
+/* --- DASHBOARD PAGE HERO --- */
+.page-hero {
+    padding: 2.5rem 1rem;
+    text-align: center;
+    position: relative;
+}
+
+.page-hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    
+    /* FIX: Align the stroke to the left edge */
+    left: 0; 
+    
+    /* FIX: Set the width to 100% of the hero section */
+    width: 100%; 
+
+    /* REMOVED: No longer need transform or max-width */
+    height: 3px;
+    background: var(--client-accent-gradient);
+}
+
+.page-hero__icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    margin: 0 auto 1.5rem auto;
+    position: relative; /* Establishes the positioning context for the layers */
+}
+
+
+/* Base style for all layers */
+.icon-layer {
+    position: absolute;
+    border-radius: 50%;
+    /* This trick perfectly centers each layer */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+/* Bottom Layer (White) */
+.icon-layer--bottom {
+    width: 71px;
+    height: 71px;
+    background-color: #FFFFFF;
+    z-index: 1;
+}
+
+
+/* Middle Layer (#34495E) - Symmetrical sizing */
+.icon-layer--middle {
+    width: 62px; /* 64px - 16px = 8px border */
+    height: 62px;
+    background-color: #34495E;
+    z-index: 2;
+}
+
+
+/* Top Layer (Gradient) - Symmetrical sizing */
+.icon-layer--top {
+    width: 49px; /* 48px - 16px = 8px border */
+    height: 49px;
+    background: var(--client-accent-gradient);
+    z-index: 3;
+}
+
+
+
+.page-hero__title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--client-text-primary);
+    margin: 0 0 0.5rem 0;
+}
+
+.page-hero__subtitle {
+    font-size: 1rem;
+    color: var(--client-text-secondary);
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+
+
+
+
+
+
 /* FILE: /css/client.css (FINAL HEADER STYLES) */
 
 /* --- CLIENT HEADER (3-COLUMN LAYOUT) --- */

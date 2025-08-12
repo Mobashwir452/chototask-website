@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing & Funds | ChotoTask</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link rel="stylesheet" href="/css/client.css">
+    <link rel="stylesheet" href="/css/client-billing.css">
+</head>
+<body class="client-page">
+    
+    <header id="client-header-placeholder"></header>
+    <div id="client-menu-placeholder"></div>
+
+    <main>
+        <div class="block">
+            <section class="page-hero">
+                <div class="page-hero__icon">
+                    <div class="icon-layer icon-layer--bottom"></div>
+                    <div class="icon-layer icon-layer--middle"></div>
+                    <div class="icon-layer icon-layer--top"></div>
+                </div>
+                <h1 class="page-hero__title">Billing & Funds</h1>
+                <p class="page-hero__subtitle">Add funds to your account and track your spending</p>
+            </section>
+        </div>
+
+        <div class="block">
+            <section class="container">
+                <div class="billing-card">
+                    <div class="balance-header">
+                        <p>Available Balance</p>
+                        <h2 id="current-balance">৳...</h2>
+                    </div>
+                    
+                    <div class="instruction-header">
+                        <h4>How to Add Funds</h4>
+                    </div>
+
+                    <div class="instruction-steps">
+                        <div class="step-item">
+                            <div class="step-number">1</div>
+                            <p>Send money to our account number below.</p>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">2</div>
+                            <p>Enter the exact amount you sent in the form.</p>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">3</div>
+                            <p>Enter the Transaction ID (TrxID) from your payment.</p>
+                        </div>
+                    </div>
+
+                    <div class="payment-number-display">
+                        <span>Pay to Bkash/Nagad Number</span>
+                        <strong>01xxxxxxxxx</strong>
+                    </div>
+
+                    <form id="add-funds-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="amount">Amount Sent (৳)</label>
+                                <input type="number" id="amount" placeholder="e.g., 500" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="transaction-id">Transaction ID (TrxID)</label>
+                                <input type="text" id="transaction-id" placeholder="e.g., 9J7K8L2M1N" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-submit">
+                            <span class="btn-text">Submit Deposit Request</span>
+                        </button>
+                        <p id="form-message"></p>
+                    </form>
+                </div>
+            </section>
+        </div>
+
+
+<div class="block">
+    <section class="container">
+        <div class="billing-card">
+            <div class="list-header">
+                <h3>Transaction History</h3>
+                <a href="/client/transactions.html">View All &rarr;</a>
+            </div>
+            
+            <div class="transaction-list" id="transaction-history-list">
+                </div>
+        </div>
+    </section>
+</div>
+
+        
+        </main>
+
+    <div id="client-bottom-nav-placeholder"></div>
+
+    <script src="/js/component-loader.js"></script>
+    <script src="/js/client-billing.js" type="module"></script>
+</body>
+</html>
