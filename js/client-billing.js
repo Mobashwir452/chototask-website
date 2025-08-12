@@ -34,47 +34,44 @@ document.addEventListener('componentsLoaded', () => {
 
 
 
-    // --- RENDER FUNCTIONS ---
-    const renderSelectedMethod = (methodId) => {
-        const method = availableMethods.find(m => m.id === methodId);
-        if (!method) {
-            contentContainer.innerHTML = `<p class="a-empty">Please select a payment method.</p>`;
-            return;
-        }
+// FILE: /js/client-billing.js (Replace this function)
 
-        // 1. Build Instructions
-        const instructionsHTML = method.instructions.map((step, index) => `
-            <div class="step-item">
-                <div class="step-number">${index + 1}</div>
-                <p>${step}</p>
-            </div>
-        `).join('');
+const renderSelectedMethod = (methodId) => {
+    const method = availableMethods.find(m => m.id === methodId);
+    if (!method) {
+        contentContainer.innerHTML = `<p class="a-empty">Please select a payment method.</p>`;
+        return;
+    }
 
-        // 2. Build Dynamic Form Fields
-        const fieldsHTML = method.requiredProofFields.map(field => `
-            <div class="form-group">
-                <label for="${field.id}">${field.label}</label>
-                <input type="${field.type}" id="${field.id}" required>
-            </div>
-        `).join('');
+    const instructionsHTML = method.instructions.map((step, index) => `
+        <div class="step-item">
+            <div class="step-number">${index + 1}</div>
+            <p>${step}</p>
+        </div>`).join('');
 
-        // 3. Assemble the full content
-        contentContainer.innerHTML = `
-            <div class="instruction-steps">${instructionsHTML}</div>
-            <div class="payment-number-display">
-                <span>Pay to ${method.name}</span>
-                <strong>${method.accountDetails}</strong>
-            </div>
-            <form id="add-funds-form">
-                ${fieldsHTML}
-                <button type="submit" class="btn-submit">Submit Deposit Request</button>
-                <p id="form-message"></p>
-            </form>
-        `;
-        
-        // Add the submit event listener to the newly created form
-        document.getElementById('add-funds-form').addEventListener('submit', handleFormSubmit);
-    };
+    const fieldsHTML = method.requiredProofFields.map(field => `
+        <div class="form-group">
+            <label for="${field.id}">${field.label}</label>
+            <input type="${field.type}" id="${field.id}" required>
+        </div>`).join('');
+
+    contentContainer.innerHTML = `
+        <div class="instruction-steps">${instructionsHTML}</div>
+        <div class="payment-number-display">
+            <span>Pay to ${method.name}</span>
+            <strong>${method.accountDetails}</strong>
+        </div>
+        <form id="add-funds-form">
+            ${fieldsHTML}
+            <button type="submit" class="btn-submit">
+                <span class="btn-text">Submit Deposit Request</span>
+            </button>
+            <p id="form-message"></p>
+        </form>
+    `;
+    
+    document.getElementById('add-funds-form').addEventListener('submit', handleFormSubmit);
+};
 
     const renderMethodTabs = () => {
         if (availableMethods.length === 0) {
@@ -110,49 +107,66 @@ document.addEventListener('componentsLoaded', () => {
     
 // FILE: /js/client-billing.js (Replace this function)
 
+
 const handleFormSubmit = async (e) => {
         e.preventDefault();
         const form = e.target;
         const submitBtn = form.querySelector('.btn-submit');
         const formMessage = form.querySelector('#form-message');
-        
-        const activeTab = tabsContainer.querySelector('.active');
-        if (!activeTab) return; // Should not happen
-        const method = availableMethods.find(m => m.id === activeTab.dataset.id);
 
+        // Check if a user is logged in
+        if (!auth.currentUser) {
+            showMessage("You must be logged in to submit a request.", true);
+            return;
+        }
+
+        // ... (the logic to get method and proofData is the same) ...
+        const activeTab = tabsContainer.querySelector('.active');
+        const method = availableMethods.find(m => m.id === activeTab.dataset.id);
         const proofData = {};
         method.requiredProofFields.forEach(field => {
             const input = form.querySelector(`#${field.id}`);
             proofData[field.id] = input.value;
         });
 
-        // --- Loading animation logic ---
+        // Show loading state
         submitBtn.disabled = true;
-        const originalBtnText = submitBtn.innerHTML;
-        submitBtn.innerHTML = `<span class="spinner" style="border-color: #2C3E50; border-right-color: transparent; width: 1.2em; height: 1.2em;"></span>`;
-        formMessage.textContent = '';
+        submitBtn.innerHTML = `<span class="spinner" style="..."></span>`;
 
         try {
-            const result = await requestDeposit({ 
-                methodName: method.name, 
-                proofData: proofData 
+            // 1. Get the user's ID Token
+            const token = await auth.currentUser.getIdToken();
+
+            // 2. Call the Netlify Function using fetch
+            const response = await fetch('/.netlify/functions/requestDeposit', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    methodName: method.name,
+                    proofData: proofData
+                })
             });
 
-            if (result.data.success) {
-                form.reset();
-                showInfoModal("Request Submitted!", "Your balance has been provisionally updated. You can now use it to post jobs.");
-            } else {
-                throw new Error(result.data.error || "An unknown error occurred.");
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                throw new Error(result.error || "Failed to submit request.");
             }
+
+            form.reset();
+            showInfoModal("Request Submitted!", "Your balance has been provisionally updated.");
+
         } catch (error) {
             console.error("Error submitting deposit request:", error);
             formMessage.textContent = `Error: ${error.message}`;
             formMessage.className = 'message-error';
         }
 
-        // --- Restore button state ---
+        // Restore button state
         submitBtn.disabled = false;
-        submitBtn.innerHTML = originalBtnText;
+        submitBtn.innerHTML = `<span class="btn-text">Submit Deposit Request</span>`;
     };
 
     // --- Wallet and Auth Logic ---
