@@ -29,3 +29,114 @@
     color: var(--a-text-muted);
     font-size: 0.9rem;
 }
+
+
+
+
+/* FILE: /css/admin-settings.css (REVISED) */
+
+/* --- DYNAMIC FORM STYLES --- */
+.form-section-header {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--a-text);
+    margin-top: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--a-border);
+    margin-bottom: 1rem;
+}
+
+.dynamic-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.dynamic-list-item {
+    display: flex;
+    /* FIX: Ensures vertical centering */
+    align-items: center; 
+    gap: 0.5rem;
+}
+
+/* FIX: Correctly styles all inputs and selects in the dynamic form */
+.dynamic-list-item .a-search {
+    width: 100%;
+    padding: .7rem .9rem;
+    border-radius: 12px;
+    border: 1px solid var(--a-border);
+    background: #F9FAFB;
+    color: var(--a-text);
+    font-size: 0.9rem;
+}
+.dynamic-list-item .a-search:focus {
+    border-color: #8EC5FF;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(0, 112, 155, .12);
+}
+
+.proof-field-group {
+    display: grid;
+    grid-template-columns: 2fr 1.5fr 1fr;
+    gap: 0.75rem;
+    flex-grow: 1;
+    align-items: center;
+}
+
+/* FIX: Improved styling for the Remove button */
+.btn-remove-item {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    border: 1px solid var(--a-border);
+    background: transparent;
+    color: var(--a-text-muted);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+}
+.btn-remove-item:hover {
+    background-color: #FEF2F2; /* Light red */
+    color: var(--a-danger);
+    border-color: #FCA5A5;
+}
+
+/* FIX: Improved styling for the Add button */
+.btn-add-more {
+    margin-top: 1rem;
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: 1px solid var(--a-border);
+    background-color: var(--a-surface);
+    color: var(--a-text);
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+.btn-add-more:hover {
+    background-color: #F3F4F6;
+    border-color: #D1D5DB;
+}
+
+
+
+/* FILE: /css/admin-settings.css (Add this) */
+
+.a-action-btn.toggle-status.paused {
+    color: var(--a-warn);
+}
+.a-action-btn.toggle-status {
+    color: var(--a-success);
+}
+
+/* FILE: /css/admin-settings.css (Optional: Add this style) */
+
+.btn-danger {
+  background-color: var(--a-danger);
+  color: #fff;
+}
+.btn-danger:hover {
+  background-color: #b91c1c; /* A slightly darker red */
+}

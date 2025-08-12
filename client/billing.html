@@ -31,53 +31,23 @@
 
         <div class="block">
             <section class="container">
-                <div class="billing-card">
-                    <div class="balance-header">
-                        <p>Available Balance</p>
-                        <h2 id="current-balance">৳...</h2>
-                    </div>
-                    
-                    <div class="instruction-header">
-                        <h4>How to Add Funds</h4>
-                    </div>
+<div class="billing-card">
+    <div class="balance-header">
+        <p>Available Balance</p>
+        <h2 id="current-balance">৳...</h2>
+    </div>
+    
+    <div id="dynamic-payment-section">
+        <h3 class="instruction-header">Select a Payment Method</h3>
+        
+        <div class="payment-methods-tabs" id="payment-methods-tabs">
+            <p class="a-empty">Loading payment methods...</p>
+        </div>
 
-                    <div class="instruction-steps">
-                        <div class="step-item">
-                            <div class="step-number">1</div>
-                            <p>Send money to our account number below.</p>
-                        </div>
-                        <div class="step-item">
-                            <div class="step-number">2</div>
-                            <p>Enter the exact amount you sent in the form.</p>
-                        </div>
-                        <div class="step-item">
-                            <div class="step-number">3</div>
-                            <p>Enter the Transaction ID (TrxID) from your payment.</p>
-                        </div>
-                    </div>
-
-                    <div class="payment-number-display">
-                        <span>Pay to Bkash/Nagad Number</span>
-                        <strong>01xxxxxxxxx</strong>
-                    </div>
-
-                    <form id="add-funds-form">
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="amount">Amount Sent (৳)</label>
-                                <input type="number" id="amount" placeholder="e.g., 500" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="transaction-id">Transaction ID (TrxID)</label>
-                                <input type="text" id="transaction-id" placeholder="e.g., 9J7K8L2M1N" required>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn-submit">
-                            <span class="btn-text">Submit Deposit Request</span>
-                        </button>
-                        <p id="form-message"></p>
-                    </form>
-                </div>
+        <div class="payment-method-content" id="payment-method-content">
+            </div>
+    </div>
+</div>
             </section>
         </div>
 
@@ -94,6 +64,17 @@
 </div>
 
         
+<div class="info-modal__overlay" id="info-modal" style="display: none;">
+    <div class="info-modal__content">
+        <div class="info-modal__icon">
+            <i class="fa-solid fa-check-circle"></i>
+        </div>
+        <h3 class="info-modal__title" id="info-modal-title">Success</h3>
+        <p class="info-modal__message" id="info-modal-message">Your request has been submitted.</p>
+        <button class="btn-submit" id="info-modal-close-btn">OK</button>
+    </div>
+</div>
+
         </main>
 
     <div id="client-bottom-nav-placeholder"></div>

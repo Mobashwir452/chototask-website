@@ -1,8 +1,6 @@
-// FILE: /js/client-billing.js (REVISED WITH TRANSACTION CARDS)
-
 import { auth, db } from '/js/firebase-config.js';
 import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-functions.js";
-import { doc, onSnapshot, collection, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { doc, onSnapshot, getDoc, collection, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 document.addEventListener('componentsLoaded', () => {
@@ -11,99 +9,151 @@ document.addEventListener('componentsLoaded', () => {
     const requestDeposit = httpsCallable(functions, 'requestDeposit');
 
     // --- DOM Elements ---
-  const addFundsToggleBtn = document.getElementById('add-funds-toggle-btn');
-    const addFundsContainer = document.getElementById('add-funds-container');
-    const addFundsForm = document.getElementById('add-funds-form');
-    const amountInput = document.getElementById('amount');
-    const trxIdInput = document.getElementById('transaction-id');
-    const submitBtn = addFundsForm.querySelector('.btn-submit');
-    const formMessage = document.getElementById('form-message');
     const currentBalanceEl = document.getElementById('current-balance');
-    const historyListContainer = document.getElementById('transaction-history-list');
     const headerBalance = document.getElementById('header-balance');
+    const tabsContainer = document.getElementById('payment-methods-tabs');
+    const contentContainer = document.getElementById('payment-method-content');
+    const historyListContainer = document.getElementById('transaction-history-list');
+
+    // Info Modal Elements
+    const infoModal = document.getElementById('info-modal');
+    const infoModalTitle = document.getElementById('info-modal-title');
+    const infoModalMessage = document.getElementById('info-modal-message');
+    const infoModalCloseBtn = document.getElementById('info-modal-close-btn');
+
     let currentUserId = null;
-
-
-     // --- UI Logic for the toggleable form ---
-    if (addFundsToggleBtn) {
-        addFundsToggleBtn.addEventListener('click', () => {
-            addFundsContainer.classList.toggle('hidden');
-        });
-    }
-
-     const showMessage = (message, isError = false) => {
-        formMessage.textContent = message;
-        formMessage.className = isError ? 'message-error' : 'message-success';
+    let availableMethods = [];
+    
+// --- MODAL & UI FUNCTIONS ---
+    const showInfoModal = (title, message) => {
+        infoModalTitle.textContent = title;
+        infoModalMessage.textContent = message;
+        infoModal.style.display = 'flex';
     };
+    infoModalCloseBtn.addEventListener('click', () => infoModal.style.display = 'none');
 
-// FILE: /js/client-billing.js (REVISED FUNCTION)
 
-// --- RENDER HISTORY FUNCTION ---
-const renderHistory = (transactions) => {
-    if (!historyListContainer) return;
-    if (transactions.length === 0) {
-        historyListContainer.innerHTML = `<p class="empty-state" style="text-align: center; padding: 1rem;">No recent transactions found.</p>`;
-        return;
-    }
 
-    historyListContainer.innerHTML = transactions.map(tx => {
-        const isCredit = tx.amount > 0;
-        const amountSign = isCredit ? '+' : '-';
-        const amountColor = isCredit ? 'credit' : 'debit';
-        const iconType = isCredit ? 'credit' : 'debit';
-        const icon = isCredit ? 'fa-arrow-down' : 'fa-arrow-up';
-
-        return `
-            <a href="/client/transactions/${tx.id}" class="transaction-item-link">
-                <div class="transaction-card">
-                    <div class="transaction-card__icon transaction-card__icon--${iconType}">
-                        <i class="fa-solid ${icon}"></i>
-                    </div>
-                    <div class="transaction-card__details">
-                        <p class="transaction-card__description">${tx.description}</p>
-                        <p class="transaction-card__date">${tx.date}</p>
-                    </div>
-                    <div class="transaction-card__amount transaction-card__amount--${amountColor}">
-                        ${amountSign} ৳${Math.abs(tx.amount).toLocaleString()}
-                    </div>
-                </div>
-            </a>
-        `;
-    }).join('');
-};
-
-    const handleFormSubmit = async (e) => {
-        e.preventDefault();
-        const amount = parseFloat(amountInput.value);
-        const transactionId = trxIdInput.value.trim();
-
-        if (isNaN(amount) || amount <= 0 || !transactionId) {
-            showMessage("Please enter a valid amount and transaction ID.", true);
+    // --- RENDER FUNCTIONS ---
+    const renderSelectedMethod = (methodId) => {
+        const method = availableMethods.find(m => m.id === methodId);
+        if (!method) {
+            contentContainer.innerHTML = `<p class="a-empty">Please select a payment method.</p>`;
             return;
         }
 
-        btnText.style.display = 'none';
-        spinner.style.display = 'inline-block';
+        // 1. Build Instructions
+        const instructionsHTML = method.instructions.map((step, index) => `
+            <div class="step-item">
+                <div class="step-number">${index + 1}</div>
+                <p>${step}</p>
+            </div>
+        `).join('');
+
+        // 2. Build Dynamic Form Fields
+        const fieldsHTML = method.requiredProofFields.map(field => `
+            <div class="form-group">
+                <label for="${field.id}">${field.label}</label>
+                <input type="${field.type}" id="${field.id}" required>
+            </div>
+        `).join('');
+
+        // 3. Assemble the full content
+        contentContainer.innerHTML = `
+            <div class="instruction-steps">${instructionsHTML}</div>
+            <div class="payment-number-display">
+                <span>Pay to ${method.name}</span>
+                <strong>${method.accountDetails}</strong>
+            </div>
+            <form id="add-funds-form">
+                ${fieldsHTML}
+                <button type="submit" class="btn-submit">Submit Deposit Request</button>
+                <p id="form-message"></p>
+            </form>
+        `;
+        
+        // Add the submit event listener to the newly created form
+        document.getElementById('add-funds-form').addEventListener('submit', handleFormSubmit);
+    };
+
+    const renderMethodTabs = () => {
+        if (availableMethods.length === 0) {
+            tabsContainer.innerHTML = `<p class="a-empty">No payment methods are currently available.</p>`;
+            return;
+        }
+        tabsContainer.innerHTML = availableMethods.map((method, index) => `
+            <button class="payment-method-tab ${index === 0 ? 'active' : ''}" data-id="${method.id}">
+                ${method.name}
+            </button>
+        `).join('');
+        // Initially render the first method's content
+        renderSelectedMethod(availableMethods[0].id);
+    };
+
+    // --- DATA & EVENT HANDLING ---
+    const loadPaymentMethods = async () => {
+        try {
+            const settingsRef = doc(db, "settings", "paymentMethods");
+            const docSnap = await getDoc(settingsRef);
+            if (docSnap.exists() && docSnap.data().methods) {
+                // Filter for methods that are enabled
+                availableMethods = docSnap.data().methods.filter(m => m.isEnabled);
+                renderMethodTabs();
+            } else {
+                renderMethodTabs(); // Will show the "not available" message
+            }
+        } catch (error) {
+            console.error("Error fetching payment methods:", error);
+            tabsContainer.innerHTML = `<p class="a-empty">Could not load payment methods.</p>`;
+        }
+    };
+    
+// FILE: /js/client-billing.js (Replace this function)
+
+const handleFormSubmit = async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const submitBtn = form.querySelector('.btn-submit');
+        const formMessage = form.querySelector('#form-message');
+        
+        const activeTab = tabsContainer.querySelector('.active');
+        if (!activeTab) return; // Should not happen
+        const method = availableMethods.find(m => m.id === activeTab.dataset.id);
+
+        const proofData = {};
+        method.requiredProofFields.forEach(field => {
+            const input = form.querySelector(`#${field.id}`);
+            proofData[field.id] = input.value;
+        });
+
+        // --- Loading animation logic ---
         submitBtn.disabled = true;
+        const originalBtnText = submitBtn.innerHTML;
+        submitBtn.innerHTML = `<span class="spinner" style="border-color: #2C3E50; border-right-color: transparent; width: 1.2em; height: 1.2em;"></span>`;
+        formMessage.textContent = '';
 
         try {
-            const result = await requestDeposit({ amount, transactionId });
+            const result = await requestDeposit({ 
+                methodName: method.name, 
+                proofData: proofData 
+            });
+
             if (result.data.success) {
-                showMessage("Deposit request submitted successfully! Your balance has been provisionally updated.");
-                addFundsForm.reset();
+                form.reset();
+                showInfoModal("Request Submitted!", "Your balance has been provisionally updated. You can now use it to post jobs.");
             } else {
                 throw new Error(result.data.error || "An unknown error occurred.");
             }
         } catch (error) {
-            console.error("Error calling requestDeposit function:", error);
-            showMessage(`Error: ${error.message}`, true);
+            console.error("Error submitting deposit request:", error);
+            formMessage.textContent = `Error: ${error.message}`;
+            formMessage.className = 'message-error';
         }
 
-        btnText.style.display = 'inline-block';
-        spinner.style.display = 'none';
+        // --- Restore button state ---
         submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
     };
-
 
     // --- Wallet and Auth Logic ---
     const listenToWallet = (userId) => {
@@ -117,25 +167,12 @@ const renderHistory = (transactions) => {
     };
 
 
-    onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, (user) => {
         if (user) {
             currentUserId = user.uid;
             listenToWallet(currentUserId);
-            // addFundsForm.addEventListener('submit', handleFormSubmit); // Assuming form submit logic is still needed
-
-
-            // FIX: Uncomment the line below to activate the form submission button
-        addFundsForm.addEventListener('submit', handleFormSubmit);
-
-            // --- FAKE TRANSACTION DATA ---
-            const dummyTransactions = [
-                { id: "txn_123", amount: 500, type: "deposit", description: "Funds Deposit (Bkash)", date: new Date().toLocaleDateString() },
-                { id: "txn_456", amount: -250, type: "job_payment", description: "Payment for Job: 'Data Entry'", date: new Date(Date.now() - 86400000).toLocaleDateString() }, // 1 day ago
-                { id: "txn_789", amount: 490, type: "deposit_adjusted", description: "Funds Deposit (Adjusted by Admin)", date: new Date(Date.now() - 172800000).toLocaleDateString() } // 2 days ago
-            ];
-
-            renderHistory(dummyTransactions);
-
+            loadPaymentMethods();
+            // The history will be connected to live data in the next step
         } else {
             window.location.href = '/login.html';
         }
