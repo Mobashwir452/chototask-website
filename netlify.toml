@@ -1,0 +1,11 @@
+# Netlify build configuration file
+
+[build]
+  # This tells Netlify where your functions folder is located.
+  functions = "netlify/functions"
+
+# This is a rule to make sure your single-page app works correctly.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
