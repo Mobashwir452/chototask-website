@@ -1,4 +1,4 @@
-// FILE: /functions/index.js (for Firebase Functions)
+// FILE: /functions/index.js (FINAL CORRECTED VERSION)
 
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
@@ -6,8 +6,8 @@ const admin = require("firebase-admin");
 admin.initializeApp();
 const db = admin.firestore();
 
-exports.requestDeposit = functions.https.onCall(async (data, context) => {
-    // 1. Authentication Check: Ensure user is logged in.
+exports.requestDeposit = functions.runWith({ region: "asia-south1" }).https.onCall(async (data, context) => {
+    // 1. Authentication Check
     if (!context.auth) {
         throw new functions.https.HttpsError(
             "unauthenticated", 
@@ -16,8 +16,10 @@ exports.requestDeposit = functions.https.onCall(async (data, context) => {
     }
 
     const clientId = context.auth.uid;
-    const amount = Number(data.amount);
-    const transactionId = String(data.transactionId);
+    // FIX 1: Access the data from the nested 'proofData' object
+    const proofData = data.proofData || {};
+    const amount = Number(proofData.amount);
+    const transactionId = String(proofData.transactionId || '');
 
     // 2. Data Validation
     if (isNaN(amount) || amount <= 0 || !transactionId) {
@@ -31,25 +33,25 @@ exports.requestDeposit = functions.https.onCall(async (data, context) => {
         const transactionRef = db.collection("transactions").doc();
         const walletRef = db.collection("wallets").doc(clientId);
 
-        // 3. Use a batched write to perform both actions atomically
         const batch = db.batch();
 
-        // Action A: Create a new transaction document
+        // Create a new transaction document
         batch.set(transactionRef, {
             clientId: clientId,
             amount: amount,
             transactionId: transactionId,
-            status: "unverified", // Mark as unverified
+            methodName: data.methodName || 'Unknown',
+            status: "unverified",
             createdAt: admin.firestore.FieldValue.serverTimestamp(),
             type: "deposit"
         });
 
-        // Action B: Increment the user's wallet balance
-        batch.update(walletRef, {
+        // FIX 2: Use set with { merge: true } to safely create or update the wallet
+        batch.set(walletRef, {
             balance: admin.firestore.FieldValue.increment(amount)
-        });
+        }, { merge: true });
 
-        // 4. Commit the batch
+        // Commit the batch
         await batch.commit();
 
         return { success: true, message: "Deposit request successful." };
