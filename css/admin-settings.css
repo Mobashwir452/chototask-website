@@ -1,0 +1,31 @@
+/* FILE: /css/admin-settings.css */
+
+.payment-methods-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border-top: 1px solid var(--a-border);
+    padding-top: 1rem;
+}
+
+.payment-method-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--a-bg);
+    border: 1px solid var(--a-border);
+    border-radius: 0.5rem;
+}
+
+.payment-method-info strong {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--a-text);
+}
+
+.payment-method-info span {
+    color: var(--a-text-muted);
+    font-size: 0.9rem;
+}

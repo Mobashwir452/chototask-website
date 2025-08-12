@@ -163,23 +163,25 @@
 
 /* FILE: /css/client-billing.css (Add this to the end) */
 
+/* FILE: /css/client-billing.css (FINAL REVISED VERSION) */
+
 /* --- TRANSACTION HISTORY LIST --- */
 .transaction-list {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    margin-top: 1.5rem;
+     margin-top: 1.5rem;
 }
 
-/* Styles for the link that wraps the card */
 .transaction-item-link {
     display: block;
     text-decoration: none;
     color: inherit;
     border-radius: 0.75rem; /* Match card radius for focus outline */
+    
+    /* FIX: Added margin-bottom to create the gap between cards */
+    margin-bottom: 1rem;
 }
 
-/* Main card for each transaction item */
 .transaction-card {
     display: flex;
     align-items: center;
@@ -191,48 +193,108 @@
     transition: transform 0.2s ease, border-color 0.2s ease;
 }
 
+
+
 .transaction-item-link:hover .transaction-card {
     transform: translateY(-2px);
     border-color: var(--client-accent-secondary);
 }
 
 .transaction-card__icon {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     flex-shrink: 0;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1rem;
+    font-size: 1.2rem;
 }
 
 .transaction-card__details {
     flex-grow: 1;
+    overflow: hidden; /* Part of the text wrapping fix */
 }
 
 .transaction-card__description {
-    font-weight: 500;
+    font-weight: 600;
     color: var(--client-text-primary);
     margin: 0 0 0.25rem 0;
+    font-size: 1rem;
+    /* FIX: Prevents long descriptions from breaking the layout */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .transaction-card__date {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     color: var(--client-text-secondary);
     margin: 0;
 }
 
 .transaction-card__amount {
     font-size: 1.1rem;
-    font-weight: 600;
+    font-weight: 700;
     text-align: right;
+    /* FIX: Set a fixed width to solve the alignment issue */
+    width: 100px;
+    flex-shrink: 0;
 }
 
-/* Colors for different transaction types */
+/* FIX: Reverted to the previous semi-transparent icon colors */
 .transaction-card__icon--credit { background-color: rgba(0, 255, 205, 0.15); color: #00FFCD; }
 .transaction-card__icon--debit { background-color: rgba(235, 87, 87, 0.15); color: #EB5757; }
 .transaction-card__icon--info { background-color: rgba(0, 184, 255, 0.15); color: #00B8FF; }
 
+/* Colors for credit/debit amount text */
 .transaction-card__amount--credit { color: #00FFCD; }
 .transaction-card__amount--debit { color: #EB5757; }
+
+
+
+
+/* FILE: /css/client.css (Add or replace this block) */
+
+/* --- REUSABLE LIST SECTION STYLES --- */
+
+/* This removes padding from the container so the header can be full-width */
+.list-section.container {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* The header with the gradient stroke */
+.list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--client-card-bg);
+    padding: 1rem 1.5rem;
+    border-top: 2px solid transparent;
+    border-bottom: 2px solid transparent;
+    border-image-source: var(--client-accent-gradient);
+    border-image-slice: 1;
+}
+
+.list-header h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--client-text-primary);
+    margin: 0;
+}
+
+.list-header a {
+    background: var(--client-accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* This adds padding back to the content inside the list (the cards) */
+.list-content {
+    padding: 1.5rem 1rem 0 1rem;
+}
