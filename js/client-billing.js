@@ -7,6 +7,7 @@ document.addEventListener('componentsLoaded', () => {
     // --- DOM Elements ---
     const currentBalanceEl = document.getElementById('current-balance');
     const headerBalance = document.getElementById('header-balance');
+    const addFundsForm = document.getElementById('add-funds-form'); // Ensure this is correctly scoped if it's dynamic
     const tabsContainer = document.getElementById('payment-methods-tabs');
     const contentContainer = document.getElementById('payment-method-content');
     const historyListContainer = document.getElementById('transaction-history-list');
@@ -17,6 +18,73 @@ document.addEventListener('componentsLoaded', () => {
 
     let currentUserId = null;
     let availableMethods = [];
+
+
+// --- RENDER HISTORY FUNCTION ---
+    const renderHistory = (transactions) => {
+        if (!historyListContainer) return;
+        if (transactions.length === 0) {
+            historyListContainer.innerHTML = `<p class="empty-state" style="text-align: center; padding: 1rem;">No transactions found.</p>`;
+            return;
+        }
+        historyListContainer.innerHTML = transactions.map(tx => {
+        const isCredit = tx.amount > 0;
+        const amountSign = isCredit ? '+' : '-';
+        const amountColor = isCredit ? 'credit' : 'debit';
+        // Determine icon based on transaction type
+        const iconType = tx.type === 'deposit_adjusted' ? 'info' : (isCredit ? 'credit' : 'debit');
+        const icon = isCredit ? 'fa-arrow-down' : 'fa-arrow-up';
+
+        return `
+            <a href="/client/transactions/${tx.id}" class="transaction-item-link">
+                <div class="transaction-card">
+                    <div class="transaction-card__icon transaction-card__icon--${iconType}">
+                        <i class="fa-solid ${icon}"></i>
+                    </div>
+                    <div class="transaction-card__details">
+                        <p class="transaction-card__description">${tx.description}</p>
+                        <p class="transaction-card__date">${tx.date}</p>
+                    </div>
+                    <div class="transaction-card__amount transaction-card__amount--${amountColor}">
+                        ${amountSign} ৳${Math.abs(tx.amount).toLocaleString()}
+                    </div>
+                </div>
+            </a>
+        `;
+    }).join('');
+};
+
+
+// --- NEW: FUNCTION TO LISTEN FOR LIVE TRANSACTIONS ---
+    const listenToHistory = (userId) => {
+        const q = query(
+            collection(db, "transactions"), 
+            where("clientId", "==", userId), 
+            orderBy("createdAt", "desc"),
+            limit(10)
+        );
+
+        // onSnapshot creates a real-time listener
+        onSnapshot(q, (snapshot) => {
+            const transactions = [];
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                transactions.push({
+                    id: doc.id,
+                    amount: data.amount,
+                    type: data.type,
+                    description: data.description || `${data.methodName} Deposit`,
+                    date: data.createdAt ? data.createdAt.toDate().toLocaleDateString() : 'N/A'
+                });
+            });
+            renderHistory(transactions); // Render the live data
+        }, (error) => {
+            console.error("Error fetching transaction history: ", error);
+            historyListContainer.innerHTML = `<p class="empty-state" style="text-align: center; padding: 1rem;">Could not load transactions.</p>`;
+        });
+    };
+
+
     
 // --- MODAL & UI FUNCTIONS ---
     const showInfoModal = (title, message) => {
@@ -173,12 +241,21 @@ const handleFormSubmit = async (e) => {
     };
 
 
- onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, (user) => {
         if (user) {
             currentUserId = user.uid;
             listenToWallet(currentUserId);
-            loadPaymentMethods();
-            // renderHistory(dummyTransactions); // We can connect this to live data later
+
+            // FIX: Replaced the dummy data with the live listener function
+            listenToHistory(currentUserId);
+            
+            // Re-attach listener to the form, as it's created dynamically
+            // Note: This assumes your form is created by another function like 'renderSelectedMethod'
+            const form = document.getElementById('add-funds-form');
+            if(form) {
+                form.addEventListener('submit', handleFormSubmit);
+            }
+
         } else {
             window.location.href = '/login.html';
         }
