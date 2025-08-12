@@ -1,21 +1,15 @@
 import { auth, db } from '/js/firebase-config.js';
-import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-functions.js";
-import { doc, onSnapshot, getDoc, collection, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { doc, onSnapshot, getDoc, collection, addDoc, serverTimestamp, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 document.addEventListener('componentsLoaded', () => {
     
-    const functions = getFunctions();
-    const requestDeposit = httpsCallable(functions, 'requestDeposit');
-
     // --- DOM Elements ---
     const currentBalanceEl = document.getElementById('current-balance');
     const headerBalance = document.getElementById('header-balance');
     const tabsContainer = document.getElementById('payment-methods-tabs');
     const contentContainer = document.getElementById('payment-method-content');
     const historyListContainer = document.getElementById('transaction-history-list');
-
-    // Info Modal Elements
     const infoModal = document.getElementById('info-modal');
     const infoModalTitle = document.getElementById('info-modal-title');
     const infoModalMessage = document.getElementById('info-modal-message');
@@ -26,54 +20,61 @@ document.addEventListener('componentsLoaded', () => {
     
 // --- MODAL & UI FUNCTIONS ---
     const showInfoModal = (title, message) => {
+        if (!infoModal) return;
         infoModalTitle.textContent = title;
         infoModalMessage.textContent = message;
         infoModal.style.display = 'flex';
     };
-    infoModalCloseBtn.addEventListener('click', () => infoModal.style.display = 'none');
+    if (infoModalCloseBtn) {
+        infoModalCloseBtn.addEventListener('click', () => infoModal.style.display = 'none');
+    }
 
-
+  const showMessage = (form, message, isError = false) => {
+        const formMessage = form.querySelector('#form-message');
+        if (!formMessage) return;
+        formMessage.textContent = message;
+        formMessage.className = isError ? 'message-error' : 'message-success';
+    };
 
 // FILE: /js/client-billing.js (Replace this function)
 
-const renderSelectedMethod = (methodId) => {
-    const method = availableMethods.find(m => m.id === methodId);
-    if (!method) {
-        contentContainer.innerHTML = `<p class="a-empty">Please select a payment method.</p>`;
-        return;
-    }
+ // --- RENDER FUNCTIONS ---
+    const renderSelectedMethod = (methodId) => {
+        const method = availableMethods.find(m => m.id === methodId);
+        if (!method) {
+            contentContainer.innerHTML = `<p class="a-empty">Please select a payment method.</p>`;
+            return;
+        }
 
-    const instructionsHTML = method.instructions.map((step, index) => `
-        <div class="step-item">
-            <div class="step-number">${index + 1}</div>
-            <p>${step}</p>
-        </div>`).join('');
+        const instructionsHTML = method.instructions.map((step, index) => `
+            <div class="step-item">
+                <div class="step-number">${index + 1}</div>
+                <p>${step}</p>
+            </div>`).join('');
 
-    const fieldsHTML = method.requiredProofFields.map(field => `
-        <div class="form-group">
-            <label for="${field.id}">${field.label}</label>
-            <input type="${field.type}" id="${field.id}" required>
-        </div>`).join('');
+        const fieldsHTML = method.requiredProofFields.map(field => `
+            <div class="form-group">
+                <label for="${field.id}">${field.label}</label>
+                <input type="${field.type}" id="${field.id}" placeholder="${field.label}" required>
+            </div>`).join('');
 
-    contentContainer.innerHTML = `
-        <div class="instruction-steps">${instructionsHTML}</div>
-        <div class="payment-number-display">
-            <span>Pay to ${method.name}</span>
-            <strong>${method.accountDetails}</strong>
-        </div>
-        <form id="add-funds-form">
-            ${fieldsHTML}
-            <button type="submit" class="btn-submit">
-                <span class="btn-text">Submit Deposit Request</span>
-            </button>
-            <p id="form-message"></p>
-        </form>
-    `;
-    
-    document.getElementById('add-funds-form').addEventListener('submit', handleFormSubmit);
-};
+        contentContainer.innerHTML = `
+            <div class="instruction-steps">${instructionsHTML}</div>
+            <div class="payment-number-display">
+                <span>Pay to ${method.name}</span>
+                <strong>${method.accountDetails}</strong>
+            </div>
+            <form id="add-funds-form">
+                ${fieldsHTML}
+                <button type="submit" class="btn-submit"><span class="btn-text">Submit Deposit Request</span></button>
+                <p id="form-message"></p>
+            </form>
+        `;
+        
+        document.getElementById('add-funds-form').addEventListener('submit', handleFormSubmit);
+    };
 
-    const renderMethodTabs = () => {
+     const renderMethodTabs = () => {
         if (availableMethods.length === 0) {
             tabsContainer.innerHTML = `<p class="a-empty">No payment methods are currently available.</p>`;
             return;
@@ -83,9 +84,9 @@ const renderSelectedMethod = (methodId) => {
                 ${method.name}
             </button>
         `).join('');
-        // Initially render the first method's content
         renderSelectedMethod(availableMethods[0].id);
     };
+
 
     // --- DATA & EVENT HANDLING ---
     const loadPaymentMethods = async () => {
@@ -112,62 +113,53 @@ const handleFormSubmit = async (e) => {
         e.preventDefault();
         const form = e.target;
         const submitBtn = form.querySelector('.btn-submit');
-        const formMessage = form.querySelector('#form-message');
+        const originalBtnText = submitBtn.innerHTML;
 
-        // Check if a user is logged in
-        if (!auth.currentUser) {
-            showMessage("You must be logged in to submit a request.", true);
-            return;
-        }
-
-        // ... (the logic to get method and proofData is the same) ...
-        const activeTab = tabsContainer.querySelector('.active');
-        const method = availableMethods.find(m => m.id === activeTab.dataset.id);
-        const proofData = {};
-        method.requiredProofFields.forEach(field => {
-            const input = form.querySelector(`#${field.id}`);
-            proofData[field.id] = input.value;
-        });
-
-        // Show loading state
         submitBtn.disabled = true;
-        submitBtn.innerHTML = `<span class="spinner" style="..."></span>`;
-
+        submitBtn.innerHTML = `<span class="spinner" style="border-color: #2C3E50; border-right-color: transparent; width: 1.2em; height: 1.2em; display: inline-block;"></span>`;
+        
         try {
-            // 1. Get the user's ID Token
-            const token = await auth.currentUser.getIdToken();
-
-            // 2. Call the Netlify Function using fetch
-            const response = await fetch('/.netlify/functions/requestDeposit', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({
-                    methodName: method.name,
-                    proofData: proofData
-                })
+            const activeTab = tabsContainer.querySelector('.active');
+            const method = availableMethods.find(m => m.id === activeTab.dataset.id);
+            const proofData = {};
+            method.requiredProofFields.forEach(field => {
+                const input = form.querySelector(`#${field.id}`);
+                proofData[field.id] = input.value;
             });
 
-            const result = await response.json();
+            await addDoc(collection(db, "depositRequests"), {
+                clientId: currentUserId,
+                clientEmail: auth.currentUser.email,
+                amount: Number(proofData.amount),
+                transactionId: proofData.transactionId,
+                methodName: method.name,
+                status: "pending",
+                requestedAt: serverTimestamp()
+            });
 
-            if (!response.ok || !result.success) {
-                throw new Error(result.error || "Failed to submit request.");
-            }
-
+            showInfoModal("Request Submitted", "Your deposit request has been sent for admin approval.");
             form.reset();
-            showInfoModal("Request Submitted!", "Your balance has been provisionally updated.");
 
         } catch (error) {
             console.error("Error submitting deposit request:", error);
-            formMessage.textContent = `Error: ${error.message}`;
-            formMessage.className = 'message-error';
+            showMessage(form, "An error occurred. Please try again.", true);
         }
 
-        // Restore button state
         submitBtn.disabled = false;
-        submitBtn.innerHTML = `<span class="btn-text">Submit Deposit Request</span>`;
+        submitBtn.innerHTML = originalBtnText;
     };
+
+    // FIX: This event listener handles the tab switching.
+    tabsContainer.addEventListener('click', (e) => {
+        if (e.target.classList.contains('payment-method-tab')) {
+            // Remove active class from the previous tab
+            tabsContainer.querySelector('.active')?.classList.remove('active');
+            // Add active class to the clicked tab
+            e.target.classList.add('active');
+            // Render the content for the selected method
+            renderSelectedMethod(e.target.dataset.id);
+        }
+    });
 
     // --- Wallet and Auth Logic ---
     const listenToWallet = (userId) => {
@@ -181,15 +173,14 @@ const handleFormSubmit = async (e) => {
     };
 
 
-onAuthStateChanged(auth, (user) => {
+ onAuthStateChanged(auth, (user) => {
         if (user) {
             currentUserId = user.uid;
             listenToWallet(currentUserId);
             loadPaymentMethods();
-            // The history will be connected to live data in the next step
+            // renderHistory(dummyTransactions); // We can connect this to live data later
         } else {
             window.location.href = '/login.html';
         }
     });
-
 });
