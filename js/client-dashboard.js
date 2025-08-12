@@ -1,14 +1,11 @@
-// FILE: /js/client-dashboard.js (CORRECTED)
+// FILE: /js/client-dashboard.js (WITH FAKE DATA)
 
 import { auth, db } from '/js/firebase-config.js';
 import { doc, getDoc, collection, query, where, getCountFromServer, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-// FIX: We will wrap the entire script in an event listener to wait for components to load.
 document.addEventListener('componentsLoaded', () => {
 
-    // --- DOM Elements ---
-    // Now these elements will be found correctly after the header is loaded.
     const statFunds = document.getElementById('stat-funds');
     const statPending = document.getElementById('stat-pending');
     const statActiveJobs = document.getElementById('stat-active-jobs');
@@ -16,10 +13,8 @@ document.addEventListener('componentsLoaded', () => {
     const jobList = document.getElementById('job-list');
     const activityList = document.getElementById('activity-list');
     const headerBalance = document.getElementById('header-balance');
-
     const CURRENCY = '৳';
 
-    // --- Functions to update UI ---
     const updateStats = (wallet, stats) => {
         const walletBalance = wallet?.balance ?? 0;
         const totalSpent = wallet?.totalSpent ?? 0;
@@ -59,10 +54,31 @@ document.addEventListener('componentsLoaded', () => {
             `;
         }).join('');
     };
+    
+    // --- New function to render fake activity ---
+const renderActivity = (activities) => {
+    if (!activityList) return;
+    if (activities.length === 0) {
+        activityList.innerHTML = '<p class="empty-list-message">No recent activity.</p>';
+        return;
+    }
+    // FIX: Simplified the rendering logic as the icon color is now always the same
+    activityList.innerHTML = activities.map(activity => {
+        return `
+            <div class="list-item-card activity-item">
+                <div class="activity-item__icon">
+                    <i class="fa-solid ${activity.icon}"></i>
+                </div>
+                <p class="activity-item__text">${activity.text}</p>
+            </div>
+        `;
+    }).join('');
+};
 
     // --- Main Logic ---
     onAuthStateChanged(auth, async (user) => {
         if (user) {
+            // We will still fetch the main stats from Firestore
             try {
                 const walletDocRef = doc(db, "wallets", user.uid);
                 const walletDoc = await getDoc(walletDocRef);
@@ -82,25 +98,33 @@ document.addEventListener('componentsLoaded', () => {
                     pendingSubmissions: pendingSnapshot.data().count,
                     activeJobs: activeJobsSnapshot.data().count
                 };
-                
-                const recentJobsQuery = query(jobsRef, where("clientId", "==", user.uid), where("status", "==", "active"), orderBy("createdAt", "desc"), limit(3));
-                const jobsSnapshot = await getDocs(recentJobsQuery);
-                const recentJobs = jobsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
                 updateStats(walletData, liveStats);
-                renderJobs(recentJobs);
-                
-                if(activityList) {
-                    activityList.innerHTML = '<p class="empty-list-message">Recent activity feed is under construction.</p>';
-                }
 
             } catch (error) {
-                console.error("Error loading dashboard:", error);
+                console.error("Error loading stats:", error);
                 updateStats({ balance: 0, totalSpent: 0 }, { pendingSubmissions: 0, activeJobs: 0 });
             }
+            
+            // --- FAKE DATA FOR LISTS ---
+            const dummyJobs = [
+                { title: "Data Entry for Online Store", submissionsCompleted: 150, workersNeeded: 200 },
+                { title: "Social Media Engagement Boost", submissionsCompleted: 45, workersNeeded: 50 },
+                { title: "Translate English to Bengali", submissionsCompleted: 88, workersNeeded: 100 }
+            ];
+            
+   const dummyActivities = [
+            { text: "You successfully added <strong>৳1000</strong> to your wallet.", icon: "fa-plus" },
+            { text: "Your job 'Social Media Engagement Boost' is now complete.", icon: "fa-flag-checkered" },
+            { text: "You approved a submission for 'Data Entry for Online Store'.", icon: "fa-check" }
+        ];
+
+            // Render the fake data
+            renderJobs(dummyJobs);
+            renderActivity(dummyActivities);
+
         } else {
             window.location.href = '/login.html';
         }
     });
-
-}); // End of the new 'componentsLoaded' event listener
+});
