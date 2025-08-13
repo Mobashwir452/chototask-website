@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy & Security | ChotoTask</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link rel="stylesheet" href="/client/css/client.css">
+    <link rel="stylesheet" href="/client/css/client-security.css">
+</head>
+<body class="client-page">
+    
+    <header id="client-header-placeholder"></header>
+    <div id="client-menu-placeholder"></div>
+
+    <main>
+        <div class="block">
+            <section class="page-hero">
+                <div class="page-hero__icon"><div class="icon-layer icon-layer--bottom"></div><div class="icon-layer icon-layer--middle"></div><div class="icon-layer icon-layer--top"></div></div>
+                <h1 class="page-hero__title">Privacy & Security</h1>
+                <p class="page-hero__subtitle">Manage your password and strengthen your account's security</p>
+            </section>
+        </div>
+
+        <div class="block">
+            <section class="container">
+                <div class="security-card">
+                    <form id="change-password-form">
+                        <h2>Change Password</h2>
+                        <div class="form-group">
+                            <label for="currentPassword">Current Password</label>
+                            <input type="password" id="currentPassword" required>
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="newPassword">New Password</label>
+                                <input type="password" id="newPassword" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="confirmNewPassword">Confirm New Password</label>
+                                <input type="password" id="confirmNewPassword" required>
+                            </div>
+                        </div>
+                        <p class="form-message" id="form-message"></p>
+                        <button type="submit" class="btn-submit">Update Password</button>
+                    </form>
+                </div>
+
+                <div class="security-card">
+                    <h2>Data & Privacy</h2>
+                    <div class="setting-row">
+                        <div class="setting-text">
+                            <h4>Profile Visibility</h4>
+                            <p>Control whether other users can see your profile information.</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="isProfilePublicToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-row">
+                        <div class="setting-text">
+                            <h4>Activity Status</h4>
+                            <p>Show when you're active on the platform.</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="showActivityStatusToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-row">
+                        <div class="setting-text">
+                            <h4>Data Collection</h4>
+                            <p>Allow collection of usage data to improve our services.</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="allowDataCollectionToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="security-card is-disabled">
+                    <h2>Advanced Security (Coming Soon)</h2>
+                    <div class="setting-row">
+                        <div class="setting-text">
+                            <h4>Two-Factor Authentication</h4>
+                            <p>Add an extra layer of security to your account.</p>
+                        </div>
+                        <button class="btn-secondary" disabled>Enable</button>
+                    </div>
+                    <div class="setting-row">
+                        <div class="setting-text">
+                            <h4>Login Activity</h4>
+                            <p>Review and log out of active sessions on other devices.</p>
+                        </div>
+                        <button class="btn-secondary" disabled>View Sessions</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <div id="client-bottom-nav-placeholder"></div>
+
+    <script src="/js/component-loader.js"></script>
+    <script src="/client/js/client-shell.js" type="module"></script>
+    <script src="/client/js/client-security.js" type="module"></script>
+</body>
+</html>

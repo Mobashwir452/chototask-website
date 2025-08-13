@@ -1,0 +1,94 @@
+/* FILE: /client/css/client-security.css */
+
+.security-card {
+    background: var(--client-card-bg);
+    border: 1px solid var(--client-card-border);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.security-card h2 {
+    margin: 0 0 1.5rem 0;
+    font-size: 1.25rem;
+    border-bottom: 1px solid var(--client-card-border);
+    padding-bottom: 1rem;
+}
+
+/* Form Styles */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+@media (min-width: 768px) { .form-grid { grid-template-columns: 1fr 1fr; } }
+.form-group { margin-bottom: 1rem; }
+.form-group label { display: block; margin-bottom: 0.5rem; color: var(--client-text-secondary); }
+.form-group input { width: 100%; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid var(--client-card-border); background-color: rgba(0, 0, 0, 0.2); color: var(--client-text-primary); font-size: 1rem; }
+.form-message { margin: 1rem 0; text-align: center; min-height: 1.2em; font-weight: 500; }
+.message-success { color: #00FFCD; }
+.message-error { color: #EB5757; }
+
+/* Settings Row with Toggle */
+.setting-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+}
+.setting-row + .setting-row {
+    border-top: 1px solid var(--client-card-border);
+}
+.setting-text h4 { margin: 0 0 0.25rem 0; font-size: 1rem; font-weight: 500; color: var(--client-text-primary); }
+.setting-text p { margin: 0; font-size: 0.9rem; color: var(--client-text-secondary); }
+
+/* Toggle Switch Styles */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 28px;
+    flex-shrink: 0;
+}
+.toggle-switch input { display: none; }
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0,0,0,0.3);
+    border: 1px solid var(--client-card-border);
+    border-radius: 28px;
+    transition: .4s;
+}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: .4s;
+}
+input:checked + .slider {
+    background: var(--client-accent-gradient);
+    border-color: transparent;
+}
+input:checked + .slider:before {
+    transform: translateX(22px);
+}
+
+/* Disabled State for Advanced Card */
+.security-card.is-disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+.btn-secondary {
+    padding: 0.6rem 1.2rem;
+    border: 1px solid var(--client-card-border);
+    background: transparent;
+    color: var(--client-text-secondary);
+    border-radius: 20px;
+    font-weight: 600;
+}
