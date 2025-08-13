@@ -1,14 +1,40 @@
-// FILE: /js/client-shell.js (FINAL AND CORRECT)
+// FILE: /js/client-shell.js (FINAL, ROBUST VERSION)
 import { auth, db } from '/js/firebase-config.js';
 import { signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
+// --- CHECKLIST AND GUARD ---
+let isUserReady = false;
+let areComponentsReady = false;
+let didGlobalScriptsRun = false;
+let currentUserId = null;
+
+// This function will contain all logic that needs both user and DOM
+function runGlobalScripts() {
+    // Guard: Only run if both are ready AND it hasn't run before.
+    if (!isUserReady || !areComponentsReady || didGlobalScriptsRun) {
+        return;
+    }
+    
+    // Mark as run to prevent it from running again.
+    didGlobalScriptsRun = true;
+
+    // --- All global functions are called here safely ---
+    listenToWallet(currentUserId);
+    setActiveNavLink();
+    setupLogoutButton();
+}
+
+
 // --- GLOBAL FUNCTIONS ---
 
-const listenToWallet = (userId) => {
+function listenToWallet(userId) {
     const headerBalance = document.getElementById('header-balance');
-    if (!headerBalance) return; 
+    if (!headerBalance) {
+        console.error("Header balance element not found!");
+        return;
+    }
 
     const walletRef = doc(db, "wallets", userId);
     onSnapshot(walletRef, (doc) => {
@@ -16,9 +42,9 @@ const listenToWallet = (userId) => {
         const formattedBalance = `৳${balance.toLocaleString()}`;
         headerBalance.textContent = formattedBalance;
     });
-};
+}
 
-const setActiveNavLink = () => {
+function setActiveNavLink() {
     const navContainer = document.getElementById('client-bottom-nav-placeholder');
     if (!navContainer) return;
 
@@ -32,12 +58,15 @@ const setActiveNavLink = () => {
             link.classList.add('active');
         }
     });
-};
+}
 
-const setupLogoutButton = () => {
-    const logoutBtn = document.getElementById('logout-btn');
+function setupLogoutButton() {
+    // Your `client-menu.html` doesn't have an element with id="logout-btn".
+    // It has a link with class="btn-logout". We'll target that instead.
+    const logoutBtn = document.querySelector('.btn-logout');
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', async () => {
+        logoutBtn.addEventListener('click', async (e) => {
+            e.preventDefault(); // Prevent the link from navigating to "/logout"
             if (confirm("Are you sure you want to log out?")) {
                 try {
                     await signOut(auth);
@@ -48,26 +77,26 @@ const setupLogoutButton = () => {
             }
         });
     }
-};
+}
 
-// --- INITIALIZATION LOGIC ---
+// --- INITIALIZATION TRIGGERS ---
 
-// This is the main entry point for our global scripts.
-// It waits for the user to be authenticated.
+// Trigger 1: Firebase Authentication
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        // Once the user is known, we then wait for the HTML components to be loaded.
-        document.addEventListener('componentsLoaded', () => {
-            // This block will now only run when BOTH the user is known AND the DOM is ready.
-            listenToWallet(user.uid);
-            setActiveNavLink();
-            setupLogoutButton();
-        });
+        isUserReady = true;
+        currentUserId = user.uid;
+        runGlobalScripts(); // Attempt to run
     } else {
-        // If user is not logged in, redirect them.
         const protectedPaths = ['/client/'];
         if (protectedPaths.some(path => window.location.pathname.startsWith(path))) {
             window.location.href = '/login.html';
         }
     }
+});
+
+// Trigger 2: HTML Components Loaded
+document.addEventListener('componentsLoaded', () => {
+    areComponentsReady = true;
+    runGlobalScripts(); // Attempt to run
 });
