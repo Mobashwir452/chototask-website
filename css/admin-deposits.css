@@ -1,0 +1,17 @@
+/* FILE: /css/admin-deposits.css */
+
+.btn-verify {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: 6px;
+    border: 1px solid var(--a-border);
+    background-color: var(--a-surface);
+    color: var(--a-success);
+    cursor: pointer;
+}
+
+.btn-verify:hover {
+    background-color: #F0FFF4; /* A light green */
+    border-color: var(--a-success);
+}

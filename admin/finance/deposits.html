@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin • Deposits | ChotoTask</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="/css/admin-deposits.css">
+</head>
+<body class="admin">
+    <header id="admin-header"></header>
+    <aside id="admin-sidebar"></aside>
+
+    <main id="admin-main">
+        <div class="a-container">
+            <div class="a-breadcrumbs">Admin / Finance / Deposits</div>
+
+            <section class="a-card">
+                <div class="a-card-head">
+                    <h3><i class="fa-solid fa-circle-arrow-down"></i> Pending Deposit Requests</h3>
+                    </div>
+
+                <div class="a-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Requested At</th>
+                                <th>Client Email</th>
+                                <th>Amount</th>
+                                <th>Transaction ID</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="deposits-table-body">
+                            <tr><td colspan="5" class="a-empty">Loading pending requests...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+<div class="a-modal-overlay" id="admin-modal" style="display: none;">
+  <div class="a-modal-content">
+    <div class="a-modal-header">
+      <h3 id="admin-modal-title">Verify Deposit</h3>
+      <button class="a-modal-close" id="admin-modal-close-btn">&times;</button>
+    </div>
+    <div class="a-modal-body" id="admin-modal-body">
+      </div>
+  </div>
+</div>
+
+
+    </main>
+
+    <script type="module" src="/js/firebase-config.js"></script>
+    <script type="module" src="/js/admin-loader.js"></script>
+    <script type="module" src="/js/admin-shell.js"></script>
+    <script type="module" src="/js/admin-guard.js"></script>
+    <script type="module" src="/js/admin-deposits.js"></script>
+</body>
+</html>
