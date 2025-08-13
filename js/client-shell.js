@@ -31,16 +31,24 @@ function runGlobalScripts() {
 
 function listenToWallet(userId) {
     const headerBalance = document.getElementById('header-balance');
-    if (!headerBalance) {
-        console.error("Header balance element not found!");
-        return;
-    }
+    // ✅ ADD THIS LINE to find the balance element on the billing page.
+    const pageBalance = document.getElementById('current-balance'); 
 
+    if (!userId) return;
     const walletRef = doc(db, "wallets", userId);
+    
     onSnapshot(walletRef, (doc) => {
         const balance = doc.exists() ? (doc.data().balance ?? 0) : 0;
         const formattedBalance = `৳${balance.toLocaleString()}`;
-        headerBalance.textContent = formattedBalance;
+        
+        // Update the header balance if it exists.
+        if (headerBalance) {
+            headerBalance.textContent = formattedBalance;
+        }
+        // ✅ ADD THIS LINE to update the page balance if it exists.
+        if (pageBalance) {
+            pageBalance.textContent = formattedBalance;
+        }
     });
 }
 
