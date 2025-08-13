@@ -1,7 +1,6 @@
-// FILE: /js/admin-deposits.js (FULLY FUNCTIONAL VERSION)
+// /js/admin-deposits.js - FINAL VERSION
 
 import { db } from '/js/firebase-config.js';
-// FILE: /js/admin-deposits.js (Updated Import)
 import { collection, query, where, orderBy, onSnapshot, doc, getDoc, writeBatch, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // --- DOM ELEMENTS ---
@@ -66,23 +65,23 @@ const handleVerify = async (requestId) => {
                 </div>
                 <div class="a-modal-footer">
                     <button type="button" class="btn btn-danger" id="btn-reject">Reject</button>
-                    <button type="submit" class="btn btn-dark">Approve & Add Funds</button>
+                    <button type="submit" class="btn btn-dark">Approve Deposit</button>
                 </div>
             </form>
         `;
         showAdminModal();
 
-        // Add listeners for the new modal buttons
-        document.getElementById('verify-form').addEventListener('submit', (e) => {
+        document.getElementById('verify-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const actualAmount = parseFloat(document.getElementById('actual-amount').value);
-            if (!isNaN(actualAmount) && actualAmount > 0) {
-                processDeposit(requestData.clientId, requestId, actualAmount, 'approved');
+            if (!isNaN(actualAmount)) {
+                // Pass the original request data to the processing function
+                await processDeposit(requestData, requestId, actualAmount, 'approved');
             }
         });
         document.getElementById('btn-reject').addEventListener('click', () => {
-             if (confirm("Are you sure you want to reject this request?")) {
-                processDeposit(requestData.clientId, requestId, 0, 'rejected');
+             if (confirm("Are you sure you want to reject this request? This will reverse the funds from the user's wallet.")) {
+                processDeposit(requestData, requestId, 0, 'rejected');
              }
         });
 
@@ -92,33 +91,63 @@ const handleVerify = async (requestId) => {
     }
 };
 
-// FILE: /js/admin-deposits.js (Replace this function)
+// ✅ REPLACED with smarter logic to prevent double-deposits
+const processDeposit = async (originalRequestData, requestId, actualAmount, newStatus) => {
+    const { clientId, amount: originalAmount, userTransactionId } = originalRequestData;
+    
+    // Calculate the difference to fix the wallet balance
+    const difference = actualAmount - originalAmount;
 
-// FILE: /js/admin-deposits.js (Replace this function)
-
-const processDeposit = async (clientId, requestId, actualAmount, newStatus) => {
+    // Define all database references
     const walletRef = doc(db, "wallets", clientId);
     const requestRef = doc(db, "depositRequests", requestId);
+    const userTransactionRef = doc(db, "transactions", userTransactionId);
 
     try {
         const batch = writeBatch(db);
 
+        // 1. Update the original deposit request (the admin's to-do item)
         batch.update(requestRef, {
             status: newStatus,
             actualAmount: actualAmount,
             reviewedAt: serverTimestamp()
         });
 
-        if (newStatus === 'approved' && actualAmount > 0) {
-            batch.set(walletRef, {
-                balance: increment(actualAmount)
-            }, { merge: true });
+        // 2. Fix the wallet balance by the calculated difference
+        if (difference !== 0) {
+             batch.update(walletRef, { balance: increment(difference) });
+        }
+
+        // 3. Update the original user-facing transaction log
+        batch.update(userTransactionRef, {
+            status: newStatus,
+            amount: actualAmount, // Update to the actual amount
+            description: originalRequestData.methodName + ' Deposit' // Clean up description
+        });
+
+        // 4. If an adjustment was made, create a NEW transaction log for it
+        if (difference !== 0 && newStatus === 'approved') {
+            const adjustmentRef = doc(collection(db, "transactions"));
+            batch.set(adjustmentRef, {
+                clientId: clientId,
+                amount: difference,
+                createdAt: serverTimestamp(),
+                description: 'Deposit amount adjustment by admin',
+                type: 'deposit_adjustment',
+                status: 'approved'
+            });
+        }
+        
+        // When rejecting, reverse the full original amount if no adjustment is specified
+        if (newStatus === 'rejected') {
+            batch.update(walletRef, { balance: increment(-originalAmount) });
+            batch.update(userTransactionRef, { status: 'rejected', amount: 0 });
         }
 
         await batch.commit();
+
+        // Show success message
         hideAdminModal();
-        
-        // Show styled success message instead of alert
         modalTitle.textContent = 'Success';
         modalBody.innerHTML = `<p style="text-align:center;">Request has been successfully ${newStatus}.</p><div class="a-modal-footer"><button id="success-ok" class="btn btn-dark">OK</button></div>`;
         showAdminModal();
@@ -126,26 +155,22 @@ const processDeposit = async (clientId, requestId, actualAmount, newStatus) => {
 
     } catch (error) {
         console.error("Error processing deposit:", error);
-        
-        // Show styled error message instead of alert
+        hideAdminModal();
         modalTitle.textContent = 'Error';
-        modalBody.innerHTML = `<p style="text-align:center;">Failed to process the request. Check the console for details.</p><div class="a-modal-footer"><button id="error-ok" class="btn btn-dark">OK</button></div>`;
+        modalBody.innerHTML = `<p style="text-align:center;">Failed to process the request: ${error.message}</p><div class="a-modal-footer"><button id="error-ok" class="btn btn-dark">OK</button></div>`;
         showAdminModal();
         document.getElementById('error-ok').addEventListener('click', hideAdminModal);
     }
 };
 
-
 // --- EVENT LISTENERS & INITIALIZATION ---
 document.addEventListener('adminReady', () => {
-    // Real-time listener for pending requests
     const q = query(collection(db, "depositRequests"), where("status", "==", "pending"), orderBy("requestedAt", "asc"));
     onSnapshot(q, (snapshot) => {
         const requests = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         renderTable(requests);
     });
 
-    // Delegated event listener for the whole table
     tableBody.addEventListener('click', (e) => {
         if (e.target.dataset.action === 'verify') {
             const requestId = e.target.closest('tr').dataset.id;

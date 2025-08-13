@@ -1,4 +1,4 @@
-// /netlify/functions/requestDeposit.js - UPDATED
+// /netlify/functions/requestDeposit.js - FINAL VERSION
 
 const admin = require('firebase-admin');
 
@@ -27,38 +27,50 @@ exports.handler = async (event, context) => {
         const { methodName, proofData } = JSON.parse(event.body);
         const amount = Number(proofData.amount);
 
-        // ✅ Server-side amount validation
         if (isNaN(amount) || amount < 100 || amount > 10000) {
             return { statusCode: 400, body: JSON.stringify({ success: false, error: "Invalid amount. Must be between 100 and 10,000 BDT." }) };
         }
 
         const depositRequestsRef = db.collection("depositRequests");
         const walletRef = db.collection("wallets").doc(clientId);
+        const transactionsRef = db.collection("transactions");
 
-        // ✅ Use a transaction to ensure all-or-nothing logic
         await db.runTransaction(async (transaction) => {
             const pendingRequestsQuery = depositRequestsRef.where('clientId', '==', clientId).where('status', '==', 'pending');
             const pendingRequestsSnapshot = await transaction.get(pendingRequestsQuery);
 
-            // If a pending request already exists, stop the entire process
             if (!pendingRequestsSnapshot.empty) {
                 throw new Error('You already have a deposit request pending approval.');
             }
+            
+            // Create a reference for the new user-facing transaction log
+            const newTransactionRef = transactionsRef.doc();
 
-            // If no pending requests, proceed:
-            // 1. Create the new deposit request document
+            // 1. Create the user-facing transaction history entry
+            transaction.set(newTransactionRef, {
+                clientId: clientId,
+                amount: amount,
+                createdAt: admin.firestore.FieldValue.serverTimestamp(),
+                description: `${methodName} Deposit (Pending)`,
+                methodName: methodName,
+                status: 'pending',
+                type: 'deposit'
+            });
+
+            // 2. Create the admin's deposit request, now linked to the transaction
             const newRequestRef = depositRequestsRef.doc();
             transaction.set(newRequestRef, {
                 clientId,
                 clientEmail,
                 amount,
                 transactionId: String(proofData.transactionId || ''),
+                userTransactionId: newTransactionRef.id, // ✅ Link to history item
                 methodName,
-                status: "pending", // Set status for admin
+                status: "pending",
                 requestedAt: admin.firestore.FieldValue.serverTimestamp()
             });
 
-            // 2. Instantly update the user's wallet balance
+            // 3. Instantly update the user's wallet balance
             transaction.set(walletRef, {
                 balance: admin.firestore.FieldValue.increment(amount)
             }, { merge: true });
@@ -71,7 +83,6 @@ exports.handler = async (event, context) => {
 
     } catch (error) {
         console.error("Error in Netlify function:", error);
-        // Return a specific error message if one was thrown from our transaction
         return {
             statusCode: 400,
             body: JSON.stringify({ success: false, error: error.message })
