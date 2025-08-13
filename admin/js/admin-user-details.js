@@ -1,10 +1,10 @@
-// FILE: /js/admin-user-details.js (FINAL VERSION)
+// FILE: /admin/js/admin-user-details.js (FINAL UPDATED VERSION)
 import { db } from '/js/firebase-config.js';
 import { doc, getDoc, collection, query, where, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const detailsCard = document.getElementById('details-card');
 const breadcrumbs = document.querySelector('.a-breadcrumbs');
-const CURRENCY_SYMBOL = '৳'; // <-- CHANGE CURRENCY HERE
+const CURRENCY_SYMBOL = '৳';
 
 // --- RENDER FUNCTION ---
 const renderUserDetails = (user, wallet, activity) => {
@@ -12,17 +12,22 @@ const renderUserDetails = (user, wallet, activity) => {
     
     // --- Helper functions for cleaner rendering ---
     const formatDate = (timestamp) => timestamp ? new Date(timestamp.seconds * 1000).toLocaleString() : 'N/A';
-    const formatAddress = (address) => address ? `${address.street}, ${address.city}, ${address.country}` : 'Not provided';
+    const formatAddress = (address) => address || 'Not provided';
     
+    // ✅ FIX: Updated to handle 'not_provided', 'pending_review', and 'verified'
     const getKycBadge = (status) => {
-        const statusMap = { 'Verified': 'verified', 'Pending': 'pending', 'Not Submitted': 'free' };
-        const badgeClass = statusMap[status] || 'free';
-        return `<span class="status-badge ${badgeClass}">${status || 'N/A'}</span>`;
+        const statusText = (status || 'not_provided').replace('_', ' ');
+        let badgeClass = 'free'; // Default neutral style
+        if (status === 'verified') badgeClass = 'verified';
+        if (status === 'pending_review') badgeClass = 'pending';
+        return `<span class="status-badge ${badgeClass}">${statusText}</span>`;
     };
     
-    const getPlanBadge = (plan) => {
-        const badgeClass = plan === 'Premium' ? 'premium' : 'free';
-        return `<span class="status-badge ${badgeClass}">${plan || 'N/A'}</span>`;
+    // ✅ FIX: Updated to read from 'accountType' field instead of 'plan'
+    const getPlanBadge = (accountType) => {
+        const plan = accountType || 'free'; // Default to free if missing
+        const badgeClass = plan === 'premium' ? 'premium' : 'free';
+        return `<span class="status-badge ${badgeClass}">${plan}</span>`;
     };
 
     const kpiCards = user.role === 'worker' ? `
@@ -35,8 +40,9 @@ const renderUserDetails = (user, wallet, activity) => {
         <div class="details-kpi"><h4>Total Spent</h4><p>${CURRENCY_SYMBOL}${wallet.totalSpent.toFixed(2)}</p></div>
     `;
 
+    // ✅ FIX: Updated to render the text from the new 'activities' collection
     const activityList = activity.length > 0
-        ? activity.map(item => `<li><span>${item.description}</span><span class="date">${new Date(item.date.seconds * 1000).toLocaleDateString()}</span></li>`).join('')
+        ? activity.map(item => `<li><span>${item.text}</span><span class="date">${formatDate(item.timestamp)}</span></li>`).join('')
         : '<li>No recent activity found.</li>';
 
     // --- Final HTML Structure ---
@@ -57,10 +63,11 @@ const renderUserDetails = (user, wallet, activity) => {
                 <div class="info-row"><span>Username</span> <strong>${user.username || 'Not set'}</strong></div>
                 <div class="info-row"><span>Role</span> <strong>${user.role}</strong></div>
                 <div class="info-row"><span>Account Status</span> <strong>${user.status}</strong></div>
-                <div class="info-row"><span>Subscription Plan</span> <strong>${getPlanBadge(user.plan)}</strong></div>
+                <div class="info-row"><span>Subscription Plan</span> <strong>${getPlanBadge(user.accountType)}</strong></div>
                 <div class="info-row"><span>KYC Status</span> <strong>${getKycBadge(user.kycStatus)}</strong></div>
                 <div class="info-row"><span>Joined On</span> <strong>${formatDate(user.createdAt)}</strong></div>
                 <div class="info-row"><span>Address</span> <strong>${formatAddress(user.address)}</strong></div>
+                <div class="info-row"><span>Phone</span> <strong>${user.phone || 'Not provided'}</strong></div>
             </div>
             <div class="details-section">
                 <h4>Recent Activity</h4>
@@ -70,6 +77,7 @@ const renderUserDetails = (user, wallet, activity) => {
     `;
     detailsCard.innerHTML = html;
 };
+
 // --- DATA FETCHING ---
 (async () => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -81,34 +89,36 @@ const renderUserDetails = (user, wallet, activity) => {
     }
 
     try {
-        // Fetch user and wallet data in parallel
+        // Fetch user, wallet, and new activity data in parallel
         const userDocRef = doc(db, "users", userId);
         const walletDocRef = doc(db, "wallets", userId);
-        const [userDoc, walletDoc] = await Promise.all([getDoc(userDocRef), getDoc(walletDocRef)]);
+        
+        // ✅ FIX: Query the new unified 'activities' collection instead of jobs/submissions
+        const activityQuery = query(
+            collection(db, "activities"), 
+            where("userId", "==", userId), 
+            orderBy("timestamp", "desc"), 
+            limit(5)
+        );
 
-        // Check for user existence (this is required)
+        const [userDoc, walletDoc, activitySnapshot] = await Promise.all([
+            getDoc(userDocRef), 
+            getDoc(walletDocRef),
+            getDocs(activityQuery)
+        ]);
+
         if (!userDoc.exists()) {
              detailsCard.innerHTML = `<h2>Error: User not found for ID: ${userId}</h2>`;
              return;
         }
         
         const userData = userDoc.data();
-        // Handle cases where wallet might not exist for old users
-        const walletData = walletDoc.exists() ? walletDoc.data() : { balance: 0, totalEarned: 0, totalSpent: 0, currency: 'USD' };
-
-        // Fetch recent activity based on role
-        let activity = [];
-        if (userData.role === 'worker') {
-            const submissionsQuery = query(collection(db, "submissions"), where("workerId", "==", userId), orderBy("submittedAt", "desc"), limit(5));
-            const submissionDocs = await getDocs(submissionsQuery);
-            activity = submissionDocs.docs.map(d => ({ description: `Submitted job: ${d.data().jobTitle || 'Untitled'}`, date: d.data().submittedAt }));
-        } else if (userData.role === 'client') {
-            const jobsQuery = query(collection(db, "jobs"), where("clientId", "==", userId), orderBy("createdAt", "desc"), limit(5));
-            const jobDocs = await getDocs(jobsQuery);
-            activity = jobDocs.docs.map(d => ({ description: `Posted job: ${d.data().title}`, date: d.data().createdAt }));
-        }
+        const walletData = walletDoc.exists() ? walletDoc.data() : { balance: 0, totalEarned: 0, totalSpent: 0 };
         
-        renderUserDetails(userData, walletData, activity);
+        // ✨ NEW: Map the activity data from the new collection
+        const activityData = activitySnapshot.docs.map(doc => doc.data());
+        
+        renderUserDetails(userData, walletData, activityData);
 
     } catch (error) {
         console.error("Error fetching user details:", error);

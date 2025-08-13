@@ -299,9 +299,6 @@ async function handleLogin(e) {
 // ===============================================
 //              REGISTRATION HANDLER
 // ===============================================
-// In /js/auth.js
-// REPLACE your existing handleRegister function with this one.
-
 async function handleRegister(e) {
     e.preventDefault();
     const btnText = document.getElementById('btn-text');
@@ -323,8 +320,22 @@ async function handleRegister(e) {
     formInputs.forEach(input => input.classList.remove('is-invalid'));
     termsLabel.classList.remove('is-invalid');
 
-    // 2. Perform Validation (No changes here)
-    // ... (validation code is the same)
+    // 2. Perform Validation
+    let errors = [];
+    if (!roleInput.value) errors.push('Role');
+    if (!firstNameInput.value) { errors.push('First Name'); firstNameInput.classList.add('is-invalid'); }
+    if (!lastNameInput.value) { errors.push('Last Name'); lastNameInput.classList.add('is-invalid'); }
+    if (!emailInput.value) { errors.push('Email'); emailInput.classList.add('is-invalid'); }
+    if (!passwordInput.value) { errors.push('Password'); passwordInput.classList.add('is-invalid'); }
+    if (passwordInput.value !== confirmPasswordInput.value) {
+        errors.push('Passwords do not match');
+        passwordInput.classList.add('is-invalid');
+        confirmPasswordInput.classList.add('is-invalid');
+    }
+    if (!termsCheckbox.checked) {
+        errors.push('Terms');
+        termsLabel.classList.add('is-invalid');
+    }
 
     if (errors.length > 0) {
         return showModal('Missing Information', 'Please correct the highlighted fields and agree to the terms.', 'error');
@@ -374,8 +385,8 @@ async function handleRegister(e) {
         setTimeout(redirectToLogin, 5000);
 
     } catch (error) {
-        // ✅ THIS IS THE IMPORTANT CHANGE
-        console.error("Registration Error Details:", error); 
+        // This new line will show us the real error
+        console.error("REGISTRATION ERROR DETAILS:", error); 
 
         let friendlyMessage = "An unexpected error occurred. Please try again.";
         if (error.code === 'auth/email-already-in-use') {
