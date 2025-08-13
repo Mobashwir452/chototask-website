@@ -57,6 +57,17 @@ exports.handler = async (event, context) => {
                 type: 'deposit'
             });
 
+            // ✅ ADD THIS BLOCK TO LOG THE ACTIVITY
+            const activityRef = db.collection("activities").doc();
+            transaction.set(activityRef, {
+                userId: clientId,
+                userRole: 'client',
+                type: 'deposit_requested',
+                text: `You requested a deposit of ৳${amount.toLocaleString()}.`,
+                timestamp: admin.firestore.FieldValue.serverTimestamp()
+            });
+
+
             // 2. Create the admin's deposit request, now linked to the transaction
             const newRequestRef = depositRequestsRef.doc();
             transaction.set(newRequestRef, {

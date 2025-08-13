@@ -1,0 +1,68 @@
+/* FILE: /client/css/client-activity.css */
+
+.activity-feed {
+    position: relative;
+    padding-left: 2.5rem; /* Space for the timeline */
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* The main timeline bar */
+.activity-feed::before {
+    content: '';
+    position: absolute;
+    left: 20px;
+    top: 10px;
+    bottom: 10px;
+    width: 3px;
+    background-color: var(--client-card-border);
+    border-radius: 2px;
+}
+
+.activity-item {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+    position: relative;
+}
+
+.activity-icon {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    background: var(--client-accent-gradient);
+    color: var(--client-text-dark);
+    /* Position it over the timeline bar */
+    position: absolute;
+    left: -2.5rem; 
+    top: 0;
+    margin-left: -1px; /* Center it on the 3px bar */
+    border: 3px solid #34495E;
+}
+
+.activity-content {
+    background: var(--client-card-bg);
+    border: 1px solid var(--client-card-border);
+    border-radius: 0.75rem;
+    padding: 1rem 1.25rem;
+    width: 100%;
+}
+
+.activity-text {
+    font-weight: 500;
+    color: var(--client-text-primary);
+    margin: 0 0 0.25rem 0;
+    line-height: 1.5;
+}
+
+.activity-timestamp {
+    font-size: 0.85rem;
+    color: var(--client-text-secondary);
+    margin: 0;
+}

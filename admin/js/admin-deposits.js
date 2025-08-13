@@ -102,6 +102,8 @@ const processDeposit = async (originalRequestData, requestId, actualAmount, newS
     const walletRef = doc(db, "wallets", clientId);
     const requestRef = doc(db, "depositRequests", requestId);
     const userTransactionRef = doc(db, "transactions", userTransactionId);
+    const activityRef = doc(collection(db, "activities"));
+
 
     try {
         const batch = writeBatch(db);
@@ -142,6 +144,26 @@ const processDeposit = async (originalRequestData, requestId, actualAmount, newS
         if (newStatus === 'rejected') {
             batch.update(walletRef, { balance: increment(-originalAmount) });
             batch.update(userTransactionRef, { status: 'rejected', amount: 0 });
+        }
+
+
+        // ✅ ADD THIS LOGIC before batch.commit()
+        if (newStatus === 'approved') {
+            batch.set(activityRef, {
+                userId: clientId,
+                userRole: 'client',
+                type: 'deposit_approved',
+                text: `Your deposit of ৳${actualAmount.toLocaleString()} was approved by an admin.`,
+                timestamp: serverTimestamp()
+            });
+        } else if (newStatus === 'rejected') {
+            batch.set(activityRef, {
+                userId: clientId,
+                userRole: 'client',
+                type: 'deposit_rejected',
+                text: `Your deposit request of ৳${originalAmount.toLocaleString()} was rejected.`,
+                timestamp: serverTimestamp()
+            });
         }
 
         await batch.commit();

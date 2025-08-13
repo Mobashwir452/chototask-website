@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Activity | ChotoTask</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link rel="stylesheet" href="/client/css/client.css">
+    <link rel="stylesheet" href="/client/css/client-activity.css">
+</head>
+<body class="client-page">
+    
+    <header id="client-header-placeholder"></header>
+    <div id="client-menu-placeholder"></div>
+
+    <main>
+        <div class="block">
+            <section class="page-hero">
+                <div class="page-hero__icon"><div class="icon-layer icon-layer--bottom"></div><div class="icon-layer icon-layer--middle"></div><div class="icon-layer icon-layer--top"></div></div>
+                <h1 class="page-hero__title">My Activity</h1>
+                <p class="page-hero__subtitle">A complete history of all your actions on the platform.</p>
+            </section>
+        </div>
+
+        <div class="block">
+            <section class="container">
+                <div id="activity-feed-container">
+                    <p class="empty-state" style="text-align: center; padding: 1rem;">Loading activity...</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <div id="client-bottom-nav-placeholder"></div>
+
+    <script src="/js/component-loader.js"></script>
+    <script src="/client/js/client-shell.js" type="module"></script>
+    <script src="/client/js/client-activity.js" type="module"></script>
+</body>
+</html>
