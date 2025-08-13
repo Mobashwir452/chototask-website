@@ -1,0 +1,88 @@
+/* FILE: /client/css/client-personal-info.css */
+
+.form-card {
+    background: var(--client-card-bg);
+    border: 1px solid var(--client-card-border);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.form-card h2 {
+    margin: 0 0 1.5rem 0;
+    font-size: 1.25rem;
+    border-bottom: 1px solid var(--client-card-border);
+    padding-bottom: 1rem;
+}
+
+/* Form Styles */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+@media (min-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr 1fr; /* Two columns on desktop */
+    }
+}
+
+.form-group { margin-bottom: 0.5rem; }
+.form-group label { display: block; margin-bottom: 0.5rem; color: var(--client-text-secondary); }
+.form-group input, .form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--client-card-border);
+    background-color: rgba(0, 0, 0, 0.2);
+    color: var(--client-text-primary);
+    font-size: 1rem;
+    font-family: inherit;
+}
+.form-group input:disabled {
+    background-color: rgba(0, 0, 0, 0.4);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+.form-message { margin: 1rem 0; text-align: center; min-height: 1.2em; font-weight: 500;}
+.message-success { color: #00FFCD; }
+.message-error { color: #EB5757; }
+
+
+/* KYC Section Styles */
+.kyc-section { margin-top: 1.5rem; }
+.kyc-section label { font-weight: 600; }
+.kyc-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin: 0.5rem 0;
+}
+.kyc-status--unverified { background-color: rgba(235, 87, 87, 0.15); color: #EB5757; }
+.kyc-status--pending { background-color: rgba(242, 201, 76, 0.15); color: #F2C94C; }
+.kyc-status--verified { background-color: rgba(0, 255, 205, 0.15); color: #00FFCD; }
+
+.kyc-instructions {
+    font-size: 0.9rem;
+    color: var(--client-text-secondary);
+    margin: 0 0 1rem 0;
+}
+
+.btn-upload {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border: 1px solid var(--client-card-border);
+    border-radius: 0.5rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--client-text-primary);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.btn-upload:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+.btn-upload i { margin-right: 0.5rem; }

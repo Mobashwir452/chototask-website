@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Admin • All Transactions | ChotoTask</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link rel="stylesheet" href="/admin/css/admin-global.css">
+    <link rel="stylesheet" href="/admin/css/admin-transactions.css">
+</head>
+<body class="admin">
+    <header id="admin-header"></header>
+    <aside id="admin-sidebar"></aside>
+
+    <main id="admin-main">
+        <div class="a-container">
+            <div class="a-breadcrumbs">Admin / Finance / All Transactions</div>
+
+            <section class="a-card">
+                <div class="a-card-head">
+                    <h3><i class="fa-solid fa-receipt"></i> All User Transactions</h3>
+                </div>
+
+                <div class="a-filters">
+                    <input type="text" id="search-email" class="a-search" placeholder="Search by Client Email...">
+                    
+                    <select id="filter-type">
+                        <option value="">All Types</option>
+                        <option value="deposit">Deposit</option>
+                        <option value="job_posting">Job Posting</option>
+                        <option value="deposit_adjustment">Adjustment</option>
+                    </select>
+
+                    <select id="filter-status">
+                        <option value="">All Statuses</option>
+                        <option value="pending">Pending</option>
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                    
+                    <button id="filter-btn" class="btn btn-dark">Apply Filters</button>
+                </div>
+
+                <div class="a-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Client</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th style="text-align: right;">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-transactions">
+                            <tr><td colspan="5" class="a-empty">Loading transactions...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="a-pagination">
+                    <button id="prev-btn" class="btn btn-dark" disabled>Previous</button>
+                    <button id="next-btn" class="btn btn-dark">Next</button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script type="module" src="/js/firebase-config.js"></script>
+    <script type="module" src="/admin/js/admin-loader.js"></script>
+    <script type="module" src="/admin/js/admin-shell.js"></script>
+    <script type="module" src="/admin/js/admin-guard.js"></script>
+    <script type="module" src="/admin/js/admin-transactions.js"></script>
+</body>
+</html>

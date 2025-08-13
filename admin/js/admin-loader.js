@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
   const parts = {
-    '#admin-header': '/components-admin/admin-header.html',
-    '#admin-sidebar': '/components-admin/admin-sidebar.html',
+    '#admin-header': '/admin/components/admin-header.html',
+    '#admin-sidebar': '/admin/components/admin-sidebar.html',
     '#admin-footer': '/components-admin/admin-footer.html',
   };
   const load = async (sel, url) => {

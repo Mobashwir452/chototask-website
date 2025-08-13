@@ -13,9 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
         '#auth-header-placeholder': '/components/header-auth.html',
 
         // Client Dashboard Components
-        '#client-header-placeholder': '/components/client-header.html',
-        '#client-bottom-nav-placeholder': '/components/client-bottom-nav.html',
-        '#client-menu-placeholder': '/components/client-menu.html'
+        '#client-header-placeholder': '/client/components/client-header.html',
+        '#client-bottom-nav-placeholder': '/client/components/client-bottom-nav.html',
+        '#client-menu-placeholder': '/client/components/client-menu.html'
     };
 
     const loadComponent = async (id, url) => {

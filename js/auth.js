@@ -350,6 +350,7 @@ async function handleRegister(e) {
         const user = userCredential.user;
         const fullName = `${firstNameInput.value.trim()} ${lastNameInput.value.trim()}`;
 
+        // This is where the user document is created in Firestore
         await setDoc(doc(db, "users", user.uid), {
             uid: user.uid,
             fullName: fullName,
@@ -357,32 +358,35 @@ async function handleRegister(e) {
             role: roleInput.value,
             createdAt: serverTimestamp(),
             balance: 0,
-            status: 'active'
+            status: 'active',
+
+            // ✅ ADD THESE THREE NEW FIELDS WITH DEFAULT VALUES
+            accountType: 'free',
+            kycStatus: 'not_provided',
+            phone: ''
         });
 
 
         const walletDocRef = doc(db, "wallets", user.uid); // Use the same UID for the wallet ID
         await setDoc(walletDocRef, {
             balance: 0.00,
-            currency: 'BDT', // Or your site's currency
-            totalEarned: 0.00, // For Workers
-            totalSpent: 0.00, // For Clients
+            currency: 'BDT',
+            totalEarned: 0.00,
+            totalSpent: 0.00,
             lastUpdated: serverTimestamp()
         });
 
         await sendEmailVerification(user);
 
-    // Update the success message
         showModal(
             'Account Created!', 
             'We have sent a verification link to your email address. Please verify your account before logging in.', 
             'success'
         );
 
-    // Redirect to login page after user clicks "OK" or after a delay
         const redirectToLogin = () => window.location.href = '/login.html';
         modalCloseBtn.onclick = redirectToLogin;
-        setTimeout(redirectToLogin, 5000); // Increased timeout to allow reading the message
+        setTimeout(redirectToLogin, 5000);
 
     } catch (error) {
         let friendlyMessage = "An unexpected error occurred. Please try again.";

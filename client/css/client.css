@@ -516,3 +516,134 @@ header#client-header-placeholder {
     text-decoration: none;
     border: 1px solid var(--client-card-border);
 }
+
+
+
+
+/* Add this to your /client/css/client.css file */
+
+/* --- REUSABLE SUBMIT BUTTON --- */
+.btn-submit {
+    display: block;
+    width: 100%;
+    padding: 0.9rem;
+    border: none;
+    border-radius: 0.5rem;
+    background: var(--client-accent-gradient);
+    color: var(--client-text-dark);
+    font-size: 1rem;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.btn-submit:hover {
+    transform: scale(1.02);
+}
+
+
+
+
+
+
+
+/* Add this to the end of /client/css/client.css */
+
+/* --- CONFIRMATION MODAL --- */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0s 0.3s;
+}
+
+.modal-overlay.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease;
+}
+
+.modal-content {
+    background: var(--client-card-bg);
+    border: 1px solid var(--client-card-border);
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.modal-overlay.is-visible .modal-content {
+    transform: scale(1);
+}
+
+.modal-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin: 0 auto 1.5rem auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+}
+
+.modal-icon.warning {
+    background-color: rgba(242, 201, 76, 0.15); /* Yellow */
+    color: #F2C94C;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    color: var(--client-text-primary);
+}
+
+.modal-message {
+    color: var(--client-text-secondary);
+    margin: 0 0 2rem 0;
+    line-height: 1.6;
+}
+
+.modal-footer {
+    display: flex;
+    gap: 1rem;
+}
+
+.modal-btn {
+    flex: 1;
+    padding: 0.8rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+.modal-btn:hover {
+    transform: scale(1.03);
+}
+
+.modal-btn--confirm {
+    background: var(--client-accent-gradient);
+    color: var(--client-text-dark);
+}
+
+.modal-btn--cancel {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--client-text-primary);
+    border: 1px solid var(--client-card-border);
+}

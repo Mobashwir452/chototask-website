@@ -1,0 +1,44 @@
+/* FILE: /admin/css/admin-transactions.css */
+
+/* --- Filter Bar Styles --- */
+.a-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.a-filters input,
+.a-filters select {
+    padding: 0.6rem;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.a-filters input {
+    flex-grow: 1; /* Allows the search bar to take up available space */
+}
+
+/* --- Table Status Colors --- */
+.status-cell {
+    font-weight: 600;
+    text-transform: capitalize;
+}
+.status-cell[data-status="approved"] { color: #27AE60; } /* Green */
+.status-cell[data-status="pending"] { color: #F2C94C; } /* Yellow */
+.status-cell[data-status="rejected"] { color: #EB5757; } /* Red */
+
+
+/* --- Pagination Styles --- */
+.a-pagination {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
