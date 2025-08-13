@@ -94,6 +94,8 @@ const handleVerify = async (requestId) => {
 
 // FILE: /js/admin-deposits.js (Replace this function)
 
+// FILE: /js/admin-deposits.js (Replace this function)
+
 const processDeposit = async (clientId, requestId, actualAmount, newStatus) => {
     const walletRef = doc(db, "wallets", clientId);
     const requestRef = doc(db, "depositRequests", requestId);
@@ -101,16 +103,13 @@ const processDeposit = async (clientId, requestId, actualAmount, newStatus) => {
     try {
         const batch = writeBatch(db);
 
-        // Action 1: Update the deposit request status
         batch.update(requestRef, {
             status: newStatus,
             actualAmount: actualAmount,
             reviewedAt: serverTimestamp()
         });
 
-        // Action 2: If approved, update the client's wallet
         if (newStatus === 'approved' && actualAmount > 0) {
-            // FIX: Changed from 'admin.firestore...' to the correct client-side 'increment()' function
             batch.set(walletRef, {
                 balance: increment(actualAmount)
             }, { merge: true });
@@ -118,11 +117,21 @@ const processDeposit = async (clientId, requestId, actualAmount, newStatus) => {
 
         await batch.commit();
         hideAdminModal();
-        alert(`Request has been successfully ${newStatus}.`);
+        
+        // Show styled success message instead of alert
+        modalTitle.textContent = 'Success';
+        modalBody.innerHTML = `<p style="text-align:center;">Request has been successfully ${newStatus}.</p><div class="a-modal-footer"><button id="success-ok" class="btn btn-dark">OK</button></div>`;
+        showAdminModal();
+        document.getElementById('success-ok').addEventListener('click', hideAdminModal);
+
     } catch (error) {
         console.error("Error processing deposit:", error);
-        alert("Failed to process the request. Check the console.");
-        hideAdminModal();
+        
+        // Show styled error message instead of alert
+        modalTitle.textContent = 'Error';
+        modalBody.innerHTML = `<p style="text-align:center;">Failed to process the request. Check the console for details.</p><div class="a-modal-footer"><button id="error-ok" class="btn btn-dark">OK</button></div>`;
+        showAdminModal();
+        document.getElementById('error-ok').addEventListener('click', hideAdminModal);
     }
 };
 

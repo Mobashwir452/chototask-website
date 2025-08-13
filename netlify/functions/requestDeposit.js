@@ -1,11 +1,10 @@
-// FILE: /netlify/functions/requestDeposit.js
+// /netlify/functions/requestDeposit.js - UPDATED
 
 const admin = require('firebase-admin');
 
 // IMPORTANT: Set this up in your Netlify build environment variables!
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
-// Initialize the Firebase Admin SDK
 if (admin.apps.length === 0) {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
@@ -15,59 +14,64 @@ if (admin.apps.length === 0) {
 const db = admin.firestore();
 
 exports.handler = async (event, context) => {
-    // 1. Get the ID token from the request header
     if (!event.headers.authorization || !event.headers.authorization.startsWith('Bearer ')) {
         return { statusCode: 401, body: JSON.stringify({ success: false, error: 'Unauthorized' }) };
     }
     const idToken = event.headers.authorization.split('Bearer ')[1];
     
-    // 2. Get the form data from the request body
-    const { methodName, proofData } = JSON.parse(event.body);
-
     try {
-        // 3. Verify the ID token to get the user's UID
         const decodedToken = await admin.auth().verifyIdToken(idToken);
         const clientId = decodedToken.uid;
         const clientEmail = decodedToken.email;
 
-        // 4. Perform the secure database operations (same logic as before)
+        const { methodName, proofData } = JSON.parse(event.body);
         const amount = Number(proofData.amount);
-        const transactionId = String(proofData.transactionId || '');
 
-        if (isNaN(amount) || amount <= 0 || !transactionId) {
-            throw new Error("Invalid amount or transaction ID.");
+        // ✅ Server-side amount validation
+        if (isNaN(amount) || amount < 100 || amount > 10000) {
+            return { statusCode: 400, body: JSON.stringify({ success: false, error: "Invalid amount. Must be between 100 and 10,000 BDT." }) };
         }
 
+        const depositRequestsRef = db.collection("depositRequests");
         const walletRef = db.collection("wallets").doc(clientId);
-        const transactionRef = db.collection("transactions").doc();
 
-        const batch = db.batch();
+        // ✅ Use a transaction to ensure all-or-nothing logic
+        await db.runTransaction(async (transaction) => {
+            const pendingRequestsQuery = depositRequestsRef.where('clientId', '==', clientId).where('status', '==', 'pending');
+            const pendingRequestsSnapshot = await transaction.get(pendingRequestsQuery);
 
-        batch.set(transactionRef, {
-            clientId,
-            clientEmail,
-            amount,
-            transactionId,
-            methodName,
-            status: "unverified",
-            createdAt: admin.firestore.FieldValue.serverTimestamp(),
-            type: "deposit"
+            // If a pending request already exists, stop the entire process
+            if (!pendingRequestsSnapshot.empty) {
+                throw new Error('You already have a deposit request pending approval.');
+            }
+
+            // If no pending requests, proceed:
+            // 1. Create the new deposit request document
+            const newRequestRef = depositRequestsRef.doc();
+            transaction.set(newRequestRef, {
+                clientId,
+                clientEmail,
+                amount,
+                transactionId: String(proofData.transactionId || ''),
+                methodName,
+                status: "pending", // Set status for admin
+                requestedAt: admin.firestore.FieldValue.serverTimestamp()
+            });
+
+            // 2. Instantly update the user's wallet balance
+            transaction.set(walletRef, {
+                balance: admin.firestore.FieldValue.increment(amount)
+            }, { merge: true });
         });
 
-        batch.set(walletRef, {
-            balance: admin.firestore.FieldValue.increment(amount)
-        }, { merge: true });
-
-        await batch.commit();
-
-        // 5. Return a success response
         return {
             statusCode: 200,
-            body: JSON.stringify({ success: true, message: 'Deposit request successful.' })
+            body: JSON.stringify({ success: true, message: 'Deposit request successful and pending approval.' })
         };
 
     } catch (error) {
         console.error("Error in Netlify function:", error);
+        // Return a specific error message if one was thrown from our transaction
         return {
             statusCode: 400,
             body: JSON.stringify({ success: false, error: error.message })
