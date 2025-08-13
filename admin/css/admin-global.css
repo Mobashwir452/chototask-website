@@ -459,3 +459,71 @@ body.admin a:hover{ text-decoration:none; }
   border-bottom-left-radius: var(--a-radius);
   border-bottom-right-radius: var(--a-radius);
 }
+
+
+
+
+
+/* Add these new styles to the end of /admin/css/admin-global.css */
+
+/* --- ADMIN INFO MODAL --- */
+.a-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.a-modal-content {
+  background: var(--a-surface);
+  border-radius: var(--a-radius);
+  max-width: 450px;
+  width: 100%;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  animation: modal-fade-in 0.3s ease;
+}
+.a-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--a-border);
+}
+.a-modal-header h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0;
+}
+.a-modal-close {
+  background: none;
+  border: none;
+  font-size: 1.75rem;
+  color: var(--a-text-muted);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+.a-modal-body {
+  padding: 1.5rem;
+  line-height: 1.6;
+  color: var(--a-text-muted);
+}
+.a-modal-footer {
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  background-color: #F9FAFB;
+  border-top: 1px solid var(--a-border);
+  border-bottom-left-radius: var(--a-radius);
+  border-bottom-right-radius: var(--a-radius);
+}
+
+@keyframes modal-fade-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}

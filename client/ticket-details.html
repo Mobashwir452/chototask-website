@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ticket Details | ChotoTask</title>
+    <link rel="stylesheet" href="/client/css/client.css">
+    <link rel="stylesheet" href="/client/css/client-ticket-details.css">
+    </head>
+<body class="client-page">
+    <header id="client-header-placeholder"></header>
+    <div id="client-menu-placeholder"></div>
+    <main>
+        <div class="block"><section class="page-hero">
+            <div class="page-hero__icon"></div>
+            <h1 class="page-hero__title" id="ticket-subject-title">Loading Ticket...</h1>
+            <p class="page-hero__subtitle" id="ticket-status-subtitle">Status: ...</p>
+        </section></div>
+        <div class="block"><section class="container">
+            <div class="support-card">
+                <div class="conversation-thread" id="conversation-thread"></div>
+            </div>
+            <div class="support-card">
+                <h3>Add a Reply</h3>
+                <form id="reply-form">
+                    <div class="form-group">
+                        <textarea id="reply-message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit">Send Reply</button>
+                </form>
+            </div>
+        </section></div>
+    </main>
+    <div id="client-bottom-nav-placeholder"></div>
+    <script src="/js/component-loader.js"></script>
+    <script src="/client/js/client-shell.js" type="module"></script>
+    <script src="/client/js/client-ticket-details.js" type="module"></script>
+</body>
+</html>

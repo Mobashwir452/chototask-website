@@ -365,7 +365,11 @@ async function handleRegister(e) {
             isProfilePublic: false,      // Default to private
             showActivityStatus: true,    // Default to showing activity
             allowDataCollection: false,  // Default to not allowing
-            twoFactorEnabled: false      // Default to disabled
+            twoFactorEnabled: false,      // Default to disabled
+            notification_onSubmission: true,   // Default to ON
+            notification_onJobComplete: true,  // Default to ON
+            notification_onDeposit: true,      // Default to ON
+            notification_onPromo: true         // Default to ON
         });
 
         const walletDocRef = doc(db, "wallets", user.uid);

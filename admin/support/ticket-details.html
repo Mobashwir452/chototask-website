@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Admin • Ticket Details | ChotoTask</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link rel="stylesheet" href="/admin/css/admin-global.css">
+    <link rel="stylesheet" href="/admin/css/admin-ticket-details.css">
+</head>
+<body class="admin">
+    <header id="admin-header"></header>
+    <aside id="admin-sidebar"></aside>
+
+    <main id="admin-main">
+        <div class="a-container">
+            <div class="a-breadcrumbs" id="breadcrumbs">Admin / Support / Loading Ticket...</div>
+
+            <div class="details-grid">
+                <div class="grid-main">
+                    <div class="a-card">
+                        <h3 id="ticket-subject">Loading subject...</h3>
+                        <p class="ticket-from" id="ticket-from">From: ...</p>
+                        <hr class="divider">
+                        <div class="conversation-thread" id="conversation-thread">
+                            </div>
+                    </div>
+                    <div class="a-card">
+                        <h2><i class="fa-solid fa-reply"></i> Add a Reply</h2>
+                        <form id="reply-form" class="reply-box">
+                            <textarea id="reply-message" class="a-textarea" rows="6" placeholder="Type your reply here..."></textarea>
+                            <p id="reply-form-message" class="form-message"></p>
+                            <button type="submit" class="btn btn-accent">Save Reply</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="grid-sidebar">
+                    <div class="a-card">
+                        <h4>Ticket Status</h4>
+                        <div class="status-updater">
+                            <select id="status-select" class="a-search"></select>
+                            <button id="update-status-btn" class="btn btn-dark">Update</button>
+                        </div>
+                    </div>
+                    <div class="a-card" id="user-info-card">
+                        <h4>User Information</h4>
+                        <div id="user-info-content"><p class="a-empty">Loading...</p></div>
+                    </div>
+                    <div class="a-card" id="guest-link-card" style="display: none;">
+                        <h4>Secure Guest Link</h4>
+                        <p class="guest-link-instructions">Copy this link and email it to the guest user.</p>
+                        <input type="text" id="guest-link-input" class="a-search" readonly>
+                        <button id="copy-link-btn" class="btn btn-dark" style="width: 100%; margin-top: 0.5rem;">Copy Link</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    <div class="a-modal-overlay" id="info-modal" style="display: none;">
+    <div class="a-modal-content">
+        <div class="a-modal-header">
+        <h3 id="info-modal-title">Notification</h3>
+        <button class="a-modal-close" id="info-modal-close-btn">&times;</button>
+        </div>
+        <div class="a-modal-body" id="info-modal-body">
+        </div>
+        <div class="a-modal-footer">
+            <button id="info-modal-ok-btn" class="btn btn-dark">OK</button>
+        </div>
+    </div>
+    </div>
+    </main>
+
+    <script type="module" src="/js/firebase-config.js"></script>
+    <script type="module" src="/admin/js/admin-loader.js"></script>
+    <script type="module" src="/admin/js/admin-shell.js"></script>
+    <script type="module" src="/admin/js/admin-guard.js"></script>
+    <script type="module" src="/admin/js/admin-ticket-details.js"></script>
+</body>
+</html>

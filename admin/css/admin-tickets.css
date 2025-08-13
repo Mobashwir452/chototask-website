@@ -1,0 +1,50 @@
+/* FILE: /admin/css/admin-tickets.css */
+
+/* --- Filter Tabs --- */
+.a-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    background-color: var(--bg-main-accent);
+}
+
+.a-tab-item {
+    padding: 1rem 1.25rem;
+    border: none;
+    background: none;
+    color: var(--text-secondary);
+    font-weight: 600;
+    cursor: pointer;
+    position: relative;
+    border-bottom: 3px solid transparent;
+}
+
+.a-tab-item:hover {
+    color: var(--text-primary);
+}
+
+.a-tab-item.active {
+    color: var(--bg-main-accent);
+    border-bottom-color: var(--color-accent-primary);
+}
+
+/* --- Status Badges --- */
+.status-badge {
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    display: inline-block;
+}
+
+.status-badge.new { background-color: rgba(45, 156, 219, 0.2); color: #2D9CDB; }
+.status-badge.in_progress { background-color: rgba(242, 153, 74, 0.2); color: #F2994A; }
+.status-badge.resolved { background-color: rgba(39, 174, 96, 0.2); color: #27AE60; }
+
+/* Action Buttons */
+.btn-view {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+}

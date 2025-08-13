@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help & Support | ChotoTask</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link rel="stylesheet" href="/client/css/client.css">
+    <link rel="stylesheet" href="/client/css/client-support.css">
+</head>
+<body class="client-page">
+    
+    <header id="client-header-placeholder"></header>
+    <div id="client-menu-placeholder"></div>
+
+    <main>
+        <div class="block">
+            <section class="page-hero">
+                <div class="page-hero__icon"><div class="icon-layer icon-layer--bottom"></div><div class="icon-layer icon-layer--middle"></div><div class="icon-layer icon-layer--top"></div></div>
+                <h1 class="page-hero__title">Help & Support</h1>
+                <p class="page-hero__subtitle">Find answers or get in touch with our team.</p>
+            </section>
+        </div>
+
+        <div class="block">
+            <section class="container">
+                <div class="support-nav">
+                    <a href="/client/support.html" class="support-nav-btn active">
+                        <i class="fa-solid fa-headset"></i>
+                        <span>Support</span>
+                    </a>
+                    <a href="/client/my-tickets.html" class="support-nav-btn">
+                        <i class="fa-solid fa-ticket"></i>
+                        <span>My Tickets</span>
+                    </a>
+                </div>
+
+                <div class="support-card" id="faq-section">
+                    <h2>Frequently Asked Questions</h2>
+                    <div class="faq-accordion">
+                        <div class="faq-item">
+                            <button class="faq-question">How do I deposit funds? <i class="fa-solid fa-chevron-down"></i></button>
+                            <div class="faq-answer"><p>You can add funds from the 'Billing & Funds' page. Select a payment method, follow the instructions, and submit your request. Your balance will be updated instantly pending admin approval.</p></div>
+                        </div>
+                        <div class="faq-item">
+                            <button class="faq-question">What are the fees for posting a job? <i class="fa-solid fa-chevron-down"></i></button>
+                            <div class="faq-answer"><p>Our platform charges a small service fee on top of the worker payouts. This fee is clearly displayed when you are creating a new job. Premium members enjoy lower fees.</p></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="support-card" id="contact-form-section">
+                    <h2>Still need help? Send us a message.</h2>
+                    <form id="contact-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="contact-name">Full Name</label>
+                                <input type="text" id="contact-name" required disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="contact-email">Email Address</label>
+                                <input type="email" id="contact-email" required disabled>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-subject">Subject</label>
+                            <input type="text" id="contact-subject" placeholder="e.g., Issue with a payment" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-message">Your Message</label>
+                            <textarea id="contact-message" rows="5" placeholder="Please describe your issue in detail..." required></textarea>
+                        </div>
+                        <p class="form-message" id="form-message"></p>
+                        <button type="submit" class="btn-submit">Send Message</button>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <div id="client-bottom-nav-placeholder"></div>
+
+    <script src="/js/component-loader.js"></script>
+    <script src="/client/js/client-shell.js" type="module"></script>
+    <script src="/client/js/client-support.js" type="module"></script>
+</body>
+</html>

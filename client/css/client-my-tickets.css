@@ -1,0 +1,19 @@
+/* FILE: /client/css/client-my-tickets.css */
+.ticket-list-item {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 1rem 1.25rem; background: var(--client-card-bg);
+    border: 1px solid var(--client-card-border); border-radius: 0.75rem;
+    text-decoration: none; color: inherit; margin-bottom: 1rem;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.ticket-list-item:hover { transform: translateY(-3px); border-color: #00FFCD; }
+.ticket-info { flex-grow: 1; }
+.ticket-info h4 { margin: 0 0 0.25rem 0; font-weight: 500; font-size: 1.1rem; }
+.ticket-info p { margin: 0; color: var(--client-text-secondary); font-size: 0.85rem; }
+.ticket-status-badge {
+    padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem;
+    font-weight: 600; text-transform: capitalize;
+}
+.status-new { background-color: rgba(45, 156, 219, 0.2); color: #2D9CDB; }
+.status-in_progress { background-color: rgba(242, 153, 74, 0.2); color: #F2994A; }
+.status-resolved { background-color: rgba(39, 174, 96, 0.2); color: #27AE60; }

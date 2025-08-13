@@ -1,0 +1,19 @@
+/* FILE: /client/css/client-ticket-details.css */
+.conversation-thread { display: flex; flex-direction: column; gap: 1.5rem; }
+.message-bubble {
+    padding: 1rem 1.25rem; border-radius: 1rem; line-height: 1.6;
+    max-width: 85%; border: 1px solid var(--client-card-border);
+}
+.message-bubble.user {
+    background: #00B8FF; color: var(--client-text-dark);
+    align-self: flex-end; border-top-right-radius: 0;
+}
+.message-bubble.admin {
+    background: var(--client-card-bg); align-self: flex-start;
+    border-top-left-radius: 0;
+}
+.message-header {
+    font-size: 0.8rem; font-weight: 700;
+    margin-bottom: 0.5rem; opacity: 0.8;
+}
+.message-body { white-space: pre-wrap; margin: 0; }

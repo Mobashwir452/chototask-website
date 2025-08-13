@@ -1,0 +1,70 @@
+/* FILE: /admin/css/admin-ticket-details.css (FINAL VERSION) */
+
+.details-grid { 
+    display: grid; 
+    grid-template-columns: 1fr; 
+    gap: 1.5rem; 
+}
+@media (min-width: 900px) { 
+    .details-grid { 
+        grid-template-columns: 1fr 350px; 
+    } 
+}
+.grid-main, .grid-sidebar { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 1.5rem; 
+}
+
+/* Card Styles */
+.a-card h3 { margin: 0 0 0.25rem 0; font-size: 1.5rem; }
+.a-card h4 { margin: 0 0 1rem 0; font-size: 1.1rem; font-weight: 600; padding-bottom: 0.75rem; border-bottom: 1px solid var(--a-border); }
+.ticket-from { font-size: 0.9rem; color: var(--a-text-muted); margin-bottom: 1rem; }
+.divider { display: none; } /* No longer needed */
+
+/* Conversation Thread */
+.conversation-thread { display: flex; flex-direction: column; gap: 1rem; }
+.message-bubble { padding: 1rem 1.25rem; border-radius: 14px; line-height: 1.6; max-width: 95%; border: 1px solid var(--a-border); }
+.message-bubble.user { background-color: #F9FAFB; align-self: flex-start; }
+.message-bubble.admin { background-color: #EFF6FF; align-self: flex-end; }
+.message-header { font-size: 0.8rem; font-weight: 700; color: var(--a-text-muted); margin-bottom: 0.5rem; }
+.message-body { white-space: pre-wrap; color: var(--a-text); }
+
+/* Add a Reply Box */
+.reply-box .a-textarea {
+    width: 97%;
+    min-height: 120px;
+    padding: 0.75rem;
+    border-radius: 12px;
+    border: 1px solid var(--a-border);
+    margin-bottom: 1rem;
+    font-family: inherit;
+    font-size: 0.95rem;
+}
+.reply-box .btn { width: 100%; }
+.form-message { min-height: 1em; margin-bottom: 0.5rem; text-align: center; font-weight: 500; }
+
+/* Status Updater */
+.status-updater {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+.status-updater select {
+    flex-grow: 1; /* Dropdown takes available space */
+}
+.status-updater .btn {
+    flex-shrink: 0; /* Button doesn't shrink */
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+/* User Info Card */
+.info-row { display: flex; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px solid var(--a-border); font-size: 0.9rem; }
+.info-row:last-child { border-bottom: none; }
+.info-row span { color: var(--a-text-muted); }
+.info-row a { font-weight: 600; text-decoration: none; color: var(--a-info); }
+.info-row a:hover { text-decoration: underline; }
+
+/* Guest Link Card */
+.guest-link-instructions { font-size: 0.85rem; color: var(--a-text-muted); margin-bottom: 1rem; }
