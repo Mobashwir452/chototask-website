@@ -1,0 +1,108 @@
+/* FILE: /css/client-transactions.css */
+
+/* --- FILTER BAR STYLES --- */
+.transaction-filters {
+    display: flex;
+    flex-wrap: wrap; /* Allows buttons to wrap on smaller screens */
+    gap: 0.75rem;
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--client-card-border);
+}
+
+.filter-btn {
+    padding: 0.6rem 1.2rem;
+    border: 1px solid var(--client-card-border);
+    background: transparent;
+    color: var(--client-text-secondary);
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+    background-color: var(--client-card-bg);
+    border-color: #00FFCD;
+}
+
+.filter-btn.active {
+    background: var(--client-accent-gradient);
+    color: var(--client-text-dark);
+    border-color: transparent;
+}
+
+
+/* --- TRANSACTION LIST STYLES --- */
+/* This reuses the same styles from your other pages for perfect consistency */
+.transaction-item-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    border-radius: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.transaction-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--client-card-bg);
+    padding: 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid transparent;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.transaction-item-link:hover .transaction-card {
+    transform: translateY(-2px);
+    border-color: #00FFCD;
+}
+
+.transaction-card__icon {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.transaction-card__details {
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.transaction-card__description {
+    font-weight: 600;
+    color: var(--client-text-primary);
+    margin: 0 0 0.25rem 0;
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.transaction-card__date {
+    font-size: 0.85rem;
+    color: var(--client-text-secondary);
+    margin: 0;
+}
+
+.transaction-card__amount {
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-align: right;
+    width: 100px;
+    flex-shrink: 0;
+}
+
+.transaction-card__icon--credit { background-color: rgba(0, 255, 205, 0.15); color: #00FFCD; }
+.transaction-card__icon--debit { background-color: rgba(235, 87, 87, 0.15); color: #EB5757; }
+.transaction-card__icon--info { background-color: rgba(0, 184, 255, 0.15); color: #00B8FF; }
+
+.transaction-card__amount--credit { color: #00FFCD; }
+.transaction-card__amount--debit { color: #EB5757; }

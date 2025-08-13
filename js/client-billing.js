@@ -6,7 +6,6 @@ document.addEventListener('componentsLoaded', () => {
     
     // --- DOM Elements ---
     const currentBalanceEl = document.getElementById('current-balance');
-    const headerBalance = document.getElementById('header-balance');
     const tabsContainer = document.getElementById('payment-methods-tabs');
     const contentContainer = document.getElementById('payment-method-content');
     const historyListContainer = document.getElementById('transaction-history-list');
@@ -189,15 +188,7 @@ document.addEventListener('componentsLoaded', () => {
     });
 
 
-    const listenToWallet = (userId) => {
-        const walletRef = doc(db, "wallets", userId);
-        onSnapshot(walletRef, (doc) => {
-            const balance = doc.exists() ? (doc.data().balance ?? 0) : 0;
-            const formattedBalance = `৳${balance.toLocaleString()}`;
-            if (currentBalanceEl) currentBalanceEl.textContent = formattedBalance;
-            if (headerBalance) headerBalance.textContent = formattedBalance;
-        });
-    };
+
 
 
     const listenToHistory = (userId) => {
@@ -247,7 +238,6 @@ document.addEventListener('componentsLoaded', () => {
     onAuthStateChanged(auth, (user) => {
         if (user) {
             currentUserId = user.uid;
-            listenToWallet(currentUserId);
             checkPendingRequestsAndLoadMethods(currentUserId);
             listenToHistory(currentUserId);
         } else {

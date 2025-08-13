@@ -15,20 +15,19 @@ document.addEventListener('componentsLoaded', () => {
     const headerBalance = document.getElementById('header-balance');
     const CURRENCY = '৳';
 
-    const updateStats = (wallet, stats) => {
-        const walletBalance = wallet?.balance ?? 0;
-        const totalSpent = wallet?.totalSpent ?? 0;
-        const pendingSubmissions = stats?.pendingSubmissions ?? 0;
-        const activeJobs = stats?.activeJobs ?? 0;
+const updateStats = (wallet, stats) => {
+    const walletBalance = wallet?.balance ?? 0;
+    const totalSpent = wallet?.totalSpent ?? 0;
+    const pendingSubmissions = stats?.pendingSubmissions ?? 0;
+    const activeJobs = stats?.activeJobs ?? 0;
 
-        statFunds.textContent = `${CURRENCY}${walletBalance.toLocaleString()}`;
-        if (headerBalance) {
-            headerBalance.textContent = `${CURRENCY}${walletBalance.toLocaleString()}`;
-        }
-        statPending.textContent = pendingSubmissions;
-        statActiveJobs.textContent = activeJobs;
-        statTotalSpent.textContent = `${CURRENCY}${totalSpent.toLocaleString()}`;
-    };
+    statFunds.textContent = `${CURRENCY}${walletBalance.toLocaleString()}`;
+    // The line below should be DELETED
+    // if (headerBalance) { headerBalance.textContent = ... }
+    statPending.textContent = pendingSubmissions;
+    statActiveJobs.textContent = activeJobs;
+    statTotalSpent.textContent = `${CURRENCY}${totalSpent.toLocaleString()}`;
+};
 
     const renderJobs = (jobs) => {
         if (!jobList) return;

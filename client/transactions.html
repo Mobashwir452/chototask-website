@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction History | ChotoTask</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link rel="stylesheet" href="/css/client.css">
+    <link rel="stylesheet" href="/css/client-transactions.css">
+</head>
+<body class="client-page">
+    
+    <header id="client-header-placeholder"></header>
+    <div id="client-menu-placeholder"></div>
+
+    <main>
+        <div class="block">
+            <section class="page-hero">
+                <div class="page-hero__icon">
+                    <div class="icon-layer icon-layer--bottom"></div>
+                    <div class="icon-layer icon-layer--middle"></div>
+                    <div class="icon-layer icon-layer--top"></div>
+                </div>
+                <h1 class="page-hero__title">Transaction History</h1>
+                <p class="page-hero__subtitle">Review all your financial activities and statements</p>
+            </section>
+        </div>
+
+        <div class="block">
+            <section class="container">
+                <div class="transaction-filters">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="deposit">Deposits</button>
+                    <button class="filter-btn" data-filter="job_posting">Spending</button>
+                    <button class="filter-btn" data-filter="deposit_adjustment">Adjustments</button>
+                </div>
+
+                <div class="list-content" id="transaction-list-container">
+                    <p class="empty-state" style="text-align: center; padding: 1rem;">Loading transactions...</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <div id="client-bottom-nav-placeholder"></div>
+
+    <script src="/js/component-loader.js"></script>
+    <script src="/js/client-shell.js" type="module"></script>
+    <script src="/js/client-transactions.js" type="module"></script>
+</body>
+</html>
