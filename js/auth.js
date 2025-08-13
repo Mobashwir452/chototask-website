@@ -360,7 +360,12 @@ async function handleRegister(e) {
             status: 'active',
             accountType: 'free',
             kycStatus: 'not_provided',
-            phone: ''
+            phone: '',
+
+            isProfilePublic: false,      // Default to private
+            showActivityStatus: true,    // Default to showing activity
+            allowDataCollection: false,  // Default to not allowing
+            twoFactorEnabled: false      // Default to disabled
         });
 
         const walletDocRef = doc(db, "wallets", user.uid);
