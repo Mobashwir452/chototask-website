@@ -1,7 +1,8 @@
 // FILE: /js/admin-deposits.js (FULLY FUNCTIONAL VERSION)
 
 import { db } from '/js/firebase-config.js';
-import { collection, query, where, orderBy, onSnapshot, doc, getDoc, writeBatch, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+// FILE: /js/admin-deposits.js (Updated Import)
+import { collection, query, where, orderBy, onSnapshot, doc, getDoc, writeBatch, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // --- DOM ELEMENTS ---
 const tableBody = document.getElementById('deposits-table-body');
@@ -91,6 +92,8 @@ const handleVerify = async (requestId) => {
     }
 };
 
+// FILE: /js/admin-deposits.js (Replace this function)
+
 const processDeposit = async (clientId, requestId, actualAmount, newStatus) => {
     const walletRef = doc(db, "wallets", clientId);
     const requestRef = doc(db, "depositRequests", requestId);
@@ -107,14 +110,15 @@ const processDeposit = async (clientId, requestId, actualAmount, newStatus) => {
 
         // Action 2: If approved, update the client's wallet
         if (newStatus === 'approved' && actualAmount > 0) {
+            // FIX: Changed from 'admin.firestore...' to the correct client-side 'increment()' function
             batch.set(walletRef, {
-                balance: admin.firestore.FieldValue.increment(actualAmount)
+                balance: increment(actualAmount)
             }, { merge: true });
         }
 
         await batch.commit();
         hideAdminModal();
-        alert(`Request has been ${newStatus}.`);
+        alert(`Request has been successfully ${newStatus}.`);
     } catch (error) {
         console.error("Error processing deposit:", error);
         alert("Failed to process the request. Check the console.");
