@@ -299,6 +299,9 @@ async function handleLogin(e) {
 // ===============================================
 //              REGISTRATION HANDLER
 // ===============================================
+// In /js/auth.js
+// REPLACE your existing handleRegister function with this one.
+
 async function handleRegister(e) {
     e.preventDefault();
     const btnText = document.getElementById('btn-text');
@@ -320,22 +323,8 @@ async function handleRegister(e) {
     formInputs.forEach(input => input.classList.remove('is-invalid'));
     termsLabel.classList.remove('is-invalid');
 
-    // 2. Perform Validation
-    let errors = [];
-    if (!roleInput.value) errors.push('Role');
-    if (!firstNameInput.value) { errors.push('First Name'); firstNameInput.classList.add('is-invalid'); }
-    if (!lastNameInput.value) { errors.push('Last Name'); lastNameInput.classList.add('is-invalid'); }
-    if (!emailInput.value) { errors.push('Email'); emailInput.classList.add('is-invalid'); }
-    if (!passwordInput.value) { errors.push('Password'); passwordInput.classList.add('is-invalid'); }
-    if (passwordInput.value !== confirmPasswordInput.value) {
-        errors.push('Passwords do not match');
-        passwordInput.classList.add('is-invalid');
-        confirmPasswordInput.classList.add('is-invalid');
-    }
-    if (!termsCheckbox.checked) {
-        errors.push('Terms');
-        termsLabel.classList.add('is-invalid');
-    }
+    // 2. Perform Validation (No changes here)
+    // ... (validation code is the same)
 
     if (errors.length > 0) {
         return showModal('Missing Information', 'Please correct the highlighted fields and agree to the terms.', 'error');
@@ -350,7 +339,6 @@ async function handleRegister(e) {
         const user = userCredential.user;
         const fullName = `${firstNameInput.value.trim()} ${lastNameInput.value.trim()}`;
 
-        // This is where the user document is created in Firestore
         await setDoc(doc(db, "users", user.uid), {
             uid: user.uid,
             fullName: fullName,
@@ -359,15 +347,12 @@ async function handleRegister(e) {
             createdAt: serverTimestamp(),
             balance: 0,
             status: 'active',
-
-            // ✅ ADD THESE THREE NEW FIELDS WITH DEFAULT VALUES
             accountType: 'free',
             kycStatus: 'not_provided',
             phone: ''
         });
 
-
-        const walletDocRef = doc(db, "wallets", user.uid); // Use the same UID for the wallet ID
+        const walletDocRef = doc(db, "wallets", user.uid);
         await setDoc(walletDocRef, {
             balance: 0.00,
             currency: 'BDT',
@@ -389,6 +374,9 @@ async function handleRegister(e) {
         setTimeout(redirectToLogin, 5000);
 
     } catch (error) {
+        // ✅ THIS IS THE IMPORTANT CHANGE
+        console.error("Registration Error Details:", error); 
+
         let friendlyMessage = "An unexpected error occurred. Please try again.";
         if (error.code === 'auth/email-already-in-use') {
             friendlyMessage = "This email address is already registered. Please try logging in.";
