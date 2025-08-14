@@ -15,13 +15,27 @@
         </div>
 
         <div class="client-header__group client-header__group--right">
-            <a href="#" class="client-header__icon-btn client-header__icon-btn--small">
-                <i class="fa-solid fa-bell"></i>
-            </a>
+<a href="#" class="client-header__icon-btn client-header__icon-btn--small" id="notification-btn">
+    <i class="fa-solid fa-bell"></i>
+    <span class="notification-badge" id="notification-count" style="display: none;"></span>
+</a>
             <a href="/client/profile.html" class="client-header__icon-btn client-header__avatar">
                 <i class="fa-solid fa-user"></i>
             </a>
         </div>
         
     </nav>
+</div>
+
+
+<div class="notification-panel" id="notification-panel">
+    <div class="notification-header">
+        <h3>Notifications</h3>
+    </div>
+    <div class="notification-list" id="notification-list">
+        <p class="notification-placeholder">Loading...</p>
+    </div>
+    <div class="notification-footer">
+        <a href="/client/activity.html">View All Activity</a>
+    </div>
 </div>
