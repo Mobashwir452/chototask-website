@@ -527,3 +527,37 @@ body.admin a:hover{ text-decoration:none; }
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
 }
+
+
+
+
+/* FILE: /admin/css/admin-global.css (Add this to the end) */
+
+/* --- TABS COMPONENT --- */
+.a-tabs {
+    display: flex;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--admin-border);
+    margin-bottom: 1rem;
+}
+
+.a-tab-item {
+    padding: 0.75rem 1.25rem;
+    border: none;
+    background-color: transparent;
+    color: var(--admin-text-muted);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease-in-out;
+}
+
+.a-tab-item:hover {
+    color: var(--admin-text);
+}
+
+.a-tab-item.active {
+    color: var(--admin-accent);
+    border-bottom-color: var(--color-accent-primary);
+}

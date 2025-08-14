@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post a New Job | ChotoTask</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link rel="stylesheet" href="/client/css/client.css">
+    <link rel="stylesheet" href="/client/css/client-post-job.css">
+</head>
+<body class="client-page">
+    
+    <header id="client-header-placeholder"></header>
+    <div id="client-menu-placeholder"></div>
+
+    <main>
+        <div class="block">
+            <section class="page-hero">
+                <div class="page-hero__icon"><div class="icon-layer icon-layer--bottom"></div><div class="icon-layer icon-layer--middle"></div><div class="icon-layer icon-layer--top"></div></div>
+                <h1 class="page-hero__title">Create a New Job</h1>
+                <p class="page-hero__subtitle">Guide workers with clear steps to get the best results.</p>
+            </section>
+        </div>
+
+        <div class="block">
+            <section class="container">
+                <div class="form-wizard-container">
+                   <div class="progress-bar-container">
+                    <div class="progress-step active" data-step="1"><span>Details</span></div>
+                    <div class="progress-step" data-step="2"><span>Steps & Rules</span></div>
+                    <div class="progress-step" data-step="3"><span>Proof</span></div>
+                    <div class="progress-step" data-step="4"><span>Budget</span></div>
+                    <div class="progress-step" data-step="5"><span>Review</span></div>
+                    </div>
+
+                    <form id="create-job-form">
+                        <div class="form-step active" data-step="1">
+                            <h3 class="step-title">Job Details</h3>
+                            <div class="form-group">
+                                <label for="job-title">Job Title</label>
+                                <input type="text" id="job-title" class="form-input" placeholder="e.g., Follow my new Instagram Page" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="job-category">Category</label>
+                                <select id="job-category" class="form-input" required>
+                                    <option value="">Select a Category</option>
+                                    <option value="social-media">Social Media</option>
+                                    <option value="content-engagement">Content Engagement</option>
+                                    <option value="data-entry">Data Entry</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-step" data-step="2">
+                            <h3 class="step-title">Task Instructions</h3>
+                            <div id="instruction-list" class="dynamic-list"></div>
+                            <button type="button" class="btn-add" id="add-instruction-btn"><i class="fa-solid fa-plus"></i> Add Instruction</button>
+                            
+                            <h3 class="step-title" style="margin-top: 2rem;">Task Rules (Restrictions)</h3>
+                            <div id="restriction-list" class="dynamic-list"></div>
+                            <button type="button" class="btn-add" id="add-restriction-btn"><i class="fa-solid fa-plus"></i> Add Rule</button>
+                        </div>
+
+                        <div class="form-step" data-step="3">
+                            <h3 class="step-title">Proof Requirements</h3>
+                            <p class="step-subtitle">What do you need from the worker to verify completion?</p>
+                            <div id="proof-list" class="dynamic-list"></div>
+                            <div class="proof-type-buttons">
+                                <button type="button" class="btn-add" id="add-screenshot-proof-btn"><i class="fa-solid fa-image"></i> Screenshot</button>
+                                <button type="button" class="btn-add" id="add-text-proof-btn"><i class="fa-solid fa-font"></i> Text Input</button>
+                                <button type="button" class="btn-add" id="add-link-proof-btn"><i class="fa-solid fa-link"></i> Link</button>
+                            </div>
+                        </div>
+
+                            <div class="form-step" data-step="4">
+                                <h3 class="step-title">Budget & Settings</h3>
+                                <div class="form-group">
+                                    <label for="workers-needed">Number of Workers</label>
+                                    <input type="number" id="workers-needed" class="form-input" min="1" placeholder="e.g., 100" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cost-per-worker">Cost per Worker (৳)</label>
+                                    <input type="number" id="cost-per-worker" class="form-input" min="1" placeholder="e.g., 5" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="submission-cooldown">Worker Cooldown Period</label>
+                                    <select id="submission-cooldown" class="form-input" required>
+                                        <option value="">Select how long a worker must wait...</option>
+                                        <option value="0">No Cooldown</option>
+                                        <option value="3600">1 Hour</option>
+                                        <option value="43200">12 Hours</option>
+                                        <option value="86400">24 Hours (1 Day)</option>
+                                    </select>
+                                </div>
+                                <div class="cost-summary">
+                                    <div class="cost-line"><span>Subtotal</span> <span id="summary-subtotal">৳0</span></div>
+                                    <div class="cost-line"><span>Platform Fee (10%)</span> <span id="summary-fee">৳0</span></div>
+                                    <div class="cost-line total"><span>Total Cost</span> <span id="summary-total">৳0</span></div>
+                                </div>
+                            </div>
+                        
+                        <div class="form-step" data-step="5">
+                            <h3 class="step-title">Review Your Job</h3>
+                            <div id="review-container"></div>
+                        </div>
+
+                        <div class="form-navigation">
+                            <button type="button" class="btn-nav" id="prev-btn" style="display: none;">Previous</button>
+                            <button type="button" class="btn-nav" id="next-btn">Next Step</button>
+                            <button type="submit" class="btn-nav" id="submit-btn" style="display: none;">Post Job</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+
+<div class="modal-overlay" id="custom-modal">
+  <div class="modal-content">
+    <div id="modal-icon" class="modal-icon"></div>
+    <h3 id="modal-title" class="modal-title"></h3>
+    <p id="modal-message" class="modal-message"></p>
+    <button id="modal-close-btn" class="btn-submit">OK</button>
+  </div>
+</div>
+
+
+    </main>
+
+    <div id="client-bottom-nav-placeholder"></div>
+
+    <script src="/js/component-loader.js"></script>
+    <script src="/client/js/client-shell.js" type="module"></script>
+    <script src="/client/js/client-post-job.js" type="module"></script>
+</body>
+</html>

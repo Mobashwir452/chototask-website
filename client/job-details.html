@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Details | ChotoTask</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link rel="stylesheet" href="/client/css/client.css">
+    <link rel="stylesheet" href="/client/css/client-job-details.css">
+</head>
+<body class="client-page">
+    
+    <header id="client-header-placeholder"></header>
+    <div id="client-menu-placeholder"></div>
+
+    <main>
+        <div id="job-details-content" class="container">
+            <h1 class="loading-title">Loading Job Details...</h1>
+        </div>
+
+        <div id="submission-manager-section" class="container">
+            </div>
+
+        <div id="original-info-section" class="container">
+             </div>
+    </main>
+
+    <div class="modal-overlay" id="proof-modal">
+      <div class="modal-content">
+        <h3 id="proof-modal-title" class="modal-title">Review Proof</h3>
+        <div id="proof-modal-body" class="modal-body"></div>
+        <div class="modal-footer" id="proof-modal-footer"></div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="cancel-job-modal">
+        <div class="modal-content">
+            <div class="modal-icon warning"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <h3 class="modal-title">Are you sure?</h3>
+            <p class="modal-message">Cancelling this job will stop all new submissions and refund the budget for any unfulfilled spots. This action cannot be undone.</p>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn--cancel" id="cancel-modal-close-btn">Keep Job</button>
+                <button class="modal-btn modal-btn--confirm" id="cancel-modal-confirm-btn">Yes, Cancel Job</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="client-bottom-nav-placeholder"></div>
+
+    <script src="/js/component-loader.js"></script>
+    <script src="/client/js/client-shell.js" type="module"></script>
+    <script src="/client/js/client-job-details.js" type="module"></script>
+
+</body>
+</html>
