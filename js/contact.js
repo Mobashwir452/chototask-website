@@ -1,12 +1,9 @@
-// FILE: js/contact.js (Replace the entire file with this new version)
+// FILE: /js/contact.js (FINAL UPDATED VERSION)
 
-// 1. IMPORT from our firebase-config.js file
 import { db } from './firebase-config.js';
-
-// 2. IMPORT from the Firebase SDK
 import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// 3. GET references to the HTML elements
+// --- GET HTML ELEMENTS ---
 const contactForm = document.querySelector('.contact-form');
 const formButton = contactForm.querySelector('button');
 const modal = document.getElementById('custom-modal');
@@ -15,38 +12,57 @@ const modalTitle = document.getElementById('modal-title');
 const modalMessage = document.getElementById('modal-message');
 const modalCloseBtn = document.getElementById('modal-close-btn');
 
-// ========== NEW: Function to show the custom modal ==========
+// --- HELPER FUNCTIONS ---
+
 const showModal = (type, title, message) => {
-    // Set the content
     modalTitle.textContent = title;
     modalMessage.textContent = message;
-
-    // Set the icon style
     modalIcon.innerHTML = type === 'success' 
         ? '<i class="fa-solid fa-check"></i>' 
         : '<i class="fa-solid fa-xmark"></i>';
-    modalIcon.className = `modal-icon ${type}`; // Adds 'success' or 'error' class
-
-    // Make the modal visible
+    modalIcon.className = `modal-icon ${type}`;
     modal.classList.add('is-visible');
 };
 
-// Event listener to close the modal
+function generateSecureToken() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let token = '';
+    for (let i = 0; i < 24; i++) {
+        token += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return token;
+}
+
+// ✅ NEW: Function to create the short, readable ID for your admins
+function generateReadableId() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const nums = '0123456789';
+    let id = '';
+    for (let i = 0; i < 3; i++) {
+        id += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    id += '-';
+    for (let i = 0; i < 3; i++) {
+        id += nums.charAt(Math.floor(Math.random() * nums.length));
+    }
+    return id;
+}
+
+// --- EVENT LISTENERS ---
+
 modalCloseBtn.addEventListener('click', () => {
     modal.classList.remove('is-visible');
 });
 
-// 4. ADD an event listener to the form
 contactForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const name = contactForm.name.value;
-    const email = contactForm.email.value;
-    const subject = contactForm.subject.value;
-    const message = contactForm.message.value;
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const subject = document.getElementById('subject').value;
+    const message = document.getElementById('message').value;
 
     if (!name || !email || !subject || !message) {
-        // Use the new modal for validation errors
         showModal('error', 'Oops!', 'Please fill out all fields before sending.');
         return;
     }
@@ -55,22 +71,27 @@ contactForm.addEventListener('submit', async (e) => {
     formButton.disabled = true;
 
     try {
-        await addDoc(collection(db, "contact_submissions"), {
-            name: name,
-            email: email,
+        const ticketData = {
+            userName: name,
+            userEmail: email,
             subject: subject,
             message: message,
-            timestamp: serverTimestamp(),
-            status: "new"
-        });
+            status: "new",
+            submittedAt: serverTimestamp(),
+            userId: 'guest',
+            userRole: 'guest',
+            secureToken: generateSecureToken(),
+            // ✅ NEW: Add the readable ID from your plan
+            ticketId: generateReadableId() 
+        };
         
-        // Use the new modal for success messages
+        await addDoc(collection(db, "supportTickets"), ticketData);
+        
         showModal('success', 'Thank You!', 'Your message has been sent successfully.');
         contactForm.reset();
 
     } catch (error) {
-        console.error("Error adding document: ", error);
-        // Use the new modal for submission errors
+        console.error("Error submitting ticket: ", error);
         showModal('error', 'Error', 'Sorry, there was a problem sending your message. Please try again.');
     } finally {
         formButton.textContent = "Send Securely";
