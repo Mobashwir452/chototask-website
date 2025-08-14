@@ -15,12 +15,16 @@ document.addEventListener('componentsLoaded', () => {
         all: [],
         jobs: ['JOB_POSTED'],
         submissions: ['SUBMISSION_NEW', 'SUBMISSION_APPROVED', 'SUBMISSION_REJECTED'],
-        wallet: ['DEPOSIT_SUCCESS'],
+        wallet: ['DEPOSIT_SUCCESS', 'deposit_requested'],
         tickets: ['TICKET_CREATED', 'TICKET_REPLY_ADMIN']
     };
 
     const getActivityIcon = (type) => {
         switch (type) {
+
+
+            case 'deposit_requested':
+            return { class: 'icon-wallet', icon: 'fa-solid fa-arrow-down-to-line' };
             case 'DEPOSIT_SUCCESS':
                 return { class: 'icon-wallet', icon: 'fa-solid fa-wallet' };
             case 'JOB_POSTED':
@@ -60,7 +64,7 @@ document.addEventListener('componentsLoaded', () => {
                         <i class="${iconInfo.icon}"></i>
                     </div>
                     <div class="activity-details">
-                        <p class="activity-message">${activity.message}</p>
+                        <p class="activity-message">${activity.text}</p>
                         <p class="activity-timestamp">${timestamp}</p>
                     </div>
                 </${tag}>
