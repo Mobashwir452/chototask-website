@@ -19,16 +19,28 @@
     <main>
         <div class="block">
             <section class="page-hero">
-                <div class="page-hero__icon"><div class="icon-layer icon-layer--bottom"></div><div class="icon-layer icon-layer--middle"></div><div class="icon-layer icon-layer--top"></div></div>
+                <div class="page-hero__icon">
+                    <div class="icon-layer icon-layer--bottom"></div>
+                    <div class="icon-layer icon-layer--middle"></div>
+                    <div class="icon-layer icon-layer--top"></div>
+                </div>
                 <h1 class="page-hero__title">My Activity</h1>
-                <p class="page-hero__subtitle">A complete history of all your actions on the platform.</p>
+                <p class="page-hero__subtitle">A complete history of your actions and notifications on the platform.</p>
             </section>
         </div>
 
         <div class="block">
             <section class="container">
-                <div id="activity-feed-container">
-                    <p class="empty-state" style="text-align: center; padding: 1rem;">Loading activity...</p>
+                <div class="filter-controls" id="activity-filters">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="jobs">Job Related</button>
+                    <button class="filter-btn" data-filter="submissions">Submissions</button>
+                    <button class="filter-btn" data-filter="wallet">Wallet</button>
+                    <button class="filter-btn" data-filter="tickets">Tickets</button>
+                </div>
+
+                <div class="activity-feed" id="activity-feed">
+                    <p class="loading-message">Loading activity...</p>
                 </div>
             </section>
         </div>

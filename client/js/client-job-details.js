@@ -1,16 +1,14 @@
-// FILE: /client/js/client-job-details.js (FINAL & COMPLETE)
+// FILE: /client/js/client-job-details.js (FINAL - ACCORDION MOVED)
 
 import { auth, db } from '/js/firebase-config.js';
-import { doc, onSnapshot, collection, query, where, updateDoc, getDoc, runTransaction, increment, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { doc, onSnapshot, collection, query, updateDoc, getDoc, runTransaction, increment, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 document.addEventListener('componentsLoaded', () => {
     // --- DOM Elements ---
     const jobDetailsContainer = document.getElementById('job-details-content');
     const submissionManagerSection = document.getElementById('submission-manager-section');
-    const originalInfoSection = document.getElementById('original-info-section');
-    const proofModal = document.getElementById('proof-modal');
-    const cancelJobModal = document.getElementById('cancel-job-modal');
+    // 'originalInfoSection' is no longer needed as a separate container
     
     const urlParams = new URLSearchParams(window.location.search);
     const jobId = urlParams.get('id');
@@ -20,7 +18,7 @@ document.addEventListener('componentsLoaded', () => {
         return;
     }
 
-    // --- RENDER FUNCTIONS ---
+    // --- RENDER FUNCTION ---
     function renderPage(job) {
         const statusText = job.status.replace('_', ' ');
         const approvedCount = job.submissionsApproved || 0;
@@ -38,59 +36,77 @@ document.addEventListener('componentsLoaded', () => {
         if (job.status === 'open' || job.status === 'active' || job.status === 'paused') {
              actionButtonsHTML += `<button class="job-action-btn outline" id="cancel-job-btn"><i class="fa-solid fa-ban"></i> Cancel Job</button>`;
         }
+        
+        // Accordion content is now generated here
+        const instructionsHTML = job.instructions.map(i => `<li>${i}</li>`).join('');
+        const restrictionsHTML = job.restrictions.map(r => `<li>${r}</li>`).join('');
+        const proofsHTML = job.proofs.map(p => `<li>${p.instruction} <strong>(${p.type})</strong></li>`).join('');
 
         jobDetailsContainer.innerHTML = `
             <div class="block">
                 <div class="job-overview-card">
                     <div class="overview-header">
-                        <div>
-                            <h1 class="job-title">${job.title}</h1>
-                            <p class="job-id">ID: ${job.id}</p>
-                        </div>
+                        <h1 class="job-title">${job.title}</h1>
+                        <p class="job-id">ID: ${job.id}</p>
                         <span class="status-badge ${job.status}">${statusText}</span>
                     </div>
-                    <div class="overview-stats-grid">
-                        <div class="overview-stat">
-                            <div class="stat-label"><span class="stat-icon"><i class="fa-solid fa-users"></i></span>Worker Progress</div>
-                            <div class="stat-value">${approvedCount} / ${neededCount}</div>
+
+                    <div class="overview-stats">
+                        <div class="stat-item">
+                            <span class="stat-label"><i class="stat-icon fa-solid fa-users"></i> Workers Filled</span>
+                            <span class="stat-value">${approvedCount} / ${neededCount}</span>
                         </div>
-                        <div class="overview-stat">
-                            <div class="stat-label"><span class="stat-icon"><i class="fa-solid fa-check-to-slot"></i></span>Submissions (A/P/R)</div>
-                            <div class="stat-value">${approvedCount} / ${pendingCount} / ${rejectedCount}</div>
+                        <div class="stat-item">
+                            <span class="stat-label"><i class="stat-icon fa-solid fa-check"></i> Approved Submissions</span>
+                            <span class="stat-value">${approvedCount}</span>
                         </div>
-                        <div class="overview-stat">
-                            <div class="stat-label"><span class="stat-icon"><i class="fa-solid fa-coins"></i></span>Total Budget</div>
-                            <div class="stat-value">৳${job.totalCost.toLocaleString()}</div>
+                        <div class="stat-item">
+                            <span class="stat-label"><i class="stat-icon fa-solid fa-hourglass-half"></i> Pending Submissions</span>
+                            <span class="stat-value">${pendingCount}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label"><i class="stat-icon fa-solid fa-times"></i> Rejected Submissions</span>
+                            <span class="stat-value">${rejectedCount}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label"><i class="stat-icon fa-solid fa-coins"></i> Total Budget</span>
+                            <span class="stat-value">৳${job.totalCost.toLocaleString()}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label"><i class="stat-icon fa-solid fa-hand-holding-dollar"></i> Cost Per Worker</span>
+                            <span class="stat-value">৳${job.costPerWorker.toLocaleString()}</span>
                         </div>
                     </div>
+                    
                     <div class="overview-progress">
-                        <div class="progress-labels"><span>Completion</span><strong>${progress.toFixed(0)}%</strong></div>
+                        <div class="progress-labels">
+                            <span>Completion</span>
+                            <strong>${progress.toFixed(0)}%</strong>
+                        </div>
                         <div class="progress-bar"><div class="progress-bar__fill" style="width: ${progress.toFixed(2)}%;"></div></div>
                     </div>
-                    <div class="overview-actions">${actionButtonsHTML}</div>
-                </div>
-            </div>`;
-        
-        const instructionsHTML = job.instructions.map(i => `<li>${i}</li>`).join('');
-        const restrictionsHTML = job.restrictions.map(r => `<li>${r}</li>`).join('');
-        const proofsHTML = job.proofs.map(p => `<li>${p.instruction} <strong>(${p.type})</strong></li>`).join('');
-        originalInfoSection.innerHTML = `
-            <div class="block">
-                <div class="accordion">
-                    <button class="accordion-header">
-                        <span>Original Job Information</span><i class="fa-solid fa-chevron-down"></i>
-                    </button>
-                    <div class="accordion-content">
-                        <div class="info-section"><h4>Instructions</h4><ul>${instructionsHTML}</ul></div>
-                        <div class="info-section"><h4>Rules</h4><ul>${restrictionsHTML}</ul></div>
-                        <div class="info-section"><h4>Proof Required</h4><ul>${proofsHTML}</ul></div>
+
+                    <div class="accordion-container">
+                        <div class="accordion">
+                            <button class="accordion-header">
+                                <span>Original Job Information</span><i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                            <div class="accordion-content">
+                                <div class="info-section"><h4>Instructions</h4><ul>${instructionsHTML}</ul></div>
+                                <div class="info-section"><h4>Rules</h4><ul>${restrictionsHTML}</ul></div>
+                                <div class="info-section"><h4>Proof Required</h4><ul>${proofsHTML}</ul></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="overview-actions">
+                        ${actionButtonsHTML}
                     </div>
                 </div>
             </div>`;
     }
 
-    function renderSubmissions(submissions) {
-        const activeTab = submissionManagerSection.querySelector('.tab-btn.active')?.dataset.tab || 'pending';
+    function renderSubmissions(submissions, activeTab = 'pending') {
         submissionManagerSection.innerHTML = `
             <div class="block">
                 <div class="submission-manager">
@@ -132,8 +148,7 @@ document.addEventListener('componentsLoaded', () => {
     }
 
     // --- DATA LISTENERS ---
-    const jobRef = doc(db, "jobs", jobId);
-    onSnapshot(jobRef, (docSnap) => {
+    onSnapshot(doc(db, "jobs", jobId), (docSnap) => {
         if (docSnap.exists()) {
             renderPage({ id: docSnap.id, ...docSnap.data() });
         } else {
@@ -141,8 +156,7 @@ document.addEventListener('componentsLoaded', () => {
         }
     });
 
-    const submissionsRef = collection(db, "jobs", jobId, "submissions");
-    onSnapshot(query(submissionsRef, orderBy("submittedAt", "desc")), (snapshot) => {
+    onSnapshot(query(collection(db, "jobs", jobId, "submissions"), orderBy("submittedAt", "desc")), (snapshot) => {
         const submissions = { pending: [], approved: [], rejected: [] };
         snapshot.forEach(doc => {
             const sub = { id: doc.id, ...doc.data() };
@@ -150,7 +164,8 @@ document.addEventListener('componentsLoaded', () => {
                 submissions[sub.status].push(sub);
             }
         });
-        renderSubmissions(submissions);
+        const activeTab = submissionManagerSection.querySelector('.tab-btn.active')?.dataset.tab || 'pending';
+        renderSubmissions(submissions, activeTab);
     });
 
     // --- HELPER FUNCTIONS ---
@@ -165,12 +180,12 @@ document.addEventListener('componentsLoaded', () => {
     }
 
     async function handleApproval(submissionId) {
+        const jobRef = doc(db, "jobs", jobId);
         const submissionRef = doc(db, "jobs", jobId, "submissions", submissionId);
         try {
             await runTransaction(db, async (transaction) => {
                 const jobDoc = await transaction.get(jobRef);
                 const submissionDoc = await transaction.get(submissionRef);
-
                 if (!jobDoc.exists() || !submissionDoc.exists()) throw new Error("Job or submission not found.");
                 if (submissionDoc.data().status !== 'pending') throw new Error("Submission already processed.");
                 
@@ -179,7 +194,6 @@ document.addEventListener('componentsLoaded', () => {
                     submissionsApproved: increment(1),
                     submissionsPending: increment(-1)
                 });
-                // CRITICAL: A Cloud Function should trigger on this update to handle payment.
             });
             alert("Submission approved successfully!");
         } catch (error) {
@@ -189,6 +203,7 @@ document.addEventListener('componentsLoaded', () => {
     }
     
     async function handleRejection(submissionId) {
+        const jobRef = doc(db, "jobs", jobId);
         const submissionRef = doc(db, "jobs", jobId, "submissions", submissionId);
         try {
             await runTransaction(db, async (transaction) => {
@@ -210,6 +225,7 @@ document.addEventListener('componentsLoaded', () => {
     }
 
     async function showProofModal(submissionId) {
+        const proofModal = document.getElementById('proof-modal');
         const proofModalBody = document.getElementById('proof-modal-body');
         const proofModalFooter = document.getElementById('proof-modal-footer');
         const proofModalTitle = document.getElementById('proof-modal-title');
@@ -227,7 +243,7 @@ document.addEventListener('componentsLoaded', () => {
         let proofHTML = '';
         subData.proofs.forEach(proof => {
             proofHTML += `<div class="proof-item"><h5>${proof.instruction}</h5>`;
-            if(proof.type === 'text' || proof.type === 'link') {
+            if (proof.type === 'text' || proof.type === 'link') {
                 proofHTML += `<p>${proof.answer}</p>`;
             } else if (proof.type === 'screenshot') {
                 proofHTML += `<a href="${proof.answer}" target="_blank" rel="noopener noreferrer"><img src="${proof.answer}" alt="Proof Screenshot"></a>`;
@@ -265,15 +281,21 @@ document.addEventListener('componentsLoaded', () => {
     });
 
     document.addEventListener('click', (e) => {
-        const targetId = e.target.closest('.job-action-btn')?.id;
-        if (targetId === 'pause-job-btn') updateJobStatus(jobId, 'paused');
-        if (targetId === 'resume-job-btn') updateJobStatus(jobId, 'open');
-        if (targetId === 'cancel-job-btn') cancelJobModal?.classList.add('is-visible');
+        const target = e.target;
+        
+        const actionButton = target.closest('.job-action-btn');
+        if (actionButton) {
+            if (actionButton.id === 'pause-job-btn') updateJobStatus(jobId, 'paused');
+            if (actionButton.id === 'resume-job-btn') updateJobStatus(jobId, 'open');
+            if (actionButton.id === 'cancel-job-btn') {
+                document.getElementById('cancel-job-modal')?.classList.add('is-visible');
+            }
+        }
 
-        if (e.target.closest('.accordion-header')) {
-            const header = e.target.closest('.accordion-header');
-            header.classList.toggle('active');
-            const content = header.nextElementSibling;
+        const accordionHeader = target.closest('.accordion-header');
+        if (accordionHeader) {
+            accordionHeader.classList.toggle('active');
+            const content = accordionHeader.nextElementSibling;
             if (content.style.maxHeight) {
                 content.style.maxHeight = null;
                 content.classList.remove('open');
@@ -283,30 +305,32 @@ document.addEventListener('componentsLoaded', () => {
             }
         }
         
-        if (e.target.closest('.tab-btn')) {
-            const tabsNav = e.target.closest('.tabs-nav');
-            if (tabsNav.querySelector('.active')) {
+        const tabButton = target.closest('.tab-btn');
+        if (tabButton) {
+            const tabsNav = tabButton.closest('.tabs-nav');
+            if (tabsNav && tabsNav.querySelector('.active')) {
                 tabsNav.querySelector('.active').classList.remove('active');
             }
-            e.target.closest('.tab-btn').classList.add('active');
-            // This part is handled by the main submission listener now, no need to re-render manually
+            tabButton.classList.add('active');
         }
 
-        const submissionActions = e.target.closest('.submission-actions');
+        const submissionActions = target.closest('.submission-actions');
         if (submissionActions) {
             const submissionId = submissionActions.dataset.submissionId;
-            if (e.target.matches('.btn-view')) showProofModal(submissionId);
-            if (e.target.matches('.btn-approve')) handleApproval(submissionId);
-            if (e.target.matches('.btn-reject')) handleRejection(submissionId);
+            if (target.matches('.btn-view')) showProofModal(submissionId);
+            if (target.matches('.btn-approve')) handleApproval(submissionId);
+            if (target.matches('.btn-reject')) handleRejection(submissionId);
         }
 
-        if (e.target.id === 'cancel-modal-close-btn') cancelJobModal?.classList.remove('is-visible');
-        if (e.target.id === 'cancel-modal-confirm-btn') {
-            updateJobStatus(jobId, 'cancelled');
-            cancelJobModal?.classList.remove('is-visible');
+        if (target.id === 'cancel-modal-close-btn') {
+            document.getElementById('cancel-job-modal')?.classList.remove('is-visible');
         }
-        if (e.target.matches('#proof-modal, #proof-modal-close, #proof-modal-close-footer')) {
-            proofModal?.classList.remove('is-visible');
+        if (target.id === 'cancel-modal-confirm-btn') {
+            updateJobStatus(jobId, 'cancelled');
+            document.getElementById('cancel-job-modal')?.classList.remove('is-visible');
+        }
+        if (target.id === 'proof-modal' || target.id === 'proof-modal-close-footer') {
+            document.getElementById('proof-modal')?.classList.remove('is-visible');
         }
     });
 });

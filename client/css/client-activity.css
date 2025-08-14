@@ -1,30 +1,60 @@
 /* FILE: /client/css/client-activity.css */
 
+/* --- Filter Controls --- */
+.filter-controls {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.filter-controls::-webkit-scrollbar {
+    display: none;
+}
+.filter-btn {
+    padding: 0.6rem 1rem;
+    border-radius: 20px;
+    border: 1px solid var(--client-card-border);
+    background-color: var(--client-card-bg);
+    color: var(--client-text-secondary);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+.filter-btn:hover {
+    border-color: #00FFCD;
+    color: var(--client-text-primary);
+}
+.filter-btn.active {
+    background: var(--client-accent-gradient);
+    color: var(--client-text-dark);
+    font-weight: 600;
+    border-color: transparent;
+}
+
+/* --- Activity Feed --- */
 .activity-feed {
-    position: relative;
-    padding-left: 2.5rem; /* Space for the timeline */
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1rem;
 }
-
-/* The main timeline bar */
-.activity-feed::before {
-    content: '';
-    position: absolute;
-    left: 20px;
-    top: 10px;
-    bottom: 10px;
-    width: 3px;
-    background-color: var(--client-card-border);
-    border-radius: 2px;
-}
-
-.activity-item {
+.activity-card {
+    background: var(--client-card-bg);
+    border: 1px solid var(--client-card-border);
+    border-radius: 0.75rem;
+    padding: 1rem;
     display: flex;
-    gap: 1.5rem;
-    align-items: flex-start;
-    position: relative;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+.activity-card.is-clickable:hover {
+    background-color: rgba(4, 31, 46, 0.8);
+    border-color: #00FFCD;
 }
 
 .activity-icon {
@@ -36,33 +66,40 @@
     align-items: center;
     justify-content: center;
     font-size: 1.2rem;
-    background: var(--client-accent-gradient);
     color: var(--client-text-dark);
-    /* Position it over the timeline bar */
-    position: absolute;
-    left: -2.5rem; 
-    top: 0;
-    margin-left: -1px; /* Center it on the 3px bar */
-    border: 3px solid #34495E;
+}
+/* Icon Colors */
+.icon-wallet { background: var(--client-accent-gradient); }
+.icon-jobs { background: #2F80ED; } /* Blue */
+.icon-submissions { background: #27AE60; } /* Green */
+.icon-tickets { background: #9B51E0; } /* Purple */
+.icon-warning { background: #F2C94C; } /* Yellow */
+
+
+.activity-details {
+    flex-grow: 1;
+}
+.activity-message {
+    font-size: 0.95rem;
+    color: var(--client-text-primary);
+    margin: 0;
+    line-height: 1.5;
+}
+.activity-message strong {
+    font-weight: 600;
+    color: #00FFCD;
+}
+.activity-timestamp {
+    font-size: 0.8rem;
+    color: var(--client-text-secondary);
+    margin: 0.25rem 0 0 0;
 }
 
-.activity-content {
+.loading-message, .empty-list-message {
     background: var(--client-card-bg);
     border: 1px solid var(--client-card-border);
     border-radius: 0.75rem;
-    padding: 1rem 1.25rem;
-    width: 100%;
-}
-
-.activity-text {
-    font-weight: 500;
-    color: var(--client-text-primary);
-    margin: 0 0 0.25rem 0;
-    line-height: 1.5;
-}
-
-.activity-timestamp {
-    font-size: 0.85rem;
+    padding: 3rem;
+    text-align: center;
     color: var(--client-text-secondary);
-    margin: 0;
 }
