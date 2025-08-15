@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | ChotoTask</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link rel="stylesheet" href="/worker/css/worker.css">
+    <link rel="stylesheet" href="/worker/css/worker-profile.css">
+    <link rel="stylesheet" href="/css/modal.css">
+</head>
+<body class="client-page"> <header id="worker-header-placeholder"></header>
+    <div id="worker-menu-placeholder"></div>
+
+    <main>
+        <div class="block">
+            <section class="page-hero">
+                <div class="page-hero__icon">
+                    <div class="icon-layer icon-layer--bottom"></div>
+                    <div class="icon-layer icon-layer--middle"></div>
+                    <div class="icon-layer icon-layer--top"></div>
+                </div>
+                <h1 class="page-hero__title">My Profile</h1>
+                <p class="page-hero__subtitle">Manage your performance, skills, and account details</p>
+            </section>
+        </div>
+
+        <div class="block">
+            <section class="container">
+                <div class="profile-header" id="profile-header">
+    <div class="profile-picture-wrapper" id="profile-picture-wrapper">
+        <img id="profile-picture" src="" alt="Profile Picture" style="display: none;">
+        <div class="initials-avatar" id="initials-avatar" style="display: none;"></div>
+        <div class="update-picture-overlay">
+            <button id="update-picture-btn" class="overlay-icon-btn" title="Update Picture">
+                <i class="fa-solid fa-camera"></i>
+            </button>
+            <button id="remove-picture-btn" class="overlay-icon-btn remove" title="Remove Picture">
+                <i class="fa-solid fa-trash-can"></i>
+            </button>
+        </div>
+    </div>
+    <input type="file" id="profile-picture-input" accept="image/jpeg, image/png" style="display:none;">
+
+    <div class="profile-info">
+        <h2 class="profile-name" id="profile-name">Loading...</h2>
+        <p class="profile-email" id="profile-email">loading@email.com</p>
+    </div>
+    <div class="plan-badge-wrapper" id="plan-badge-wrapper"></div>
+</div>
+
+                <div class="kpi-grid" id="worker-stats-grid">
+                    </div>
+                
+                <nav class="settings-menu">
+                    <a href="/worker/personal-info.html" class="settings-link">
+                        <div class="settings-link__icon"><i class="fa-solid fa-user-edit"></i></div>
+                        <div class="settings-link__text">
+                            <span class="settings-link__title">Personal Information</span>
+                            <p class="settings-link__subtitle">Update your name & contact details</p>
+                        </div>
+                        <div class="settings-link__arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                    </a>
+                    <a href="/worker/security.html" class="settings-link">
+                        <div class="settings-link__icon"><i class="fa-solid fa-shield-halved"></i></div>
+                        <div class="settings-link__text">
+                            <span class="settings-link__title">Privacy & Security</span>
+                            <p class="settings-link__subtitle">Change password, manage access</p>
+                        </div>
+                        <div class="settings-link__arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                    </a>
+                    <a href="/worker/notifications.html" class="settings-link">
+                        <div class="settings-link__icon"><i class="fa-solid fa-bell"></i></div>
+                        <div class="settings-link__text">
+                            <span class="settings-link__title">Notifications</span>
+                            <p class="settings-link__subtitle">Set your email preferences</p>
+                        </div>
+                        <div class="settings-link__arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                    </a>
+                    <a href="/worker/support.html" class="settings-link">
+                        <div class="settings-link__icon"><i class="fa-solid fa-headset"></i></div>
+                        <div class="settings-link__text">
+                            <span class="settings-link__title">Help & Support</span>
+                            <p class="settings-link__subtitle">FAQs, Contact Us</p>
+                        </div>
+                        <div class="settings-link__arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                    </a>
+                </nav>
+
+                <div class="upgrade-prompt-card" id="upgrade-prompt-card" style="display: none;">
+                    <div class="upgrade-prompt__header">
+                        <h3><i class="fa-solid fa-rocket"></i> Boost Your Earnings</h3>
+                        <p>Upgrade to Premium to get exclusive worker benefits and earn more.</p>
+                    </div>
+                    <div class="premium-features-grid">
+                        <div class="feature-item">
+                            <div class="feature-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                            <div class="feature-text">
+                                <h4>Lower Service Fees</h4>
+                                <p>Keep a higher percentage of your earnings from every task.</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon"><i class="fa-solid fa-bolt"></i></div>
+                            <div class="feature-text">
+                                <h4>Early Access to Jobs</h4>
+                                <p>See and apply for new jobs before free members.</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon"><i class="fa-solid fa-headset"></i></div>
+                            <div class="feature-text">
+                                <h4>Priority Support</h4>
+                                <p>Get faster responses from our support team to resolve issues.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="/worker/pricing.html" class="btn-submit">Upgrade to Premium</a>
+                </div>
+            </section>
+        </div>
+
+
+        <div class="modal-overlay" id="confirmation-modal">
+    <div class="modal-content">
+        <div class="modal-icon warning" id="modal-icon">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <h3 class="modal-title" id="modal-title">Confirm Action</h3>
+        <p class="modal-message" id="modal-message">Are you sure?</p>
+        <div class="modal-footer">
+            <button class="modal-btn modal-btn--cancel" id="modal-cancel-btn">Cancel</button>
+            <button class="modal-btn modal-btn--confirm" id="modal-confirm-btn">Confirm</button>
+        </div>
+    </div>
+</div>
+
+
+    </main>
+
+    <div id="worker-bottom-nav-placeholder"></div>
+
+    <script src="/js/component-loader.js"></script>
+    <script src="/worker/js/worker-shell.js" type="module"></script>
+    <script src="/worker/js/worker-profile.js" type="module"></script>
+</body>
+</html>

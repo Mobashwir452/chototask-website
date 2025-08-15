@@ -15,7 +15,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Client Dashboard Components
         '#client-header-placeholder': '/client/components/client-header.html',
         '#client-bottom-nav-placeholder': '/client/components/client-bottom-nav.html',
-        '#client-menu-placeholder': '/client/components/client-menu.html'
+        '#client-menu-placeholder': '/client/components/client-menu.html',
+
+        // Worker Dashboard Components
+        '#worker-header-placeholder': '/worker/components/worker-header.html',
+        '#worker-bottom-nav-placeholder': '/worker/components/worker-bottom-nav.html',
+        '#worker-menu-placeholder': '/worker/components/worker-menu.html'
     };
 
     const loadComponent = async (id, url) => {

@@ -1,0 +1,775 @@
+/* FILE: /css/client.css (REVISED) */
+
+/* --- CLIENT COLOR & FONT VARIABLES --- */
+:root {
+    --client-bg-gradient: linear-gradient(160deg, #2C3E50 0%, #00709B 100%);
+    --client-accent-gradient: linear-gradient(90deg, #00FFCD 0%, #00B8FF 100%);
+    --client-card-bg: rgba(4, 31, 46, 0.4);
+    --client-card-border: rgba(255, 255, 255, 0.15);
+    --client-text-primary: #FFFFFF;
+    --client-text-secondary: #B0B0B0;
+    --client-text-dark: #2C3E50;
+    --font-family-base: 'Poppins', sans-serif;
+    --gap-md: 1rem; /* Spacing between content blocks */
+}
+
+
+html, body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+body.client-page {
+    font-family: var(--font-family-base);
+    background: var(--client-bg-gradient);
+    color: var(--client-text-primary);
+    padding-bottom: 80px;
+    min-height: 100vh;
+}
+.container {
+    width: 100%;
+    padding: 0 1rem;
+    margin: 0 auto;
+    max-width: 1200px;
+}
+
+.block + .block {
+  margin-block-start: var(--gap-md);
+}
+
+
+
+/* --- CLIENT HEADER (FINAL FIX) --- */
+
+/* FIX: We now target the main <header> tag where the component is loaded.
+  Making it "sticky" forces it to the top of the viewport and makes it full-width.
+*/
+
+/* This ensures no unwanted margins or padding on the main page */
+html, body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Ensures padding doesn't add to the width */
+}
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+
+/* --- DASHBOARD PAGE HERO --- */
+.page-hero {
+    padding: 2.5rem 1rem;
+    text-align: center;
+    position: relative;
+}
+
+.page-hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    
+    /* FIX: Align the stroke to the left edge */
+    left: 0; 
+    
+    /* FIX: Set the width to 100% of the hero section */
+    width: 100%; 
+
+    /* REMOVED: No longer need transform or max-width */
+    height: 3px;
+    background: var(--client-accent-gradient);
+}
+
+.page-hero__icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    margin: 0 auto 1.5rem auto;
+    position: relative; /* Establishes the positioning context for the layers */
+}
+
+
+/* Base style for all layers */
+.icon-layer {
+    position: absolute;
+    border-radius: 50%;
+    /* This trick perfectly centers each layer */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+/* Bottom Layer (White) */
+.icon-layer--bottom {
+    width: 71px;
+    height: 71px;
+    background-color: #FFFFFF;
+    z-index: 1;
+}
+
+
+/* Middle Layer (#34495E) - Symmetrical sizing */
+.icon-layer--middle {
+    width: 62px; /* 64px - 16px = 8px border */
+    height: 62px;
+    background-color: #34495E;
+    z-index: 2;
+}
+
+
+/* Top Layer (Gradient) - Symmetrical sizing */
+.icon-layer--top {
+    width: 49px; /* 48px - 16px = 8px border */
+    height: 49px;
+    background: var(--client-accent-gradient);
+    z-index: 3;
+}
+
+
+
+.page-hero__title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--client-text-primary);
+    margin: 0 0 0.5rem 0;
+}
+
+.page-hero__subtitle {
+    font-size: 1rem;
+    color: var(--client-text-secondary);
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+
+
+
+
+
+
+
+
+
+/* FILE: /css/client.css (FINAL HEADER STYLES) */
+
+/* --- CLIENT HEADER (3-COLUMN LAYOUT) --- */
+
+header#worker-header-placeholder {
+    position: sticky;
+    top: 0;
+    width: 100vw;
+    z-index: 1100;
+    background-color: #2C3E50;
+}
+
+/* The main flex container that positions the 3 groups */
+.client-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 64px;
+    position: relative;
+}
+/* Base style for all three groups */
+.client-header__group {
+    display: flex;
+    align-items: center;
+    z-index: 2; /* Ensures they stay above the center element if they overlap */
+}
+
+/* Specific alignment for each group */
+.client-header__group--left {
+    justify-content: flex-start;
+    gap: 1rem;
+}
+
+/* THE FIX: Absolute positioning for a perfect center */
+.client-header__group--center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+.client-header__group--right {
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+/* Styles for the items themselves (mostly unchanged) */
+.client-header__logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--client-text-primary);
+    text-decoration: none;
+}
+.client-header__menu-btn, .client-header__icon-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--client-accent-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--client-text-dark);
+    font-size: 1.2rem;
+    cursor: pointer;
+    text-decoration: none;
+    flex-shrink: 0;
+    position: relative; 
+}
+.client-header__balance {
+    background: rgba(0,0,0,0.2);
+    padding: 0.6rem 1rem;
+    border-radius: 20px;
+    border: 1px solid var(--client-card-border);
+    /* FIX: Added styles for the link */
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+.client-header__balance:hover {
+    background-color: rgba(0,0,0,0.4); /* Darkens slightly on hover */
+}
+
+.client-header__balance strong {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+}
+.client-header__icon-btn--small {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 480px) {
+    .client-header__logo {
+        display: none; /* Hides the logo text on very small screens to prevent cramping */
+    }
+    .client-header__group--left,
+    .client-header__group--right {
+        gap: 0.5rem;
+    }
+}
+
+/* FILE: /css/client.css (Add this to the end) */
+
+/* --- MOBILE HEADER REFINEMENTS --- */
+@media (max-width: 480px) {
+
+    /* 1. Makes the "ChotoTask" text smaller on mobile */
+    .client-header__logo {
+        font-size: 1.2rem;
+    }
+
+    /* 2. Adjusts the spacing between the right-side items */
+    .client-header__left,
+    .client-header__right {
+        gap: 0.5rem; /* Reduces the gap for a less cramped look */
+    }
+    
+    .client-header__balance {
+        padding: 0.5rem 0.75rem; /* Slightly reduces padding */
+    }
+
+    /* 3. Makes the notification button even smaller */
+    .client-header__icon-btn--small {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+    }
+
+    /* Adjusts the size of the other two main icons on mobile */
+    .client-header__menu-btn,
+    .client-header__avatar {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
+}
+
+
+
+
+
+/* FILE: /css/client.css (REVISED BOTTOM NAV STYLES) */
+
+/* --- CLIENT BOTTOM NAV (NEW DESIGN) --- */
+
+/* Find this rule in your file and replace it */
+
+.client-bottom-nav {
+    position: fixed; /* This is the correct rule that makes it stick to the bottom */
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background-color: #34495E;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+    border-top: 1px solid var(--client-card-border);
+    z-index: 1000;
+    /* REMOVED: The incorrect "position: relative;" was here. Removing it fixes the bug. */
+}
+
+/* Container for the 4 main links */
+.client-bottom-nav__links-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 100%;
+}
+
+.bottom-nav__link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px; /* Space between icon and text */
+    text-decoration: none;
+    flex: 1; /* Allows links to take up equal space */
+}
+
+/* Find this rule in the CLIENT BOTTOM NAV section and replace it */
+
+.bottom-nav__link span {
+    font-size: 0.75rem;
+    font-weight: 500;
+    /* FIX: Changed color to primary white for better visibility */
+    color: var(--client-text-primary); 
+    transition: color 0.2s;
+}
+
+/* FIX: New style for the circular icon background */
+.bottom-nav__icon-wrapper {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.2); /* Muted background for inactive icons */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+.bottom-nav__icon-wrapper i {
+    font-size: 0.9rem;
+    color: var(--client-text-primary); /* Muted icon color */
+}
+
+/* Style for the active link */
+.bottom-nav__link.active .bottom-nav__icon-wrapper {
+    background: var(--client-accent-gradient); /* Active icon has gradient bg */
+}
+.bottom-nav__link.active .bottom-nav__icon-wrapper i {
+    color: var(--client-text-dark); /* Dark icon on light background */
+}
+.bottom-nav__link.active span {
+    color: #00FFCD; /* Active text uses accent color */
+    font-weight: 600;
+}
+
+
+/* FIX: Absolute positioning for the central Add Task button */
+.bottom-nav__link--cta {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--client-accent-gradient);
+    color: var(--client-text-dark);
+    font-size: 1.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 15px rgba(0, 255, 205, 0.4);
+    border: 4px solid #34495E;
+    text-decoration: none;
+
+    /* This positions it in the true center, pulled up */
+    left: 50%;
+    top: -20px;
+    transform: translateX(-50%);
+    transition: transform 0.2s ease;
+}
+.bottom-nav__link--cta:hover {
+    transform: translateX(-50%) scale(1.05);
+}
+
+/* FILE: /css/client.css (REVISED MENU STYLES) */
+
+/* --- CLIENT SIDE MENU (NEW DESIGN) --- */
+.menu-toggle-input { display: none; }
+
+.client-menu-container {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 2000;
+    transition: left 0s 0.3s, background-color 0.3s;
+}
+.menu-toggle-input:checked ~ .client-menu-container {
+    left: 0;
+    transition: background-color 0.3s;
+}
+
+/* FIX: Changed menu background to a dark color */
+/* Find this rule in your file and replace it */
+
+/* FIX: Changed menu background to a dark color */
+.client-menu-content {
+    position: absolute;
+    left: -100%;
+    width: 85%;
+    max-width: 320px;
+    height: 100%;
+    background-color: #34495E; /* Dark background */
+    color: var(--client-text-primary); /* Light text */
+    display: flex;
+    flex-direction: column;
+    transition: left 0.3s ease-in-out;
+    box-sizing: border-box; /* Ensures padding is included in height */
+
+    /* THE FIX: Add padding to the bottom to create space for the nav bar */
+    padding-bottom: 70px; 
+}
+.menu-toggle-input:checked ~ .client-menu-container .client-menu-content {
+    left: 0;
+}
+
+.client-menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* FIX: Reduced vertical padding to match the main site header */
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--client-card-border);
+    flex-shrink: 0; /* Prevents the header from shrinking */
+}
+
+
+/* FIX: Removes any default spacing from the "Menu" title */
+.client-menu-header h2 {
+    font-size: 1.25rem;
+    margin: 0;
+}
+.client-menu-close-btn {
+    font-size: 1.5rem;
+    color: var(--client-text-secondary);
+    cursor: pointer;
+}
+
+.client-menu-nav { padding: 1rem; }
+
+/* FIX: Styled menu links as colored boxes */
+.client-menu-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    color: var(--client-text-primary);
+    font-weight: 500;
+    background-color: var(--client-card-bg); /* Use consistent card color */
+    border: 1px solid var(--client-card-border);
+    transition: background-color 0.2s, border-color 0.2s;
+}
+.client-menu-link:hover, .client-menu-link.active {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-color: #00FFCD; /* Highlight with accent color */
+}
+
+.nav-icon-wrapper {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--client-accent-gradient);
+    color: var(--client-text-dark);
+    flex-shrink: 0;
+}
+
+.client-menu-footer {
+    margin-top: auto;
+    padding: 1.5rem;
+}
+.btn-logout {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    background: var(--client-accent-gradient);
+    color: var(--client-text-dark);
+    font-weight: 1000;
+    text-decoration: none;
+    border: 1px solid var(--client-card-border);
+}
+
+
+
+
+/* Add this to your /client/css/client.css file */
+
+/* --- REUSABLE SUBMIT BUTTON --- */
+.btn-submit {
+    display: block;
+    width: 100%;
+    padding: 0.9rem;
+    border: none;
+    border-radius: 0.5rem;
+    background: var(--client-accent-gradient);
+    color: var(--client-text-dark);
+    font-size: 1rem;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.btn-submit:hover {
+    transform: scale(1.02);
+}
+
+
+
+
+
+
+
+/* Add this to the end of /client/css/client.css */
+
+/* --- CONFIRMATION MODAL --- */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0s 0.3s;
+}
+
+.modal-overlay.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease;
+}
+
+.modal-content {
+    background: var(--client-card-bg);
+    border: 1px solid var(--client-card-border);
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.modal-overlay.is-visible .modal-content {
+    transform: scale(1);
+}
+
+.modal-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin: 0 auto 1.5rem auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+}
+
+.modal-icon.warning {
+    background-color: rgba(242, 201, 76, 0.15); /* Yellow */
+    color: #F2C94C;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    color: var(--client-text-primary);
+}
+
+.modal-message {
+    color: var(--client-text-secondary);
+    margin: 0 0 2rem 0;
+    line-height: 1.6;
+}
+
+.modal-footer {
+    display: flex;
+    gap: 1rem;
+}
+
+.modal-btn {
+    flex: 1;
+    padding: 0.8rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+.modal-btn:hover {
+    transform: scale(1.03);
+}
+
+.modal-btn--confirm {
+    background: var(--client-accent-gradient);
+    color: var(--client-text-dark);
+}
+
+.modal-btn--cancel {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--client-text-primary);
+    border: 1px solid var(--client-card-border);
+}
+
+
+
+
+
+
+
+/* FILE: /client/css/client-notifications.css */
+
+/* --- Notification Badge on Bell Icon --- */
+.notification-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #EB5757; /* Red */
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #2C3E50; /* Matches header background */
+    transform: translate(30%, -30%);
+}
+
+/* --- Notification Panel --- */
+.notification-panel {
+    position: absolute;
+    top: 70px; /* Below header */
+    right: 1rem;
+    width: 320px;
+    max-width: 90vw;
+    background: var(--client-card-bg);
+    border: 1px solid var(--client-card-border);
+    border-radius: 0.75rem;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    backdrop-filter: blur(10px);
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s 0.2s;
+}
+.notification-panel.visible {
+    opacity: 100;
+    visibility: visible;
+    transform: translateY(0);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.notification-header, .notification-footer {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--client-card-border);
+}
+.notification-header h3 {
+    margin: 0;
+    font-size: 1rem;
+}
+.notification-footer {
+    border-bottom: none;
+    border-top: 1px solid var(--client-card-border);
+    text-align: center;
+}
+.notification-footer a {
+    color: #00FFCD;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.notification-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* --- Compact Notification Item --- */
+.notification-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    border-bottom: 1px solid var(--client-card-border);
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+.notification-item:hover {
+    background-color: rgba(0, 255, 205, 0.05);
+}
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-item__icon {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    background-color: rgba(0, 255, 205, 0.1);
+    color: #00FFCD;
+}
+
+.notification-item__content {
+    flex-grow: 1;
+}
+.notification-item__message {
+    font-size: 0.9rem;
+    color: var(--client-text-primary);
+    margin: 0 0 0.25rem 0;
+    line-height: 1.4;
+}
+.notification-item__timestamp {
+    font-size: 0.75rem;
+    color: var(--client-text-secondary);
+}
+.notification-placeholder {
+    padding: 2rem 1rem;
+    text-align: center;
+    color: var(--client-text-secondary);
+}

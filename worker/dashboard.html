@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worker Dashboard | ChotoTask</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link rel="stylesheet" href="/worker/css/worker.css">
+    <link rel="stylesheet" href="/worker/css/worker-dashboard.css">
+</head>
+<body class="client-page"> <header id="worker-header-placeholder"></header>
+    <div id="worker-menu-placeholder"></div>
+
+    <main>
+        <div class="block">
+            <section class="page-hero">
+                <div class="page-hero__icon">
+                    <div class="icon-layer icon-layer--bottom"></div>
+                    <div class="icon-layer icon-layer--middle"></div>
+                    <div class="icon-layer icon-layer--top"></div>
+                </div>
+                <h1 class="page-hero__title">Dashboard</h1>
+                <p class="page-hero__subtitle">Here's a quick overview of your work</p>
+            </section>
+        </div>
+
+        <div class="block">
+            <section class="kpi-section container">
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-card__icon"><i class="fa-solid fa-wallet"></i></div>
+                        <p class="kpi-card__title">Available for Withdrawal</p>
+                        <h2 class="kpi-card__value" id="stat-funds">৳...</h2>
+                        <p class="kpi-card__subtitle">Your current balance</p>
+                    </div>
+                    <div class="kpi-card kpi-card--highlight">
+                        <div class="kpi-card__icon"><i class="fa-solid fa-hourglass-half"></i></div>
+                        <p class="kpi-card__title">Pending Payouts</p>
+                        <h2 class="kpi-card__value" id="stat-pending">...</h2>
+                        <p class="kpi-card__subtitle">From submitted tasks</p>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-card__icon"><i class="fa-solid fa-check-double"></i></div>
+                        <p class="kpi-card__title">Jobs Completed</p>
+                        <h2 class="kpi-card__value" id="stat-completed-jobs">...</h2>
+                        <p class="kpi-card__subtitle">Lifetime approved tasks</p>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-card__icon"><i class="fa-solid fa-receipt"></i></div>
+                        <p class="kpi-card__title">Total Earned</p>
+                        <h2 class="kpi-card__value" id="stat-total-earned">৳...</h2>
+                        <p class="kpi-card__subtitle">Lifetime earnings</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="block">
+            <section class="list-section container">
+                <div class="list-header">
+                    <h3>Newest Available Jobs</h3>
+                    <a href="/worker/tasks.html">View All &rarr;</a>
+                </div>
+                <div class="list-content" id="job-list">
+                    </div>
+            </section>
+        </div>
+        <div class="block">
+            <section class="list-section container">
+                <div class="list-header">
+                    <h3>Recent Activity</h3>
+                    <a href="/worker/activity.html">View All &rarr;</a>
+                </div>
+                <div class="list-content" id="activity-list">
+                    </div>
+            </section>
+        </div>
+    </main>
+
+    <div id="worker-bottom-nav-placeholder"></div>
+
+    <script src="/js/component-loader.js"></script>
+    <script src="/worker/js/worker-shell.js" type="module"></script>
+    <script src="/worker/js/worker-dashboard.js" type="module"></script>
+
+</body>
+</html>
