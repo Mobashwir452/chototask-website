@@ -316,8 +316,8 @@
     pointer-events: auto;
 }
 .overlay-icon-btn {
-    width: 40px;
-    height: 40px;
+    width: 20px;
+    height: 15px;
     background-color: rgba(255, 255, 255, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
@@ -335,8 +335,4 @@
 }
 .overlay-icon-btn.remove {
     background-color: rgba(235, 87, 87, 0.3);
-    border-color: rgba(235, 87, 87, 0.5);
-}
-.overlay-icon-btn.remove:hover {
-    background-color: rgba(235, 87, 87, 0.5);
 }

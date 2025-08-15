@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile | ChotoTask</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link rel="stylesheet" href="/worker/css/worker.css">
+    <link rel="stylesheet" href="/worker/css/worker-personal-info.css">
+</head>
+<body class="client-page"> <header id="worker-header-placeholder"></header>
+    <div id="worker-menu-placeholder"></div>
+
+    <main>
+        <div class="block">
+            <section class="page-hero">
+                <div class="page-hero__icon"><div class="icon-layer icon-layer--bottom"></div><div class="icon-layer icon-layer--middle"></div><div class="icon-layer icon-layer--top"></div></div>
+                <h1 class="page-hero__title">Edit Profile</h1>
+                <p class="page-hero__subtitle">Keep your profile and verification details up to date</p>
+            </section>
+        </div>
+
+        <div class="block">
+            <section class="container">
+                <form id="profile-form">
+                    <div class="form-card">
+                        <h2>Public Profile</h2>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="username">Username</label>
+                                <input type="text" id="username" placeholder="Your unique username" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="fullName">Full Name</label>
+                                <input type="text" id="fullName" placeholder="Enter your full name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" id="phone" placeholder="Your contact number">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-card">
+                        <h2>Professional Information</h2>
+                        <div class="form-group">
+                            <label for="headline">Headline</label>
+                            <input type="text" id="headline" placeholder="e.g., Social Media Expert">
+                        </div>
+                        <div class="form-group">
+                            <label for="bio">About Me / Bio</label>
+                            <textarea id="bio" rows="4" placeholder="Describe your skills and experience..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="skills">Skills (comma-separated)</label>
+                            <input type="text" id="skills" placeholder="e.g., translation, data entry">
+                        </div>
+                    </div>
+
+                    <div class="form-card">
+                        <h2>Address & Verification</h2>
+                        <div class="form-group">
+                            <label for="address">Full Address</label>
+                            <textarea id="address" rows="3" placeholder="Enter your full address"></textarea>
+                        </div>
+                        <div class="kyc-section">
+                            <label>KYC Verification</label>
+                            <div class="kyc-status" id="kyc-status">
+                                <i class="fa-solid fa-shield-halved"></i>
+                                <span id="kyc-status-text">Not Verified</span>
+                            </div>
+                            <p class="kyc-instructions" id="kyc-instructions">
+                                Please upload a clear image of your National ID to get verified.
+                            </p>
+                            <label for="kyc-file-input" class="btn-upload" id="kyc-upload-btn">
+                                <i class="fa-solid fa-upload"></i> Upload Document
+                            </label>
+                            <input type="file" id="kyc-file-input" accept="image/jpeg, image/png" style="display:none;">
+                        </div>
+                    </div>
+
+                    <div class="form-card">
+                        <h2>Withdrawal Settings</h2>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="withdrawal-method">Withdrawal Method</label>
+                                <select id="withdrawal-method" class="form-input">
+                                    <option value="">Select a method</option>
+                                    <option value="bkash">Bkash</option>
+                                    <option value="nagad">Nagad</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="account-number">Account Number</label>
+                                <input type="text" id="account-number" placeholder="Enter your payment account number">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-footer">
+                        <p class="form-message" id="form-message"></p>
+                        <button type="submit" class="btn-submit">Save All Changes</button>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </main>
+
+    <div id="worker-bottom-nav-placeholder"></div>
+
+    <script src="/js/component-loader.js"></script>
+    <script src="/worker/js/worker-shell.js" type="module"></script>
+    <script src="/worker/js/worker-personal-info.js" type="module"></script>
+</body>
+</html>
