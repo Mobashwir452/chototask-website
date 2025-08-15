@@ -95,8 +95,8 @@
     border-bottom: 2px solid transparent;
     border-image-source: var(--client-accent-gradient);
     border-image-slice: 1;
-    margin-left: -1.5rem;
-    margin-right: -1.5rem;
+   
+    
 }
 
 .list-header h3 {
@@ -140,8 +140,9 @@
 
 .list-item-card h5 {
     font-size: 1rem;
-    font-weight: 500;
+    font-weight: 1000;
     margin: 0 0 0.75rem 0;
+    color: var(--client-text-primary);
 }
 
 .job-progress {
@@ -185,7 +186,7 @@
     /* Use the client accent gradient for the background */
     background: var(--client-accent-gradient);
     /* Use the dark text color for the icon itself */
-    color: var(--client-text-primary);
+    color: var(--client-text-dark);
 }
 .activity-item__icon--approve { background-color: #27AE60; } /* Green */
 .activity-item__icon--start { background-color: #2F80ED; } /* Blue */
@@ -194,4 +195,11 @@
 .activity-item__text {
     font-size: 0.9rem;
     color: var(--client-text-primary);
+}
+
+
+
+/* Removes underline from clickable card links */
+a.list-item-link {
+    text-decoration: none;
 }

@@ -1,8 +1,8 @@
-// FILE: /client/js/client-dashboard.js (FINAL - WITH REAL DATA)
+// FILE: /client/js/client-dashboard.js (FINAL - WITH CORRECTED QUERY)
 
 import { auth, db } from '/js/firebase-config.js';
-import { doc, getDoc, collection, query, where, getCountFromServer, orderBy, limit, getDocs } from "https://www.gstatic.com/firebase/v9.6.10/firebase-firestore.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebase/v9.6.10/firebase-auth.js";
+import { doc, getDoc, collection, query, where, getCountFromServer, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 document.addEventListener('componentsLoaded', () => {
 
@@ -12,7 +12,7 @@ document.addEventListener('componentsLoaded', () => {
     const statTotalSpent = document.getElementById('stat-total-spent');
     const jobListContainer = document.getElementById('job-list');
     const activityListContainer = document.getElementById('activity-list');
-    const jobListHeader = document.querySelector('#job-list').previousElementSibling.querySelector('h3'); // To rename the title
+    const jobListHeader = document.querySelector('#job-list').previousElementSibling.querySelector('h3');
     const CURRENCY = '৳';
 
     // --- RENDER FUNCTIONS ---
@@ -29,22 +29,24 @@ document.addEventListener('componentsLoaded', () => {
     };
 
     const renderJobs = (jobs) => {
-        if (!jobListContainer) return;
-        
-        // ✅ FIX: Rename the header
-        if (jobListHeader) {
-            jobListHeader.textContent = 'My Newest Jobs';
-        }
+    if (!jobListContainer) return;
+    
+    if (jobListHeader) {
+        jobListHeader.textContent = 'My Jobs';
+    }
 
-        if (jobs.length === 0) {
-            jobListContainer.innerHTML = '<p class="empty-list-message">You have not posted any jobs yet.</p>';
-            return;
-        }
-        jobListContainer.innerHTML = jobs.map(job => {
-            const completed = job.submissionsApproved || 0;
-            const total = job.workersNeeded || 1; // Avoid division by zero
-            const progress = total > 0 ? (completed / total) * 100 : 0;
-            return `
+    if (jobs.length === 0) {
+        jobListContainer.innerHTML = '<p class="empty-list-message">You have not posted any jobs yet.</p>';
+        return;
+    }
+    jobListContainer.innerHTML = jobs.map(job => {
+        const completed = job.submissionsApproved || 0;
+        const total = job.workersNeeded || 1;
+        const progress = total > 0 ? (completed / total) * 100 : 0;
+        
+        // ✅ FIX: The card is now wrapped in a link
+        return `
+            <a href="/client/job-details.html?id=${job.id}" class="list-item-link">
                 <div class="list-item-card">
                     <h5>${job.title}</h5>
                     <div class="job-progress">
@@ -55,9 +57,10 @@ document.addEventListener('componentsLoaded', () => {
                         <div class="progress-bar__fill" style="width: ${progress}%;"></div>
                     </div>
                 </div>
-            `;
-        }).join('');
-    };
+            </a>
+        `;
+    }).join('');
+};
     
     const renderActivity = (activities) => {
         if (!activityListContainer) return;
@@ -94,14 +97,17 @@ document.addEventListener('componentsLoaded', () => {
     // --- DATA FETCHING FUNCTIONS ---
     const fetchDashboardData = async (userId) => {
         try {
-            // Fetch stats (same as before)
+            // Fetch stats
             const walletDocRef = doc(db, "wallets", userId);
             const walletDoc = await getDoc(walletDocRef);
             const walletData = walletDoc.exists() ? walletDoc.data() : { balance: 0, totalSpent: 0 };
 
+            // ✅ FIX: The query for pending submissions was incorrect.
+            // This now correctly queries the top-level 'submissions' collection for all of the user's jobs.
             const submissionsRef = collection(db, "submissions");
+            const pendingQuery = query(submissionsRef, where("clientId", "==", userId), where("status", "==", "pending"));
+
             const jobsRef = collection(db, "jobs");
-            const pendingQuery = query(collection(db, "jobs", jobId, "submissions"), where("status", "==", "pending"));
             const activeJobsQuery = query(jobsRef, where("clientId", "==", userId), where("status", "in", ["open", "active"]));
             
             const [pendingSnapshot, activeJobsSnapshot] = await Promise.all([
@@ -116,13 +122,13 @@ document.addEventListener('componentsLoaded', () => {
 
             updateStats(walletData, liveStats);
 
-            // ✅ FIX: Fetch real jobs
+            // Fetch real jobs
             const jobsQuery = query(jobsRef, where("clientId", "==", userId), orderBy("createdAt", "desc"), limit(3));
             const jobsSnapshot = await getDocs(jobsQuery);
-            const realJobs = jobsSnapshot.docs.map(doc => doc.data());
+            const realJobs = jobsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             renderJobs(realJobs);
             
-            // ✅ FIX: Fetch real activities
+            // Fetch real activities
             const activitiesRef = collection(db, "activities");
             const activitiesQuery = query(activitiesRef, where("userId", "==", userId), orderBy("timestamp", "desc"), limit(3));
             const activitiesSnapshot = await getDocs(activitiesQuery);
@@ -142,7 +148,6 @@ document.addEventListener('componentsLoaded', () => {
         if (user) {
             fetchDashboardData(user.uid);
         } else {
-            // This case should be handled by client-shell.js, but as a fallback:
             window.location.href = '/login.html';
         }
     });
