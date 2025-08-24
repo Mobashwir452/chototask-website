@@ -90,6 +90,7 @@ const saveReply = async (e) => {
     replyFormMessage.textContent = '';
 
     try {
+        // Step 1: Save the reply to Firestore (your existing code)
         const repliesRef = collection(db, "supportTickets", ticketId, "replies");
         await addDoc(repliesRef, {
             message: replyText,
@@ -99,16 +100,29 @@ const saveReply = async (e) => {
 
         await updateDoc(doc(db, "supportTickets", ticketId), { status: 'in_progress' });
         
+        // ✅ UPDATED BLOCK with debugging and error checking
         const user = auth.currentUser;
         if (user) {
+            console.log("Attempting to get auth token...");
             const token = await user.getIdToken();
-            await fetch('/.netlify/functions/createReplyNotification', {
+            console.log("Token retrieved. Calling Netlify function...");
+
+            const response = await fetch('/.netlify/functions/createReplyNotification', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({ ticketId: ticketId })
             });
+
+            console.log("Netlify function response:", response.status, response.statusText);
+
+            // CRUCIAL FIX: This checks if the function call was successful.
+            if (!response.ok) {
+                const errorData = await response.json();
+                // This will throw a specific error, which will be caught below.
+                throw new Error(`Notification function failed: ${errorData.error || 'Unknown error'}`);
+            }
         }
         
         replyFormMessage.style.color = 'green';
@@ -116,9 +130,10 @@ const saveReply = async (e) => {
         replyMessageInput.value = '';
     
     } catch (error) {
+        // This will now catch any error, including the one from the Netlify function
         console.error("Error saving reply or notifying:", error);
         replyFormMessage.style.color = 'red';
-        replyFormMessage.textContent = 'Failed to save reply.';
+        replyFormMessage.textContent = `Error: ${error.message}`;
     } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Save Reply';
