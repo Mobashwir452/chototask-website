@@ -44,20 +44,43 @@ function setActiveNavLink() {
     });
 }
 
+// ✅ REPLACED LOGOUT FUNCTION
 function setupLogoutButton() {
     const logoutBtn = document.querySelector('.btn-logout');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', async (e) => {
-            e.preventDefault();
-            if (confirm("Are you sure you want to log out?")) {
-                try {
-                    await signOut(auth);
-                    window.location.href = '/login.html';
-                } catch (error) { console.error("Error signing out:", error); }
-            }
-        });
-    }
+    const logoutModal = document.getElementById('logout-confirmation-modal');
+    
+    if (!logoutBtn || !logoutModal) return;
+
+    const confirmBtn = logoutModal.querySelector('#logout-confirm-btn');
+    const cancelBtn = logoutModal.querySelector('#logout-cancel-btn');
+
+    // When the main logout button is clicked, show the modal
+    logoutBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        // ✅ FIX: This line finds the menu's checkbox and unchecks it, closing the menu.
+        document.getElementById('worker-menu-toggle').checked = false;
+
+        logoutModal.classList.add('is-visible');
+    });
+
+    // When the "Cancel" button inside the modal is clicked, hide it
+    cancelBtn.addEventListener('click', () => {
+        logoutModal.classList.remove('is-visible');
+    });
+
+    // When the final "Logout" button is clicked, perform the sign out
+    confirmBtn.addEventListener('click', async () => {
+        try {
+            await signOut(auth);
+            window.location.href = '/login.html';
+        } catch (error) {
+            console.error("Error signing out:", error);
+            logoutModal.classList.remove('is-visible'); // Hide modal on error
+        }
+    });
 }
+
 
 // NOTE: Notification system can be copied here from client-shell.js if needed
 

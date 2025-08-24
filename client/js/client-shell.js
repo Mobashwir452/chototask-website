@@ -69,24 +69,43 @@ function setActiveNavLink() {
     });
 }
 
+// ✅ REPLACED LOGOUT FUNCTION
 function setupLogoutButton() {
-    // Your `client-menu.html` doesn't have an element with id="logout-btn".
-    // It has a link with class="btn-logout". We'll target that instead.
     const logoutBtn = document.querySelector('.btn-logout');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', async (e) => {
-            e.preventDefault(); // Prevent the link from navigating to "/logout"
-            if (confirm("Are you sure you want to log out?")) {
-                try {
-                    await signOut(auth);
-                    window.location.href = '/login.html';
-                } catch (error) {
-                    console.error("Error signing out:", error);
-                }
-            }
-        });
-    }
+    const logoutModal = document.getElementById('logout-confirmation-modal');
+    
+    if (!logoutBtn || !logoutModal) return;
+
+    const confirmBtn = logoutModal.querySelector('#logout-confirm-btn');
+    const cancelBtn = logoutModal.querySelector('#logout-cancel-btn');
+
+    // When the main logout button is clicked, close menu and show modal
+    logoutBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        
+        // This closes the client side menu
+        document.getElementById('client-menu-toggle').checked = false;
+
+        logoutModal.classList.add('is-visible');
+    });
+
+    // When the "Cancel" button inside the modal is clicked, hide it
+    cancelBtn.addEventListener('click', () => {
+        logoutModal.classList.remove('is-visible');
+    });
+
+    // When the final "Logout" button is clicked, perform the sign out
+    confirmBtn.addEventListener('click', async () => {
+        try {
+            await signOut(auth);
+            window.location.href = '/login.html';
+        } catch (error) {
+            console.error("Error signing out:", error);
+            logoutModal.classList.remove('is-visible');
+        }
+    });
 }
+
 
 // --- NOTIFICATION SYSTEM ---
 
