@@ -1,4 +1,4 @@
-import { db } from '/js/firebase-config.js';
+import { auth, db } from '/js/firebase-config.js';
 import { doc, getDoc, updateDoc, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 
@@ -98,15 +98,27 @@ const saveReply = async (e) => {
             sentAt: serverTimestamp()
         });
 
-        // Also update the main ticket status to show there's a new reply
         await updateDoc(doc(db, "supportTickets", ticketId), { status: 'in_progress' });
         
+        // ✅ ADD THIS BLOCK to trigger the notification Netlify Function
+        const user = auth.currentUser;
+        if (user) {
+            const token = await user.getIdToken();
+            await fetch('/.netlify/functions/createReplyNotification', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ ticketId: ticketId })
+            });
+        }
+        
         replyFormMessage.style.color = 'green';
-        replyFormMessage.textContent = 'Reply saved! Send the guest link if needed.';
+        replyFormMessage.textContent = 'Reply saved and user notified!';
         replyMessageInput.value = '';
     
     } catch (error) {
-        console.error("Error saving reply:", error);
+        console.error("Error saving reply or notifying:", error);
         replyFormMessage.style.color = 'red';
         replyFormMessage.textContent = 'Failed to save reply.';
     } finally {
