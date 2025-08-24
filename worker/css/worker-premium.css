@@ -1,0 +1,121 @@
+/* FILE: /worker/css/worker-premium.css */
+/* THIS FILE'S CONTENT IS IDENTICAL TO /client/css/client-premium.css */
+
+.comparison-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+@media (min-width: 768px) {
+    .comparison-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.plan-card {
+    background: var(--client-card-bg);
+    border: 1px solid var(--client-card-border);
+    border-radius: 1rem;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.plan-card--premium {
+    border-color: #00FFCD;
+    box-shadow: 0 0 20px rgba(0, 255, 205, 0.15);
+}
+
+.plan-header {
+    text-align: center;
+    border-bottom: 1px solid var(--client-card-border);
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.plan-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 1rem auto;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--client-accent-gradient);
+    color: var(--client-text-dark);
+    font-size: 1.75rem;
+}
+
+.plan-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.plan-subtitle {
+    font-size: 0.9rem;
+    color: var(--client-text-secondary);
+    margin: 0.25rem 0 1rem 0;
+}
+
+.plan-price {
+    font-size: 2.25rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.plan-price span {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--client-text-secondary);
+}
+
+.plan-features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1;
+}
+
+.plan-features li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+.plan-features li i {
+    color: #00FFCD;
+    font-size: 1.25rem;
+}
+
+.plan-features li.disabled {
+    color: var(--client-text-secondary);
+    text-decoration: line-through;
+}
+
+.plan-features li.disabled i {
+    color: var(--client-text-secondary);
+}
+
+.cta-card {
+    text-align: center;
+    background: var(--client-card-bg);
+    border: 1px solid var(--client-card-border);
+    border-radius: 1rem;
+    padding: 2.5rem 2rem;
+}
+
+.cta-card h3 {
+    font-size: 1.75rem;
+    margin: 0 0 0.5rem 0;
+}
+
+.cta-card p {
+    color: var(--client-text-secondary);
+    margin: 0 auto 2rem auto;
+    max-width: 450px;
+}

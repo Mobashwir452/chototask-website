@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Details | ChotoTask</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="/worker/css/worker.css">
+    <link rel="stylesheet" href="/worker/css/worker-ticket-details.css">
+</head>
+<body class="client-page"> <header id="worker-header-placeholder"></header>
+    <div id="worker-menu-placeholder"></div>
+
+    <main>
+        <div class="block">
+            <section class="page-hero">
+                <div class="page-hero__icon"><div class="icon-layer icon-layer--bottom"></div><div class="icon-layer icon-layer--middle"></div><div class="icon-layer icon-layer--top"></div></div>
+                <h1 class="page-hero__title" id="ticket-subject-title">Loading Ticket...</h1>
+                <p class="page-hero__subtitle" id="ticket-status-subtitle">Status: ...</p>
+            </section>
+        </div>
+        <div class="block">
+            <section class="container">
+                <div class="support-card">
+                    <div class="conversation-thread" id="conversation-thread">
+                        </div>
+                </div>
+                <div class="support-card">
+                    <h3>Add a Reply</h3>
+                    <form id="reply-form">
+                        <div class="form-group">
+                            <textarea id="reply-message" placeholder="Type your message here..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn-submit">Send Reply</button>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <div id="worker-bottom-nav-placeholder"></div>
+
+    <script src="/js/component-loader.js"></script>
+    <script src="/worker/js/worker-shell.js" type="module"></script>
+    <script src="/worker/js/worker-ticket-details.js" type="module"></script>
+</body>
+</html>

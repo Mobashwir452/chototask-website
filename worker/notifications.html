@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification Settings | ChotoTask</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link rel="stylesheet" href="/worker/css/worker.css">
+    <link rel="stylesheet" href="/worker/css/worker-notifications.css">
+</head>
+<body class="client-page"> <header id="worker-header-placeholder"></header>
+    <div id="worker-menu-placeholder"></div>
+
+    <main>
+        <div class="block">
+            <section class="page-hero">
+                <div class="page-hero__icon"><div class="icon-layer icon-layer--bottom"></div><div class="icon-layer icon-layer--middle"></div><div class="icon-layer icon-layer--top"></div></div>
+                <h1 class="page-hero__title">Notification Settings</h1>
+                <p class="page-hero__subtitle">Choose which alerts and updates you want to receive.</p>
+            </section>
+        </div>
+
+        <div class="block">
+            <section class="container">
+                <div class="settings-card">
+                    <div class="setting-row">
+                        <div class="setting-text">
+                            <h4>Submission Approved</h4>
+                            <p>Get notified when a client approves your work.</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="approval-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-row">
+                        <div class="setting-text">
+                            <h4>Submission Rejected</h4>
+                            <p>Get notified when a client rejects your work.</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="rejection-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-row">
+                        <div class="setting-text">
+                            <h4>New Relevant Jobs</h4>
+                            <p>Receive alerts when new jobs matching your skills are posted.</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="new-jobs-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-row">
+                        <div class="setting-text">
+                            <h4>Withdrawal Updates</h4>
+                            <p>Receive notifications when your withdrawal requests are processed.</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="withdrawal-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-row">
+                        <div class="setting-text">
+                            <h4>Promotional Offers</h4>
+                            <p>Get updates about special offers and platform news.</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="promo-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <div id="worker-bottom-nav-placeholder"></div>
+
+    <script src="/js/component-loader.js"></script>
+    <script src="/worker/js/worker-shell.js" type="module"></script>
+    <script src="/worker/js/worker-notifications.js" type="module"></script>
+</body>
+</html>
