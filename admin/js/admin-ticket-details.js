@@ -1,7 +1,7 @@
 import { auth, db } from '/js/firebase-config.js';
+// ✅ FIX: Added the import for the Firebase Auth library
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { doc, getDoc, updateDoc, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-
 
 const infoModal = document.getElementById('info-modal');
 const infoModalTitle = document.getElementById('info-modal-title');
@@ -58,10 +58,9 @@ const renderPage = (ticket, user) => {
         guestLinkInput.value = link;
         guestLinkCard.style.display = 'block';
     } else if (user) {
-        // ✅ FIX: Provide a fallback for 'accountType' to prevent 'undefined'
         const plan = user.accountType || 'free'; 
         userInfoContent.innerHTML = `
-            <div class="info-row"><span>User</span> <a href="/admin/user-details.html?id=${user.uid}">${user.fullName}</a></div>
+            <div class="info-row"><span>User</span> <a href="/admin/user-details.html?id=${ticket.userId}">${user.fullName}</a></div>
             <div class="info-row"><span>Role</span> <strong>${user.role}</strong></div>
             <div class="info-row"><span>Plan</span> <strong>${plan}</strong></div>
         `;
@@ -73,10 +72,10 @@ const updateStatus = async () => {
     const ticketRef = doc(db, "supportTickets", ticketId);
     try {
         await updateDoc(ticketRef, { status: newStatus });
-        showInfoModal('Success', 'Status updated successfully!'); // Use modal instead of alert
+        showInfoModal('Success', 'Status updated successfully!');
     } catch (error) {
         console.error("Error updating status:", error);
-        showInfoModal('Error', 'Failed to update status.'); // Use modal for errors too
+        showInfoModal('Error', 'Failed to update status.');
     }
 };
 
@@ -100,7 +99,6 @@ const saveReply = async (e) => {
 
         await updateDoc(doc(db, "supportTickets", ticketId), { status: 'in_progress' });
         
-        // ✅ ADD THIS BLOCK to trigger the notification Netlify Function
         const user = auth.currentUser;
         if (user) {
             const token = await user.getIdToken();
