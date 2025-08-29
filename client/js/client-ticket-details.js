@@ -1,7 +1,7 @@
 // FILE: /client/js/client-ticket-details.js
 import { auth, db } from '/js/firebase-config.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { doc, getDoc, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { doc, getDoc, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 document.addEventListener('componentsLoaded', () => {
     const subjectTitle = document.getElementById('ticket-subject-title');
@@ -14,6 +14,14 @@ document.addEventListener('componentsLoaded', () => {
     const ticketId = urlParams.get('id');
 
     if (!ticketId) { subjectTitle.textContent = "Ticket Not Found"; return; }
+
+
+        const formatTimestamp = (timestamp) => {
+        if (!timestamp || !timestamp.toDate) return '';
+        return timestamp.toDate().toLocaleString('en-US', {
+            year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+    };
 
     onAuthStateChanged(auth, async (user) => {
         if (user) {
@@ -32,14 +40,25 @@ document.addEventListener('componentsLoaded', () => {
 
             const repliesQuery = query(collection(db, "supportTickets", ticketId, "replies"), orderBy("sentAt", "asc"));
             onSnapshot(repliesQuery, (snapshot) => {
-                let html = `<div class="message-bubble user"><div class="message-header">You</div><p class="message-body">${ticketData.message}</p></div>`;
-                snapshot.forEach(doc => {
-                    const reply = doc.data();
-                    const author = reply.author === 'user' ? 'You' : 'Support Team';
-                    html += `<div class="message-bubble ${reply.author}"><div class="message-header">${author}</div><p class="message-body">${reply.message}</p></div>`;
+                let html = `
+                        <div class="message-bubble user">
+                            <div class="message-header">You (${ticketData.userName})</div>
+                            <p class="message-body">${ticketData.message}</p>
+                            <div class="message-timestamp">${formatTimestamp(ticketData.submittedAt)}</div>
+                        </div>`;
+snapshot.forEach(doc => {
+                        const reply = doc.data();
+                        const authorClass = reply.author === 'user' ? 'user' : 'admin';
+                        const authorName = reply.author === 'user' ? `You (${ticketData.userName})` : 'Support Team';
+                        html += `
+                            <div class="message-bubble ${authorClass}">
+                                <div class="message-header">${authorName}</div>
+                                <p class="message-body">${reply.message}</p>
+                                <div class="message-timestamp">${formatTimestamp(reply.sentAt)}</div>
+                            </div>`;
+                    });
+                    conversationThread.innerHTML = html;
                 });
-                conversationThread.innerHTML = html;
-            });
 
             replyForm.addEventListener('submit', async (e) => {
                 e.preventDefault();

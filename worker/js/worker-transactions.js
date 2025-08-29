@@ -1,4 +1,4 @@
-// FILE: /js/client-transactions.js
+// FILE: /worker/js/worker-transactions.js
 
 import { auth, db } from '/js/firebase-config.js';
 import { collection, query, where, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -10,7 +10,7 @@ document.addEventListener('componentsLoaded', () => {
     const filterButtons = document.querySelectorAll('.filter-btn');
 
     let currentUserId = null;
-    let transactionsUnsubscribe = null; // To store the listener unsubscribe function
+    let transactionsUnsubscribe = null;
 
     const renderTransactions = (transactions) => {
         if (!listContainer) return;
@@ -21,24 +21,26 @@ document.addEventListener('componentsLoaded', () => {
 
         listContainer.innerHTML = transactions.map(tx => {
             const isCredit = tx.amount > 0;
-            const amountSign = isCredit ? '+' : '';
+            const amountSign = isCredit ? '+' : '-';
             const amountColor = isCredit ? 'credit' : 'debit';
             
             let iconClass = 'info';
             let iconSymbol = 'fa-info-circle';
 
+            // ✅ UPDATED: Icon logic for worker transaction types
             switch (tx.type) {
-                case 'deposit':
+                case 'job_payout':
                     iconClass = 'credit';
-                    iconSymbol = 'fa-arrow-down';
+                    iconSymbol = 'fa-sack-dollar';
                     break;
-                case 'job_posting':
+                case 'withdrawal':
                     iconClass = 'debit';
-                    iconSymbol = 'fa-arrow-up';
+                    iconSymbol = 'fa-arrow-up-from-bracket';
                     break;
-                case 'deposit_adjustment':
+                case 'bonus':
+                case 'adjustment':
                     iconClass = 'info';
-                    iconSymbol = 'fa-pen-to-square';
+                    iconSymbol = 'fa-gift';
                     break;
             }
 
@@ -59,19 +61,17 @@ document.addEventListener('componentsLoaded', () => {
     
     const fetchTransactions = (filterType = 'all') => {
         if (!currentUserId) return;
-
-        // Unsubscribe from the previous listener before creating a new one
         if (transactionsUnsubscribe) {
             transactionsUnsubscribe();
         }
 
+        // ✅ UPDATED: Query now uses 'workerId' instead of 'clientId'
         let q = query(
             collection(db, "transactions"), 
-            where("clientId", "==", currentUserId), 
+            where("workerId", "==", currentUserId), 
             orderBy("createdAt", "desc")
         );
         
-        // Add the type filter if it's not 'all'
         if (filterType !== 'all') {
             q = query(q, where("type", "==", filterType));
         }
@@ -96,11 +96,8 @@ document.addEventListener('componentsLoaded', () => {
 
     filterButtons.forEach(button => {
         button.addEventListener('click', () => {
-            // Update active class on buttons
             filterButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
-            
-            // Fetch data with the new filter
             const filterType = button.dataset.filter;
             fetchTransactions(filterType);
         });
@@ -109,7 +106,7 @@ document.addEventListener('componentsLoaded', () => {
     onAuthStateChanged(auth, (user) => {
         if (user) {
             currentUserId = user.uid;
-            fetchTransactions(); // Fetch initial data with 'all' filter
+            fetchTransactions();
         } else {
             window.location.href = '/login.html';
         }

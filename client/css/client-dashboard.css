@@ -120,14 +120,7 @@
     font-size: 0.9rem;
 }
 
-.list-content .empty-list-message {
-    background: var(--client-card-bg);
-    border: 1px solid var(--client-card-border);
-    border-radius: 0.75rem;
-    padding: 2rem;
-    text-align: center;
-    color: var(--client-text-secondary);
-}
+
 
 /* --- Job Item Card Style --- */
 .list-item-card {

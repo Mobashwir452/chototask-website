@@ -42,3 +42,24 @@
     outline: none;
     border-color: #00FFCD; /* Adds a highlight when typing */
 }
+
+
+
+
+/* --- Timestamp for Messages --- */
+.message-timestamp {
+    font-size: 0.75rem;
+    opacity: 0.8;
+    text-align: right;
+    margin-top: 0.75rem;
+}
+
+/* Timestamp color for admin/support messages */
+.message-bubble.admin .message-timestamp {
+    color: var(--client-text-secondary);
+}
+
+/* Timestamp color for user's own messages */
+.message-bubble.user .message-timestamp {
+    color: rgba(255, 255, 255, 0.7);
+}

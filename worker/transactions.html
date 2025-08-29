@@ -8,13 +8,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <link rel="stylesheet" href="/client/css/client.css">
-    <link rel="stylesheet" href="/client/css/client-transactions.css">
+    <link rel="stylesheet" href="/worker/css/worker.css">
+    <link rel="stylesheet" href="/worker/css/worker-transactions.css">
 </head>
-<body class="client-page">
-    
-    <header id="client-header-placeholder"></header>
-    <div id="client-menu-placeholder"></div>
+<body class="client-page"> <header id="worker-header-placeholder"></header>
+    <div id="worker-menu-placeholder"></div>
 
     <main>
         <div class="block">
@@ -33,9 +31,9 @@
             <section class="container">
                 <div class="transaction-filters">
                     <button class="filter-btn active" data-filter="all">All</button>
-                    <button class="filter-btn" data-filter="deposit">Deposits</button>
-                    <button class="filter-btn" data-filter="job_posting">Spending</button>
-                    <button class="filter-btn" data-filter="deposit_adjustment">Adjustments</button>
+                    <button class="filter-btn" data-filter="job_payout">Earnings</button>
+                    <button class="filter-btn" data-filter="withdrawal">Withdrawals</button>
+                    <button class="filter-btn" data-filter="adjustment">Adjustments</button>
                 </div>
 
                 <div class="list-content" id="transaction-list-container">
@@ -45,10 +43,10 @@
         </div>
     </main>
 
-    <div id="client-bottom-nav-placeholder"></div>
+    <div id="worker-bottom-nav-placeholder"></div>
 
     <script src="/js/component-loader.js"></script>
-    <script src="/client/js/client-shell.js" type="module"></script>
-    <script src="/client/js/client-transactions.js" type="module"></script>
+    <script src="/worker/js/worker-shell.js" type="module"></script>
+    <script src="/worker/js/worker-transactions.js" type="module"></script>
 </body>
 </html>
