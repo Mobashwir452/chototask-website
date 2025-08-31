@@ -15,13 +15,7 @@
     <div id="worker-menu-placeholder"></div>
 
     <main>
-        <div class="block">
-            <section class="page-hero">
-                <div class="page-hero__icon"><div class="icon-layer icon-layer--bottom"></div><div class="icon-layer icon-layer--middle"></div><div class="icon-layer icon-layer--top"></div></div>
-                <h1 class="page-hero__title">Find Your Next Task</h1>
-                <p class="page-hero__subtitle">Browse all available jobs and start earning today.</p>
-            </section>
-        </div>
+
 
         <div class="block">
             <section class="container">
@@ -32,20 +26,24 @@
                     </div>
                     <div class="filter-group">
                         <label for="category-filter">Category</label>
-                        <select id="category-filter">
-                            <option value="all">All Categories</option>
-                            <option value="Social Media">Social Media</option>
-                            <option value="Content Engagement">Content Engagement</option>
-                            <option value="Data Entry">Data Entry</option>
+                        <div class="select-wrapper">
+                            <select id="category-filter">
+                                <option value="all">All Categories</option>
+                                <option value="social-media">Social Media</option>
+                                <option value="content-engagement">Content Engagement</option>
+                                <option value="data-entry">Data Entry</option>
                             </select>
+                        </div>
                     </div>
-                    <div class="filter-group">
+               <div class="filter-group">
                         <label for="sort-filter">Sort By</label>
-                        <select id="sort-filter">
-                            <option value="newest">Newest First</option>
-                            <option value="payout_high">Highest Payout</option>
-                            <option value="payout_low">Lowest Payout</option>
-                        </select>
+                        <div class="select-wrapper">
+                            <select id="sort-filter">
+                                <option value="newest">Newest First</option>
+                                <option value="payout_high">Highest Payout</option>
+                                <option value="payout_low">Lowest Payout</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 

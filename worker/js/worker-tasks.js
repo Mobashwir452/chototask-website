@@ -23,69 +23,131 @@ document.addEventListener('componentsLoaded', () => {
         return map[category] || map['default'];
     };
 
-    const renderTasks = (tasks) => {
-        if (!taskListContainer) return;
-        if (tasks.length === 0) {
-            taskListContainer.innerHTML = `<p class="empty-list-message">No jobs found matching your criteria.</p>`;
-            return;
-        }
+// === REPLACE THE OLD renderTasks FUNCTION WITH THIS NEW ONE ===
 
-        taskListContainer.innerHTML = tasks.map(task => {
-            const completed = task.submissionsApproved || 0;
-            const needed = task.workersNeeded || 1;
-            const progress = needed > 0 ? (completed / needed) * 100 : 0;
-            const approvalTime = task.approvalTime || '24 Hours';
-            const categoryIcon = getCategoryIcon(task.category);
+const renderTasks = (tasks) => {
+    if (!taskListContainer) return;
+    if (tasks.length === 0) {
+        taskListContainer.innerHTML = `<p class="empty-list-message">No jobs found matching your criteria.</p>`;
+        return;
+    }
 
-            // This single HTML structure powers both mobile and desktop views
-            return `
-                <a href="/worker/job-details.html?id=${task.id}" class="task-card">
-                    <div class="task-card__icon mobile-only">
-                        <i class="fa-solid ${categoryIcon}"></i>
-                    </div>
-                    <div class="task-card__content mobile-only">
-                        <div class="task-card__header">
-                            <span class="task-card__title">${task.title}</span>
-                            <span class="task-card__payout">৳${task.costPerWorker}</span>
-                        </div>
-                        </div>
-                    <div class="task-card__chevron mobile-only">
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </div>
+    taskListContainer.innerHTML = tasks.map(task => {
+        const completed = task.submissionsApproved || 0;
+        const needed = task.workersNeeded || 1;
+        const progress = needed > 0 ? (completed / needed) * 100 : 0;
+        const approvalTime = task.approvalTime || '24 Hours';
 
-                    <div class="desktop-only task-card__identity">
-                        <h3 class="task-card__title">${task.title}</h3>
-                        <span class="task-card__category">${task.category}</span>
-                    </div>
-                    <div class="desktop-only task-card__stats">
-                        <div class="stat-item">
-                            <div class="stat-label"><i class="stat-icon fa-solid fa-hand-holding-dollar"></i> Payout</div>
-                            <strong>৳${task.costPerWorker}</strong>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-label"><i class="stat-icon fa-solid fa-calendar-day"></i> Posted</div>
-                            <strong>${timeAgo(task.createdAt.toDate())}</strong>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-label"><i class="stat-icon fa-solid fa-users"></i> Slots</div>
+        // --- Desktop Card HTML (No Change) ---
+        const desktopCardHTML = `
+            <a href="/worker/job-details.html?id=${task.id}" class="task-card desktop-only">
+                <div class="task-card__header">
+                    <h3 class="task-card__title">${task.title}</h3>
+                    <span class="task-card__category">${task.category}</span>
+                </div>
+                <div class="task-card__stats">
+                    <div class="stat-item">
+                        <i class="stat-icon fa-solid fa-users"></i>
+                        <div class="stat-text">
+                            <span class="stat-label">Slots</span>
                             <strong>${completed}/${needed}</strong>
                         </div>
-                        <div class="stat-item">
-                            <div class="stat-label"><i class="stat-icon fa-solid fa-clock"></i> Approval</div>
+                    </div>
+                    <div class="stat-item">
+                        <i class="stat-icon fa-solid fa-calendar-day"></i>
+                        <div class="stat-text">
+                            <span class="stat-label">Posted</span>
+                            <strong>${timeAgo(task.createdAt.toDate())}</strong>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <i class="stat-icon fa-solid fa-clock"></i>
+                        <div class="stat-text">
+                            <span class="stat-label">Approval</span>
                             <strong>${approvalTime}</strong>
                         </div>
                     </div>
-                    <div class="desktop-only task-card__action">
-                        <div class="btn-view-task">View Task</div>
-                        <div class="progress-container">
-                             <div class="progress-labels"><span>Filled</span><span>${progress.toFixed(0)}%</span></div>
-                             <div class="progress-bar"><div class="progress-bar__fill" style="width: ${progress.toFixed(2)}%;"></div></div>
+                    <div class="stat-item">
+                        <i class="stat-icon fa-solid fa-hand-holding-dollar"></i>
+                        <div class="stat-text">
+                            <span class="stat-label">Payout</span>
+                            <strong>৳${task.costPerWorker}</strong>
                         </div>
                     </div>
-                </a>
-            `;
-        }).join('');
-    };
+                </div>
+                <div class="task-card__footer">
+                    <div class="progress-container">
+                        <div class="progress-labels">
+                            <span>Progress</span>
+                            <span>${progress.toFixed(0)}%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-bar__fill" style="width: ${progress.toFixed(2)}%;"></div>
+                        </div>
+                    </div>
+                    <div class="btn-view-task">View Task</div>
+                </div>
+            </a>
+        `;
+
+        // --- NEW: Mobile Card HTML (With Icons and Progress Bar) ---
+        const mobileCardHTML = `
+            <a href="/worker/job-details.html?id=${task.id}" class="task-card mobile-only">
+                <div class="task-card__header">
+                    <h3 class="task-card__title">${task.title}</h3>
+                    <span class="task-card__category">${task.category}</span>
+                </div>
+                <div class="task-card__stats-grid">
+                    <div class="stat-item-mobile">
+                        <i class="fa-solid fa-hand-holding-dollar stat-icon-mobile"></i>
+                        <div class="stat-text-mobile">
+                            <span class="stat-label-mobile">Payout</span>
+                            <strong>৳${task.costPerWorker}</strong>
+                        </div>
+                    </div>
+                    <div class="stat-item-mobile">
+                        <i class="fa-solid fa-users stat-icon-mobile"></i>
+                        <div class="stat-text-mobile">
+                            <span class="stat-label-mobile">Slots</span>
+                            <strong>${completed}/${needed}</strong>
+                        </div>
+                    </div>
+                    <div class="stat-item-mobile">
+                        <i class="fa-solid fa-calendar-day stat-icon-mobile"></i>
+                        <div class="stat-text-mobile">
+                            <span class="stat-label-mobile">Posted</span>
+                            <strong>${timeAgo(task.createdAt.toDate())}</strong>
+                        </div>
+                    </div>
+                    <div class="stat-item-mobile">
+                        <i class="fa-solid fa-clock stat-icon-mobile"></i>
+                        <div class="stat-text-mobile">
+                            <span class="stat-label-mobile">Approval</span>
+                            <strong>${approvalTime}</strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="mobile-progress-and-button">
+                    <div class="progress-container-mobile">
+                        <div class="progress-labels-mobile">
+                            <span>Progress</span>
+                            <span>${progress.toFixed(0)}%</span>
+                        </div>
+                        <div class="progress-bar-mobile">
+                            <div class="progress-bar__fill-mobile" style="width: ${progress.toFixed(2)}%;"></div>
+                        </div>
+                    </div>
+                    <div class="btn-view-task">View Task</div>
+                </div>
+            </a>
+        `;
+
+        return desktopCardHTML + mobileCardHTML;
+    }).join('');
+};
+
+
+
 
     const fetchAndRenderTasks = async () => {
         const category = categoryFilter.value;

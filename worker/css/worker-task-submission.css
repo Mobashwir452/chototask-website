@@ -1,0 +1,32 @@
+/* === FILE: /worker/css/worker-task-submission.css === */
+
+.loading-title { text-align: center; color: var(--client-text-secondary); margin-top: 3rem; }
+
+.submission-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding-top: 2rem;
+}
+@media (min-width: 992px) {
+    .submission-layout { flex-direction: row; align-items: flex-start; }
+    .submission-guidance-column { flex: 1; position: sticky; top: 80px; }
+    .submission-form-column { flex: 1; }
+}
+
+/* Guidance Column */
+.guidance-card { background: var(--client-card-bg); border-radius: 1rem; padding: 1.5rem; }
+.guidance-card h3 { font-size: 1.2rem; color: #00FFCD; margin: 0 0 1rem 0; }
+.guidance-card ul { list-style-type: decimal; padding-left: 1.5rem; margin: 0; color: var(--client-text-secondary); }
+.guidance-card ul:not(:last-child) { margin-bottom: 1.5rem; }
+
+/* Proof Form */
+.proof-submission-form { background: var(--client-card-bg); padding: 1.5rem; border-radius: 1rem; border: 1px solid var(--client-card-border); }
+.proof-submission-form h3 { font-size: 1.5rem; margin: 0 0 1.5rem 0; border-left: 4px solid #00FFCD; padding-left: 1rem; }
+.proof-group { margin-bottom: 1.5rem; }
+.proof-group label { display: block; font-weight: 500; margin-bottom: 0.5rem; }
+.proof-group label .proof-type { font-size: 0.8rem; color: var(--client-text-secondary); }
+.proof-input { width: 100%; padding: 0.8rem; background: rgba(0,0,0,0.2); border: 1px solid var(--client-card-border); border-radius: 0.5rem; color: var(--client-text-primary); font-size: 1rem; font-family: inherit; }
+textarea.proof-input { min-height: 100px; resize: vertical; }
+.proof-input:focus { outline: none; border-color: #00FFCD; }
+.btn-submit { display: block; width: 100%; text-align: center; padding: 0.8rem; border-radius: 0.5rem; font-weight: 700; text-decoration: none; background: var(--client-accent-gradient); color: var(--client-text-dark); font-size: 1rem; border: none; }
