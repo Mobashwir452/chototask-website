@@ -103,7 +103,7 @@ document.addEventListener('componentsLoaded', () => {
                         <strong>${job.clientId.substring(0, 8)}... <button class="copy-btn" id="copy-client-id" title="Copy Client ID"><i class="fa-solid fa-copy"></i></button></strong>
                     </div>
                 </div>
-                <a href="/profile.html?id=${job.clientId}" class="stat-item clickable">
+                <a href="/worker/client-profile.html?id=${job.clientId}" class="stat-item clickable">
                     <i class="stat-icon fa-solid fa-user-circle"></i>
                     <div class="stat-text"><span class="stat-label">Client Profile</span><strong>View Profile</strong></div>
                 </a>

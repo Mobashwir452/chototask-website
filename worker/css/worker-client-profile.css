@@ -1,0 +1,112 @@
+/* === FILE: /worker/css/worker-client-profile.css === */
+
+.loading-title { text-align: center; color: var(--client-text-secondary); margin-top: 3rem; }
+.section-card {
+    background: var(--client-card-bg);
+    border: 1px solid var(--client-card-border);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+/* --- Client Summary Card --- */
+.client-summary-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+.summary-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--client-card-border);
+    margin-bottom: 1rem;
+}
+.summary-username {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem 0;
+}
+.summary-meta {
+    color: var(--client-text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+.summary-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+.summary-rating .fa-star {
+    color: #F2C94C; /* Yellow for stars */
+}
+
+/* --- Stats Card --- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+@media (min-width: 992px) {
+    .stats-grid { grid-template-columns: repeat(4, 1fr); }
+}
+.stat-item { text-align: center; }
+.stat-item .stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--client-text-primary);
+    margin-bottom: 0.25rem;
+}
+.stat-item .stat-label {
+    font-size: 0.8rem;
+    color: var(--client-text-secondary);
+}
+
+/* --- About & Reviews Section --- */
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 1rem 0;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--client-card-border);
+}
+.about-text {
+    color: var(--client-text-secondary);
+    line-height: 1.7;
+}
+.review-card {
+    background: rgba(0,0,0,0.2);
+    padding: 1rem;
+    border-radius: 0.75rem;
+    margin-bottom: 1rem;
+}
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+.review-author { font-weight: 600; }
+.review-rating { font-size: 0.9rem; }
+.review-comment { font-size: 0.9rem; color: var(--client-text-secondary); }
+
+/* --- Active Jobs Section --- */
+.job-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(0,0,0,0.2);
+    border-radius: 0.5rem;
+    text-decoration: none;
+    color: var(--client-text-primary);
+    transition: background-color 0.2s ease;
+}
+.job-list-item:not(:last-child) { margin-bottom: 1rem; }
+.job-list-item:hover { background-color: rgba(0, 255, 205, 0.05); }
+.job-item-title { font-weight: 600; }
+.job-item-payout { font-weight: 700; color: #00FFCD; }
