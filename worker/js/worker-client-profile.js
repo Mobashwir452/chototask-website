@@ -22,23 +22,34 @@ document.addEventListener('componentsLoaded', () => {
         return;
     }
 
-    const renderSummary = (data) => {
-        const joinDate = data.memberSince ? data.memberSince.toDate().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'N/A';
-        const stats = data.stats || {};
-        const rating = stats.rating ? stats.rating.toFixed(1) : 'N/A';
-        const reviewCount = stats.reviewCount || 0;
+    // REPLACE this entire function in /worker/js/worker-client-profile.js
 
-        summaryContainer.className = 'section-card client-summary-card';
-        summaryContainer.innerHTML = `
-            <img src="${data.photoURL || 'https://via.placeholder.com/100'}" alt="Client Avatar" class="summary-avatar">
-            <h1 class="summary-username">${data.username || 'Client'}</h1>
-            <p class="summary-meta">${data.country || 'Unknown Location'} &bull; Joined ${joinDate}</p>
-            <div class="summary-rating">
-                <i class="fa-solid fa-star"></i>
-                <span>${rating}/5 (${reviewCount} reviews)</span>
-            </div>
-        `;
-    };
+const renderSummary = (data) => {
+    const joinDate = data.memberSince ? data.memberSince.toDate().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'N/A';
+    const stats = data.stats || {};
+    const rating = (stats.rating || 0).toFixed(1);
+    const reviewCount = stats.reviewCount || 0;
+
+    let avatarHTML = '';
+    if (data.photoURL) {
+        avatarHTML = `<img src="${data.photoURL}" alt="Client Avatar" class="summary-avatar">`;
+    } else {
+        const initial = data.fullName ? data.fullName.charAt(0).toUpperCase() : '?';
+        avatarHTML = `<div class="summary-avatar-placeholder">${initial}</div>`;
+    }
+
+    summaryContainer.className = 'section-card client-summary-card';
+    summaryContainer.innerHTML = `
+        ${avatarHTML}
+        <h1 class="summary-username">${data.fullName || 'Client'}</h1>
+        <p class="summary-meta">${data.country || 'Unknown Location'} &bull; Joined ${joinDate}</p>
+        <div class="summary-rating">
+            <i class="fa-solid fa-star"></i>
+            <span>${rating}/5 (${reviewCount} reviews)</span>
+        </div>
+    `;
+};
+
 
     const renderStats = (data) => {
         const stats = data.stats || {};
