@@ -1,23 +1,24 @@
-// === FILE: netlify/functions/update-existing-users.js ===
+// === FILE: netlify/functions/update-existing-users.js (CORRECTED) ===
 
 const admin = require('firebase-admin');
 
-// Initialize Firebase Admin SDK
-// Ensure your Netlify environment variables are set for these
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert({
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-    }),
-  });
+// --- NEW INITIALIZATION LOGIC ---
+// This will now parse the single environment variable
+try {
+  if (!admin.apps.length) {
+    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
+    });
+  }
+} catch (e) {
+  console.error('Firebase admin initialization error', e.stack);
 }
+// --- END OF NEW LOGIC ---
 
 const db = admin.firestore();
 
 exports.handler = async (event, context) => {
-  // Simple security check to prevent unauthorized runs
   const { secret } = event.queryStringParameters;
   if (secret !== process.env.MIGRATION_SECRET) {
     return { statusCode: 401, body: 'Unauthorized' };
@@ -38,21 +39,10 @@ exports.handler = async (event, context) => {
       const userData = doc.data();
       const dataToUpdate = {};
 
-      // Check for each new field and add if it's missing
-      if (!userData.photoURL) {
-        dataToUpdate.photoURL = "";
-      }
-      if (!userData.country) {
-        dataToUpdate.country = "";
-      }
-      if (!userData.aboutMe) {
-        dataToUpdate.aboutMe = "";
-      }
-      // Use createdAt if memberSince is missing
-      if (!userData.memberSince) {
-        dataToUpdate.memberSince = userData.createdAt || admin.firestore.FieldValue.serverTimestamp();
-      }
-      // Check if the stats object is missing
+      if (userData.photoURL === undefined) { dataToUpdate.photoURL = ""; }
+      if (userData.country === undefined) { dataToUpdate.country = ""; }
+      if (userData.aboutMe === undefined) { dataToUpdate.aboutMe = ""; }
+      if (!userData.memberSince) { dataToUpdate.memberSince = userData.createdAt || admin.firestore.FieldValue.serverTimestamp(); }
       if (!userData.stats) {
         dataToUpdate.stats = {
           jobsPosted: 0,
@@ -63,14 +53,12 @@ exports.handler = async (event, context) => {
         };
       }
 
-      // If there are fields to update for this user, add to batch
       if (Object.keys(dataToUpdate).length > 0) {
         batch.update(doc.ref, dataToUpdate);
         updatedCount++;
       }
     });
 
-    // Commit all the updates at once
     await batch.commit();
 
     return {
