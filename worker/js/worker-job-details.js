@@ -1,4 +1,4 @@
-// === FILE: /worker/js/worker-task-details.js (FINAL VERSION - MODAL & PAYOUT FIX) ===
+// === FILE: /worker/js/worker-task-details.js (FINAL VERSION) ===
 
 import { auth, db } from '/js/firebase-config.js';
 import { doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -8,11 +8,11 @@ document.addEventListener('componentsLoaded', () => {
     
     const loadingContainer = document.getElementById('loading-container');
     const cardContainer = document.getElementById('task-details-card');
+    const stickyFooter = document.getElementById('sticky-footer');
     
     const urlParams = new URLSearchParams(window.location.search);
     const jobId = urlParams.get('id');
 
-    // --- Custom Modal Function ---
     function showModal(type, title, message) {
         let modalOverlay = document.getElementById('custom-notification-modal');
         if (!modalOverlay) {
@@ -28,21 +28,18 @@ document.addEventListener('componentsLoaded', () => {
                 </div>
             `;
             document.body.appendChild(modalOverlay);
-
             const closeModal = () => modalOverlay.classList.remove('is-visible');
             modalOverlay.querySelector('.modal-btn-ok').addEventListener('click', closeModal);
-            modalOverlay.addEventListener('click', (e) => {
-                if (e.target === modalOverlay) closeModal();
-            });
+            modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeModal(); });
         }
-
         const modalIcon = modalOverlay.querySelector('.modal-icon');
-        modalIcon.className = `modal-icon ${type}`; // e.g., 'success' or 'error'
+        modalIcon.className = `modal-icon ${type}`;
         modalOverlay.querySelector('.modal-title').textContent = title;
         modalOverlay.querySelector('.modal-message').textContent = message;
         modalOverlay.classList.add('is-visible');
     }
 
+    // --- RENDER FUNCTION ---
     const renderPageContent = (job) => {
         const approvedCount = job.submissionsApproved || 0;
         const neededCount = job.workersNeeded || 1;
@@ -63,13 +60,18 @@ document.addEventListener('componentsLoaded', () => {
                 <button class="accordion-header"><span>Required Proofs</span><i class="fa-solid fa-chevron-down"></i></button>
                 <div class="accordion-content"><ul>${job.proofs.map(p => `<li>${p.instruction} <strong>(${p.type})</strong></li>`).join('')}</ul></div>
             </div>`;
-
-        const proofFormHTML = `
-            <div class="proof-submission-form">
-                <h3>Start This Task</h3>
-                <p>Click the button below to proceed to the submission page where you can provide the required proofs.</p>
-                <a href="/worker/task-submission.html?id=${jobId}" class="btn-submit">Start Task & Submit Proof</a>
-            </div>`;
+        
+        const warningBoxHTML = `
+            <div class="warning-box">
+                <i class="warning-icon fa-solid fa-triangle-exclamation"></i>
+                <div class="warning-text">
+                    <h4>Please Note</h4>
+                    <p>Before starting, please carefully review all instructions, rules, and proof requirements. Failure to comply may result in a permanent account ban.</p>
+                </div>
+            </div>
+        `;
+        
+        const actionButtonHTML = `<a href="/worker/task-submission.html?id=${jobId}" class="btn-submit">Start Task & Submit Proof</a>`;
 
         cardContainer.innerHTML = `
             <div class="overview-header">
@@ -80,7 +82,6 @@ document.addEventListener('componentsLoaded', () => {
                 </div>
                 <span class="job-category">${job.category}</span>
             </div>
-
             <div class="highlighted-payout">
                 <i class="payout-icon fa-solid fa-hand-holding-dollar"></i>
                 <div class="stat-text">
@@ -88,7 +89,6 @@ document.addEventListener('componentsLoaded', () => {
                     <strong>৳${job.costPerWorker}</strong>
                 </div>
             </div>
-            
             <div class="overview-stats-grid">
                 <div class="stat-item"><i class="stat-icon fa-solid fa-users"></i><div class="stat-text"><span class="stat-label">Workers Filled</span><strong>${approvedCount}/${neededCount}</strong></div></div>
                 <div class="stat-item"><i class="stat-icon fa-solid fa-calendar-day"></i><div class="stat-text"><span class="stat-label">Posted</span><strong>Just Now</strong></div></div>
@@ -108,17 +108,17 @@ document.addEventListener('componentsLoaded', () => {
                     <div class="stat-text"><span class="stat-label">Client Profile</span><strong>View Profile</strong></div>
                 </a>
             </div>
-
             <div class="overview-progress">
                 <div class="progress-labels"><span>Completion</span><strong>${progress.toFixed(0)}%</strong></div>
                 <div class="progress-bar"><div class="progress-bar__fill" style="width: ${progress.toFixed(2)}%;"></div></div>
             </div>
-
             <div class="card-body-layout">
                 <div class="job-information-column">${accordionHTML}</div>
-                <div class="job-action-column">${proofFormHTML}</div>
+                <div class="job-action-column">${warningBoxHTML}</div>
             </div>
         `;
+
+        stickyFooter.innerHTML = actionButtonHTML;
         
         addEventListeners(job);
     };
@@ -137,23 +137,18 @@ document.addEventListener('componentsLoaded', () => {
                 }
             });
         });
-
         document.getElementById('copy-task-id').addEventListener('click', () => {
             navigator.clipboard.writeText(jobId).then(() => {
                 showModal('success', 'Copied!', 'Task ID has been copied to your clipboard.');
-            }).catch(() => {
-                showModal('error', 'Failed', 'Could not copy Task ID.');
-            });
+            }).catch(() => { showModal('error', 'Failed', 'Could not copy Task ID.'); });
         });
         document.getElementById('copy-client-id').addEventListener('click', () => {
             navigator.clipboard.writeText(job.clientId).then(() => {
                 showModal('success', 'Copied!', 'Client ID has been copied to your clipboard.');
-            }).catch(() => {
-                showModal('error', 'Failed', 'Could not copy Client ID.');
-            });
+            }).catch(() => { showModal('error', 'Failed', 'Could not copy Client ID.'); });
         });
     }
-
+    
     onAuthStateChanged(auth, (user) => {
         if (user) {
             onSnapshot(doc(db, "jobs", jobId), (docSnap) => {
@@ -161,6 +156,7 @@ document.addEventListener('componentsLoaded', () => {
                     renderPageContent(docSnap.data());
                     loadingContainer.style.display = 'none';
                     cardContainer.style.display = 'block';
+                    stickyFooter.style.display = 'block';
                 } else {
                     loadingContainer.innerHTML = `<h1 class="loading-title">Job Not Found</h1>`;
                 }

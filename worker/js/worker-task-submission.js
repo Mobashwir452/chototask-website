@@ -1,14 +1,15 @@
-// === FILE: /worker/js/worker-task-submission.js (CORRECTED) ===
+// === FILE: /worker/js/worker-task-submission.js ===
 
 import { auth, db, storage } from '/js/firebase-config.js';
-import { doc, onSnapshot, collection, addDoc, serverTimestamp, runTransaction, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { doc, getDoc, collection, addDoc, serverTimestamp, runTransaction, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 document.addEventListener('componentsLoaded', () => {
 
     const loadingContainer = document.getElementById('loading-container');
-    const submissionLayout = document.getElementById('submission-layout');
+    const submissionCard = document.getElementById('submission-card');
+    const headerContainer = document.getElementById('card-header-container');
     const guidanceContainer = document.getElementById('submission-guidance');
     const proofFormContainer = document.getElementById('proof-form-container');
 
@@ -21,48 +22,99 @@ document.addEventListener('componentsLoaded', () => {
         return;
     }
 
+// REPLACE the old renderHeader function with this new one
+
+// REPLACE the old renderHeader function with this new one
+
+const renderHeader = (job) => {
+    headerContainer.innerHTML = `
+        <div class="submission-header">
+            <a href="/worker/job-details.html?id=${jobId}" class="back-btn">
+                <i class="fa-solid fa-arrow-left"></i> Back to Task Details
+            </a>
+            <div class="task-payout">
+                <i class="fa-solid fa-hand-holding-dollar"></i>
+                <strong>৳${job.costPerWorker}</strong>
+            </div>
+        </div>`;
+};
+
     const renderGuidance = (job) => {
         guidanceContainer.innerHTML = `
-            <div class="guidance-card">
-                <h3>Task Instructions</h3>
-                <ul>${job.instructions.map(i => `<li>${i}</li>`).join('')}</ul>
-                <h3>Task Rules</h3>
-                <ul>${job.restrictions.map(r => `<li>${r}</li>`).join('')}</ul>
-            </div>`;
-    };
-
-    const renderProofForm = (job) => {
-        const proofFieldsHTML = job.proofs.map((proof, index) => {
-            let fieldHTML = '';
-            const inputId = `proof-input-${index}`;
-            switch(proof.type) {
-                case 'screenshot':
-                    fieldHTML = `<input type="file" id="${inputId}" class="proof-input" accept="image/*" required data-type="screenshot" data-instruction="${proof.instruction}">`;
-                    break;
-                case 'link':
-                    fieldHTML = `<input type="url" id="${inputId}" class="proof-input" placeholder="https://..." required data-type="link" data-instruction="${proof.instruction}">`;
-                    break;
-                case 'text':
-                default:
-                    fieldHTML = `<textarea id="${inputId}" class="proof-input" placeholder="Enter text proof..." required data-type="text" data-instruction="${proof.instruction}"></textarea>`;
-            }
-            return `
-                <div class="proof-group">
-                    <label for="${inputId}">${proof.instruction} <span class="proof-type">(${proof.type})</span></label>
-                    ${fieldHTML}
-                </div>`;
-        }).join('');
-
-        proofFormContainer.innerHTML = `
-            <form id="proof-submission-form" class="proof-submission-form">
-                <h3>Submit Your Proof</h3>
-                ${proofFieldsHTML}
-                <button type="submit" class="btn-submit" id="main-submit-btn">Submit Proof</button>
-            </form>
+            <div class="accordion">
+                <button class="accordion-header active"><span>Task Instructions</span><i class="fa-solid fa-chevron-down"></i></button>
+                <div class="accordion-content open" style="max-height: 500px;"><ul>${job.instructions.map(i => `<li>${i}</li>`).join('')}</ul></div>
+            </div>
+            <div class="accordion">
+                <button class="accordion-header"><span>Task Rules</span><i class="fa-solid fa-chevron-down"></i></button>
+                <div class="accordion-content"><ul>${job.restrictions.map(r => `<li>${r}</li>`).join('')}</ul></div>
+            </div>
+             <div class="accordion">
+                <button class="accordion-header"><span>Required Proofs</span><i class="fa-solid fa-chevron-down"></i></button>
+                <div class="accordion-content"><ul>${job.proofs.map(p => `<li>${p.instruction} <strong>(${p.type})</strong></li>`).join('')}</ul></div>
+            </div>
         `;
-        // Attach listener after form is in the DOM
-        proofFormContainer.querySelector('#proof-submission-form').addEventListener('submit', handleProofSubmit);
     };
+
+ // REPLACE the old renderProofForm function with this new one
+
+const renderProofForm = (job) => {
+    const proofFieldsHTML = job.proofs.map((proof, index) => {
+        let fieldHTML = '';
+        const inputId = `proof-input-${index}`;
+        switch(proof.type) {
+            case 'screenshot':
+                // NEW: Custom file input structure
+                fieldHTML = `
+                    <div class="file-input-wrapper">
+                        <label for="${inputId}" class="btn-file-upload">
+                            <i class="fa-solid fa-image"></i> Choose File
+                        </label>
+                        <span id="file-name-${index}" class="file-name">No file chosen</span>
+                        <input type="file" id="${inputId}" class="proof-input-hidden" accept="image/*" required data-type="screenshot" data-instruction="${proof.instruction}">
+                    </div>
+                `;
+                break;
+            case 'link':
+                fieldHTML = `<input type="url" id="${inputId}" class="proof-input" placeholder="https://..." required data-type="link" data-instruction="${proof.instruction}">`;
+                break;
+            case 'text':
+            default:
+                fieldHTML = `<textarea id="${inputId}" class="proof-input" placeholder="Enter text proof..." required data-type="text" data-instruction="${proof.instruction}"></textarea>`;
+        }
+        return `
+            <div class="proof-group">
+                <label for="${inputId}">${proof.instruction} <span class="proof-type">(${proof.type})</span></label>
+                ${fieldHTML}
+            </div>`;
+    }).join('');
+
+    proofFormContainer.innerHTML = `
+        <form id="proof-submission-form" class="proof-submission-form">
+            <h3>Submit Your Proof</h3>
+            ${proofFieldsHTML}
+            <button type="submit" class="btn-submit" id="main-submit-btn">Submit Proof</button>
+        </form>
+    `;
+
+    // Add event listener to the form
+    proofFormContainer.querySelector('#proof-submission-form').addEventListener('submit', handleProofSubmit);
+
+    // Add event listeners for custom file inputs to show the selected file's name
+    job.proofs.forEach((proof, index) => {
+        if (proof.type === 'screenshot') {
+            const fileInput = document.getElementById(`proof-input-${index}`);
+            const fileNameSpan = document.getElementById(`file-name-${index}`);
+            fileInput.addEventListener('change', () => {
+                if (fileInput.files.length > 0) {
+                    fileNameSpan.textContent = fileInput.files[0].name;
+                } else {
+                    fileNameSpan.textContent = 'No file chosen';
+                }
+            });
+        }
+    });
+};
 
     const handleProofSubmit = async (e) => {
         e.preventDefault();
@@ -105,20 +157,36 @@ document.addEventListener('componentsLoaded', () => {
         }
     };
 
-    onAuthStateChanged(auth, (user) => {
+    guidanceContainer.addEventListener('click', (e) => {
+        const header = e.target.closest('.accordion-header');
+        if (header) {
+            header.classList.toggle('active');
+            const content = header.nextElementSibling;
+            content.classList.toggle('open');
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+            } else {
+                content.style.maxHeight = content.scrollHeight + 'px';
+            }
+        }
+    });
+
+    onAuthStateChanged(auth, async (user) => {
         if (user) {
             currentUser = user;
-            onSnapshot(doc(db, "jobs", jobId), (docSnap) => {
-                if (docSnap.exists()) {
-                    const jobData = docSnap.data();
-                    renderGuidance(jobData);
-                    renderProofForm(jobData);
-                    loadingContainer.style.display = 'none';
-                    submissionLayout.style.display = 'flex';
-                } else {
-                    loadingContainer.innerHTML = `<h1 class="loading-title">Job Not Found</h1>`;
-                }
-            });
+            const docRef = doc(db, "jobs", jobId);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                const jobData = docSnap.data();
+                renderHeader(jobData);
+                renderGuidance(jobData);
+                renderProofForm(jobData);
+                loadingContainer.style.display = 'none';
+                submissionCard.style.display = 'block';
+            } else {
+                loadingContainer.innerHTML = `<h1 class="loading-title">Job Not Found</h1>`;
+            }
         } else { window.location.href = '/login.html'; }
     });
 });

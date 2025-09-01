@@ -13,177 +13,128 @@
 }
 @media (min-width: 992px) { .task-details-card { padding: 2rem; } }
 
-/* Card Header */
-.overview-header { text-align: center; padding-bottom: 1.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--client-card-border); }
+/* Card Header & Stats */
+.overview-header { text-align: center; padding-bottom: 1.5rem; }
 .job-title { font-size: 1.75rem; margin: 0 0 0.5rem 0; line-height: 1.3; }
 .job-id-container { margin: 0 0 1rem 0; color: var(--client-text-secondary); font-family: monospace; display: flex; justify-content: center; align-items: center; gap: 0.5rem;}
 .copy-btn { background: none; border: none; color: var(--client-text-secondary); cursor: pointer; font-size: 0.9rem; }
 .copy-btn:hover { color: #00FFCD; }
 .job-category { background-color: rgba(0, 255, 205, 0.1); color: #00FFCD; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; display: inline-block; }
-
-/* Stats Section */
-.highlighted-payout {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1.5rem;
-    background: rgba(0, 255, 205, 0.05);
-    border: 1px solid rgba(0, 255, 205, 0.2);
-    border-radius: 0.75rem;
-    padding: 1.5rem;
-    text-align: center;
-}
-/* FIX: Payout icon specific style */
-.payout-icon {
-    font-size: 2.25rem; /* Icon ektu choto kora hoyeche */
-    color: #00FFCD;
-    flex-shrink: 0;
-    width: 64px;       /* Circle ektu boro kora hoyeche */
-    height: 64px;      /* Circle ektu boro kora hoyeche */
-    border-radius: 50%;
-    background-color: rgba(0, 0, 0, 0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+.highlighted-payout { display: flex; align-items: center; justify-content: center; gap: 1.5rem; background: rgba(0, 255, 205, 0.05); border: 1px solid rgba(0, 255, 205, 0.2); border-radius: 0.75rem; padding: 1.5rem; text-align: center; margin-top: 1.5rem; border-top: 1px solid var(--client-card-border); }
+.payout-icon { font-size: 2.25rem; color: #00FFCD; flex-shrink: 0; width: 64px; height: 64px; border-radius: 50%; background-color: rgba(0, 0, 0, 0.2); display: flex; align-items: center; justify-content: center; }
 .highlighted-payout .stat-text .stat-label { font-size: 1.1rem; }
 .highlighted-payout .stat-text strong { font-size: 2.5rem; font-weight: 700; color: #00FFCD; line-height: 1; }
-
-.overview-stats-grid { 
-    display: grid; 
-    grid-template-columns: 1fr 1fr; /* 2 columns for mobile */
-    gap: 1.5rem; 
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--client-card-border);
-}
-@media (min-width: 768px) { .overview-stats-grid { grid-template-columns: 1fr 1fr; } }
+.overview-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--client-card-border); }
 @media (min-width: 1200px) { .overview-stats-grid { grid-template-columns: repeat(4, 1fr); } }
-
 .stat-item { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
 .stat-icon { font-size: 1.25rem; color: #00FFCD; flex-shrink: 0; width: 48px; height: 48px; border-radius: 50%; background-color: rgba(0, 0, 0, 0.2); display: flex; align-items: center; justify-content: center; }
 .stat-text { display: flex; flex-direction: column; }
 .stat-label { font-size: 0.8rem; color: var(--client-text-secondary); }
 .stat-item strong { font-size: 1rem; font-weight: 600; color: var(--client-text-primary); }
 .stat-item.clickable strong { background: var(--client-accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 700; }
-
-/* Progress Bar */
 .overview-progress { padding-top: 1.5rem; margin-top: 1.5rem; border-top: 1px solid var(--client-card-border); }
 .progress-labels { display: flex; justify-content: space-between; font-size: 0.9rem; color: var(--client-text-secondary); margin-bottom: 0.75rem; }
 .progress-bar { width: 100%; height: 10px; background-color: rgba(0, 0, 0, 0.3); border-radius: 5px; overflow: hidden; }
 .progress-bar__fill { height: 100%; background: var(--client-accent-gradient); border-radius: 5px; }
 
-/* Main Content (Accordion & Form) */
-.card-body-layout {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    padding-top: 1.5rem;
-    margin-top: 1.5rem;
-    border-top: 1px solid var(--client-card-border);
-}
+/* Main Content Body Layout */
+.card-body-layout { display: flex; flex-direction: column; gap: 2rem; padding-top: 1.5rem; margin-top: 1.5rem; border-top: 1px solid var(--client-card-border); }
 @media (min-width: 992px) {
-    .card-body-layout {
-    display: flex;
-    flex-direction: row;
-    align-items: center; /* Vertically centers the columns */
-}
+    .card-body-layout { flex-direction: row; align-items: center; }
     .job-information-column { flex: 2; }
-    .job-action-column { flex: 1; position: sticky; top: 80px; }
+    .job-action-column { flex: 1; }
 }
 
-/* Accordion */
-.accordion {
-    background: var(--client-card-bg); /* Change this line */
-    border: 1px solid var(--client-card-border);
-    border-radius: 1rem;
-    margin-bottom: 0.75rem;
-}
+/* Accordion with styled list items */
+.accordion { background: var(--client-card-bg); border: 1px solid var(--client-card-border); border-radius: 1rem; margin-bottom: 0.75rem; }
 .accordion-header { width: 100%; padding: 1rem 1.5rem; background: none; border: none; color: var(--client-text-primary); font-size: 1.1rem; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
 .accordion-header i { transition: transform 0.3s ease; }
 .accordion-header.active i { transform: rotate(180deg); }
 .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; padding: 0 1.5rem; }
-.accordion-content ul { list-style-type: decimal; padding-left: 1.5rem; margin: 0; color: var(--client-text-secondary); }
 .accordion-content.open { padding: 0 1.5rem 1.5rem; }
+.accordion-content ul { list-style-type: none; padding-left: 0; margin: 0; color: var(--client-text-secondary); counter-reset: step-counter; }
+.accordion-content li { background: rgba(0,0,0,0.2); padding: 0.75rem 1rem 0.75rem 3rem; border-radius: 0.5rem; margin-bottom: 0.5rem; position: relative; counter-increment: step-counter; }
+.accordion-content li:last-child { margin-bottom: 0; }
+.accordion-content li::before { content: counter(step-counter); position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); width: 28px; height: 28px; border-radius: 50%; background: var(--client-accent-gradient); color: var(--client-text-dark); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; }
 
-/* Proof Submission Form (Contains Start Task Button) */
-.proof-submission-form { background: var(--client-card-bg); padding: 1.5rem; border-radius: 1rem; border: 1px solid var(--client-card-border); }
-.proof-submission-form h3 { font-size: 1.5rem; margin: 0 0 1.5rem 0; border-left: 4px solid #00FFCD; padding-left: 1rem; }
-.proof-submission-form p { color: var(--client-text-secondary); margin-bottom: 1.5rem; }
-.btn-submit { display: block; width: 100%; text-align: center; padding: 0.8rem; border-radius: 0.5rem; font-weight: 700; text-decoration: none; background: var(--client-accent-gradient); color: var(--client-text-dark); font-size: 1rem; border: none; }
-
-/* --- Custom Modal Styles --- */
-.modal-overlay {
-    position: fixed;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(5px);
-    z-index: 2000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0s 0.3s;
-}
-.modal-overlay.is-visible {
-    opacity: 1;
-    visibility: visible;
-    transition: opacity 0.3s ease;
-}
-.modal-content {
-    background: var(--client-card-bg);
-    border: 1px solid var(--client-card-border);
+/* NEW: Warning Box */
+.warning-box {
+    background: rgba(242, 201, 76, 0.05);
+    border: 1px solid rgba(242, 201, 76, 0.5);
     border-radius: 1rem;
-    padding: 2rem;
-    text-align: center;
-    max-width: 400px;
-    width: 100%;
-    transform: scale(0.9);
-    transition: transform 0.3s ease;
-}
-.modal-overlay.is-visible .modal-content {
-    transform: scale(1);
-}
-.modal-icon {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    margin: 0 auto 1.5rem auto;
+    padding: 1.5rem;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.75rem;
+    gap: 1rem;
+    align-items: flex-start;
 }
-.modal-icon.success {
-    background-color: rgba(0, 255, 205, 0.15);
-    color: #00FFCD;
-}
-.modal-icon.error {
-    background-color: rgba(235, 87, 87, 0.15);
-    color: #EB5757;
-}
-.modal-title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin: 0 0 0.5rem 0;
-    color: var(--client-text-primary);
-}
-.modal-message {
-    color: var(--client-text-secondary);
-    margin: 0 0 2rem 0;
-    line-height: 1.6;
-}
-.modal-btn-ok {
-    display: block;
+.warning-icon { font-size: 1.5rem; color: #F2C94C; margin-top: 0.25rem; }
+.warning-text h4 { font-size: 1.1rem; margin: 0 0 0.5rem 0; color: var(--client-text-primary); }
+.warning-text p { font-size: 0.9rem; color: var(--client-text-secondary); margin: 0; line-height: 1.6; }
+
+/* NEW: Universal Sticky Footer */
+.sticky-footer {
+    display: block; /* Ensure it's always visible by default */
+    position: fixed;
+    bottom: 0;
+    left: 0;
     width: 100%;
-    padding: 0.9rem;
-    border: none;
-    border-radius: 0.5rem;
-    background: var(--client-accent-gradient);
-    color: var(--client-text-dark);
-    font-size: 1rem;
-    font-weight: 700;
-    cursor: pointer;
+    background: #34495E;
+    padding: 1rem;
+    z-index: 900;
+    border-top: 1px solid var(--client-card-border);
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+}
+.btn-submit { display: block; width: 100%; text-align: center; padding: 0.9rem; border-radius: 0.5rem; font-weight: 700; text-decoration: none; background: var(--client-accent-gradient); color: var(--client-text-dark); font-size: 1rem; border: none; }
+
+/* Adjust main content padding */
+body.client-page {
+    padding-bottom: 100px;
+}
+
+
+@media (max-width: 991px) {
+    /* Increase body padding to make space for BOTH sticky footers */
+    body.client-page {
+        padding-bottom: 150px;
+    }
+    /* Move the 'Start Task' footer up to sit on top of the main nav */
+    .sticky-footer {
+        bottom: 70px;
+    }
+}
+
+/* Modal styles (assuming you have a modal component) */
+.modal-overlay {
+    position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px); z-index: 2000; display: flex;
+    align-items: center; justify-content: center; padding: 1rem;
+    opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0s 0.3s;
+}
+.modal-overlay.is-visible { opacity: 1; visibility: visible; transition: opacity 0.3s ease; }
+.modal-content {
+    background: var(--client-card-bg); border: 1px solid var(--client-card-border);
+    border-radius: 1rem; padding: 2rem; text-align: center;
+    max-width: 400px; width: 100%; transform: scale(0.9); transition: transform 0.3s ease;
+}
+.modal-overlay.is-visible .modal-content { transform: scale(1); }
+.modal-icon {
+    width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 1.5rem auto;
+    display: flex; align-items: center; justify-content: center; font-size: 1.75rem;
+}
+.modal-icon.success { background-color: rgba(0, 255, 205, 0.15); color: #00FFCD; }
+.modal-icon.error { background-color: rgba(235, 87, 87, 0.15); color: #EB5757; }
+.modal-title { font-size: 1.5rem; font-weight: 600; margin: 0 0 0.5rem 0; color: var(--client-text-primary); }
+.modal-message { color: var(--client-text-secondary); margin: 0 0 2rem 0; line-height: 1.6; }
+.modal-btn-ok { display: block; width: 100%; padding: 0.9rem; border: none; border-radius: 0.5rem; background: var(--client-accent-gradient); color: var(--client-text-dark); font-size: 1rem; font-weight: 700; cursor: pointer; }
+/* Add this code to the end of your /worker/css/worker.css file */
+
+
+
+
+/* --- FIX: Hide the main bottom navigation on desktop screens --- */
+@media (min-width: 992px) {
+    /* Selects the bottom nav loaded inside the placeholder */
+    #worker-bottom-nav-placeholder .client-bottom-nav {
+        display: none;
+    }
 }
