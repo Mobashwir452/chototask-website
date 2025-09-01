@@ -73,9 +73,10 @@
 
 /* NEW: Universal Sticky Footer */
 .sticky-footer {
-    display: block; /* Ensure it's always visible by default */
+    display: block;
     position: fixed;
-    bottom: 0;
+    /* Sit above the 70px main nav on ALL screen sizes */
+    bottom: 70px; 
     left: 0;
     width: 100%;
     background: #34495E;
@@ -84,24 +85,15 @@
     border-top: 1px solid var(--client-card-border);
     box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
 }
-.btn-submit { display: block; width: 100%; text-align: center; padding: 0.9rem; border-radius: 0.5rem; font-weight: 700; text-decoration: none; background: var(--client-accent-gradient); color: var(--client-text-dark); font-size: 1rem; border: none; }
 
-/* Adjust main content padding */
 body.client-page {
-    padding-bottom: 100px;
+    padding-bottom: 150px;
 }
 
 
-@media (max-width: 991px) {
-    /* Increase body padding to make space for BOTH sticky footers */
-    body.client-page {
-        padding-bottom: 150px;
-    }
-    /* Move the 'Start Task' footer up to sit on top of the main nav */
-    .sticky-footer {
-        bottom: 70px;
-    }
-}
+
+
+
 
 /* Modal styles (assuming you have a modal component) */
 .modal-overlay {
@@ -130,11 +122,3 @@ body.client-page {
 
 
 
-
-/* --- FIX: Hide the main bottom navigation on desktop screens --- */
-@media (min-width: 992px) {
-    /* Selects the bottom nav loaded inside the placeholder */
-    #worker-bottom-nav-placeholder .client-bottom-nav {
-        display: none;
-    }
-}

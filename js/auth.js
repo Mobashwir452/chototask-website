@@ -299,6 +299,8 @@ async function handleLogin(e) {
 // ===============================================
 //              REGISTRATION HANDLER
 // ===============================================
+// === REPLACE this entire function in /js/auth.js ===
+
 async function handleRegister(e) {
     e.preventDefault();
     const btnText = document.getElementById('btn-text');
@@ -350,7 +352,9 @@ async function handleRegister(e) {
         const user = userCredential.user;
         const fullName = `${firstNameInput.value.trim()} ${lastNameInput.value.trim()}`;
 
+        // This is the updated part with the new fields
         await setDoc(doc(db, "users", user.uid), {
+            // Your existing fields
             uid: user.uid,
             fullName: fullName,
             email: user.email,
@@ -361,15 +365,27 @@ async function handleRegister(e) {
             accountType: 'free',
             kycStatus: 'not_provided',
             phone: '',
+            isProfilePublic: false,
+            showActivityStatus: true,
+            allowDataCollection: false,
+            twoFactorEnabled: false,
+            notification_onSubmission: true,
+            notification_onJobComplete: true,
+            notification_onDeposit: true,
+            notification_onPromo: true,
 
-            isProfilePublic: false,      // Default to private
-            showActivityStatus: true,    // Default to showing activity
-            allowDataCollection: false,  // Default to not allowing
-            twoFactorEnabled: false,      // Default to disabled
-            notification_onSubmission: true,   // Default to ON
-            notification_onJobComplete: true,  // Default to ON
-            notification_onDeposit: true,      // Default to ON
-            notification_onPromo: true         // Default to ON
+            // === NEW FIELDS ADDED ACCORDING TO OUR PLAN ===
+            photoURL: "",
+            country: "",
+            aboutMe: "",
+            memberSince: serverTimestamp(), // More specific for public profiles
+            stats: {
+                jobsPosted: 0,
+                totalSpent: 0,
+                approvalRate: 100,
+                rating: 0,
+                reviewCount: 0,
+            }
         });
 
         const walletDocRef = doc(db, "wallets", user.uid);
@@ -394,9 +410,7 @@ async function handleRegister(e) {
         setTimeout(redirectToLogin, 5000);
 
     } catch (error) {
-        // This new line will show us the real error
         console.error("REGISTRATION ERROR DETAILS:", error); 
-
         let friendlyMessage = "An unexpected error occurred. Please try again.";
         if (error.code === 'auth/email-already-in-use') {
             friendlyMessage = "This email address is already registered. Please try logging in.";

@@ -22,6 +22,8 @@ document.addEventListener('componentsLoaded', () => {
     const planBadgeWrapper = document.getElementById('plan-badge-wrapper');
     const upgradeCard = document.getElementById('upgrade-prompt-card');
 
+    
+
     const getInitials = (name) => {
         if (!name || name === 'Client Name') return '?';
         const names = name.split(' ');

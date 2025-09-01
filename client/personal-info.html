@@ -30,6 +30,27 @@
                 <div class="form-card">
                     <form id="profile-form">
                         <h2>Public Profile</h2>
+
+                        <div class="profile-picture-container">
+                            <div class="profile-picture-wrapper">
+                                <img src="" alt="Profile Avatar" id="avatar-preview" style="display: none;">
+                                <div class="initials-avatar" id="initials-avatar"></div>
+                                <div class="update-picture-overlay">
+                                    <label for="avatar-upload-input" class="overlay-icon-btn" title="Upload Picture">
+                                        <i class="fa-solid fa-camera"></i>
+                                    </label>
+                                    <button type="button" class="overlay-icon-btn remove" id="remove-avatar-btn" title="Remove Picture">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                </div>
+                                <input type="file" id="avatar-upload-input" accept="image/png, image/jpeg" style="display: none;">
+                            </div>
+                            <div class="picture-upload-text">
+                                <h4>Profile Picture</h4>
+                                <p>This will be displayed on your public profile.</p>
+                            </div>
+                        </div>
+
                         <div class="form-grid">
                             <div class="form-group">
                                 <label for="username">Username</label>
@@ -47,9 +68,13 @@
                                 <label for="phone">Phone Number</label>
                                 <input type="tel" id="phone" placeholder="Your contact number">
                             </div>
+                            <div class="form-group" style="grid-column: 1 / -1;">
+                                <label for="aboutMe">About Me (Public)</label>
+                                <textarea id="aboutMe" rows="4" placeholder="Write a short bio about yourself or your company..."></textarea>
+                            </div>
                         </div>
                         <p class="form-message" id="form-message"></p>
-                        <button type="submit" class="btn-submit">Save Changes</button>
+                        <button type="submit" class="btn-submit">Save Public Info</button>
                     </form>
                 </div>
 
@@ -58,6 +83,17 @@
                     <div class="form-group">
                         <label for="address">Full Address</label>
                         <textarea id="address" rows="3" placeholder="Enter your full address"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="country">Country (Public)</label>
+                        <select id="country" class="form-input">
+                            <option value="">Select Country</option>
+                            <option value="Bangladesh">Bangladesh</option>
+                            <option value="India">India</option>
+                            <option value="Pakistan">Pakistan</option>
+                            <option value="USA">United States</option>
+                            <option value="UK">United Kingdom</option>
+                        </select>
                     </div>
 
                     <div class="kyc-section">
@@ -74,9 +110,21 @@
                         </label>
                         <input type="file" id="kyc-file-input" accept="image/jpeg, image/png" style="display:none;">
                     </div>
+                    <p class="form-message" id="address-form-message"></p>
+                    <button type="button" id="address-save-btn" class="btn-submit">Save Address Info</button>
                 </div>
             </section>
         </div>
+
+        <div class="modal-overlay" id="custom-notification-modal">
+            <div class="modal-content">
+                <div class="modal-icon"></div>
+                <h3 class="modal-title"></h3>
+                <p class="modal-message"></p>
+                <button class="modal-btn-ok">OK</button>
+            </div>
+        </div>
+
     </main>
 
     <div id="client-bottom-nav-placeholder"></div>
