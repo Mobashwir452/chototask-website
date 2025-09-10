@@ -1,4 +1,4 @@
-// FILE: /client/js/client-job-details.js (FINAL & COMPLETE)
+// FILE: /client/js/client-job-details.js (FINAL - WITH APPROVE BUTTON ON RESUBMIT TAB)
 
 import { auth, db } from '/js/firebase-config.js';
 import { doc, onSnapshot, collection, query, updateDoc, getDoc, runTransaction, increment, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -146,6 +146,7 @@ document.addEventListener('componentsLoaded', () => {
                     </div>
                     <div class="submission-actions" data-submission-id="${sub.id}">
                         <button class="action-btn btn-view">View Proof</button>
+                        <button class="action-btn btn-approve">✔ Approve</button>
                     </div>`;
             } else { // For approved and rejected
                 cardContent = `
@@ -168,8 +169,7 @@ document.addEventListener('componentsLoaded', () => {
 
     function startWorkerResubmitTimers() {
         const timerElements = document.querySelectorAll('.worker-resubmit-timer');
-        const resubmitDuration = 12 * 60 * 60 * 1000; // 12 hours
-
+        const resubmitDuration = 12 * 60 * 60 * 1000;
         const update = () => {
             const now = Date.now();
             timerElements.forEach(el => {
@@ -177,7 +177,6 @@ document.addEventListener('componentsLoaded', () => {
                 const deadline = rejectionTimestamp + resubmitDuration;
                 const timeLeft = deadline - now;
                 const span = el.querySelector('span');
-
                 if (timeLeft > 0) {
                     const hours = Math.floor(timeLeft / (1000 * 60 * 60));
                     const minutes = Math.floor((timeLeft / 1000 / 60) % 60);
@@ -194,8 +193,7 @@ document.addEventListener('componentsLoaded', () => {
     
     function startClientReviewTimers() {
         const timerElements = document.querySelectorAll('.submission-timer');
-        const autoApproveDuration = 24 * 60 * 60 * 1000; // 24 hours
-
+        const autoApproveDuration = 24 * 60 * 60 * 1000;
         const update = () => {
             const now = Date.now();
             timerElements.forEach(el => {
@@ -203,7 +201,6 @@ document.addEventListener('componentsLoaded', () => {
                 const deadline = submittedAt + autoApproveDuration;
                 const timeLeft = deadline - now;
                 const span = el.querySelector('span');
-
                 if (timeLeft > 0) {
                     const hours = Math.floor(timeLeft / (1000 * 60 * 60));
                     const minutes = Math.floor((timeLeft / 1000 / 60) % 60);
@@ -217,8 +214,6 @@ document.addEventListener('componentsLoaded', () => {
         update();
         timerInterval = setInterval(update, 1000);
     }
-    
-    // --- ✅ ALL HELPER FUNCTIONS MUST BE DEFINED HERE ---
 
     function showSuccessModal(message) {
         if (successModal) {
@@ -244,14 +239,11 @@ document.addEventListener('componentsLoaded', () => {
                 headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                 body: JSON.stringify({ jobId: jobId, submissionId: submissionId })
             });
-
             const result = await response.json();
             if (!response.ok) {
                 throw new Error(result.error || 'Failed to approve submission.');
             }
-            
             showSuccessModal("Submission approved successfully and payment sent!");
-
         } catch (error) {
             console.error("Approval process failed:", error);
             alert(`Error: ${error.message}`);
@@ -262,17 +254,14 @@ document.addEventListener('componentsLoaded', () => {
         const reasonTextarea = document.getElementById('rejection-reason-textarea');
         const reason = reasonTextarea.value.trim();
         const errorP = document.getElementById('rejection-error-message');
-
         if (!reason) {
             errorP.style.display = 'block';
             return;
         }
         errorP.style.display = 'none';
-
         const confirmBtn = document.getElementById('rejection-confirm-btn');
         confirmBtn.disabled = true;
         confirmBtn.textContent = 'Submitting...';
-
         try {
             const token = await auth.currentUser.getIdToken();
             const response = await fetch('/.netlify/functions/requestResubmission', {
@@ -337,7 +326,6 @@ document.addEventListener('componentsLoaded', () => {
         proofModal.classList.add('is-visible');
     }
 
-    // --- DATA LISTENERS ---
     onSnapshot(doc(db, "jobs", jobId), (docSnap) => {
         if (docSnap.exists()) {
             renderPage({ id: docSnap.id, ...docSnap.data() });
@@ -355,16 +343,11 @@ document.addEventListener('componentsLoaded', () => {
                 subs[sub.status].push(sub);
             }
         });
-        
         allSubmissions = subs;
         const activeTab = submissionManagerSection.querySelector('.tab-btn.active')?.dataset.tab || 'pending';
         renderSubmissions(activeTab);
-    }, (error) => {
-        console.error("Error fetching submissions: ", error);
-        submissionManagerSection.innerHTML = `<p class="empty-list-message">Could not load submissions.</p>`;
     });
 
-    // --- EVENT LISTENERS ---
     onAuthStateChanged(auth, (user) => {
         if (!user) { window.location.href = '/login.html'; }
     });
@@ -395,7 +378,8 @@ document.addEventListener('componentsLoaded', () => {
         }
         const actionButton = target.closest('.job-action-btn');
         if (actionButton) {
-            // Placeholder for actions like pause/cancel
+            if (actionButton.id === 'pause-job-btn') updateDoc(doc(db, "jobs", jobId), { status: 'paused' });
+            if (actionButton.id === 'resume-job-btn') updateDoc(doc(db, "jobs", jobId), { status: 'open' });
         }
         const accordionHeader = target.closest('.accordion-header');
         if (accordionHeader) {
