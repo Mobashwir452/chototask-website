@@ -1,7 +1,7 @@
-// FILE: /client/js/client-job-details.js (FINAL WITH LOADING STATE & CONFIRMATION MODAL)
+// FILE: /client/js/client-job-details.js (FINAL & COMPLETE WITH PAUSE/CANCEL FEATURES)
 
 import { auth, db } from '/js/firebase-config.js';
-import { doc, onSnapshot, collection, query, updateDoc, getDoc, runTransaction, increment, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { doc, onSnapshot, collection, query, orderBy, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 document.addEventListener('componentsLoaded', () => {
@@ -12,6 +12,8 @@ document.addEventListener('componentsLoaded', () => {
     const rejectionModal = document.getElementById('rejection-modal');
     const proofModal = document.getElementById('proof-modal');
     const approvalModal = document.getElementById('approval-confirmation-modal');
+    const pauseModal = document.getElementById('pause-confirmation-modal');
+    const cancelModal = document.getElementById('cancel-confirmation-modal');
     
     const urlParams = new URLSearchParams(window.location.search);
     const jobId = urlParams.get('id');
@@ -19,6 +21,7 @@ document.addEventListener('componentsLoaded', () => {
     let allSubmissions = { pending: [], approved: [], rejected: [], resubmit_pending: [] };
     let timerInterval = null;
     let currentSubmissionId = null;
+    let currentJobData = null; // Store current job data globally
 
     if (!jobId) {
         jobDetailsContainer.innerHTML = `<h1 class="loading-title">Job Not Found</h1>`;
@@ -27,10 +30,11 @@ document.addEventListener('componentsLoaded', () => {
 
     // --- RENDER FUNCTIONS ---
     function renderPage(job) {
+        currentJobData = job; // Update global job data
         const statusText = job.status.replace('_', ' ');
         const approvedCount = job.submissionsApproved || 0;
         const rejectedCount = job.submissionsRejected || 0;
-        const pendingCount = job.submissionsPending || 0;
+        const pendingCount = allSubmissions.pending.length + allSubmissions.resubmit_pending.length; 
         const neededCount = job.workersNeeded || 1;
         const progress = neededCount > 0 ? (approvedCount / neededCount) * 100 : 0;
         
@@ -40,7 +44,7 @@ document.addEventListener('componentsLoaded', () => {
         } else if (job.status === 'paused') {
             actionButtonsHTML += `<button class="job-action-btn primary" id="resume-job-btn"><i class="fa-solid fa-play"></i> Resume Job</button>`;
         }
-        if (job.status === 'open' || job.status === 'active' || job.status === 'paused') {
+        if (job.status !== 'cancelled' && job.status !== 'completed') {
              actionButtonsHTML += `<button class="job-action-btn outline" id="cancel-job-btn"><i class="fa-solid fa-ban"></i> Cancel Job</button>`;
         }
         
@@ -149,7 +153,7 @@ document.addEventListener('componentsLoaded', () => {
                         <button class="action-btn btn-view">View Proof</button>
                         <button class="action-btn btn-approve">✔ Approve</button>
                     </div>`;
-            } else { // For approved and rejected
+            } else {
                 cardContent = `
                     <div class="submission-info">${commonInfoHTML}</div>
                     <div class="submission-actions" data-submission-id="${sub.id}">
@@ -161,11 +165,8 @@ document.addEventListener('componentsLoaded', () => {
         }).join('');
         
         if (timerInterval) clearInterval(timerInterval);
-        if (status === 'pending') {
-            startClientReviewTimers();
-        } else if (status === 'resubmit_pending') {
-            startWorkerResubmitTimers();
-        }
+        if (status === 'pending') { startClientReviewTimers(); } 
+        else if (status === 'resubmit_pending') { startWorkerResubmitTimers(); }
     }
 
     function startWorkerResubmitTimers() {
@@ -239,15 +240,87 @@ document.addEventListener('componentsLoaded', () => {
         }
     }
 
+    function showPauseModal() {
+        if (!currentJobData || !pauseModal) return;
+        const message = document.getElementById('pause-modal-message');
+        const confirmBtn = document.getElementById('pause-confirm-btn');
+        if (currentJobData.status === 'paused') {
+            message.textContent = "Are you sure you want to resume this job? It will become visible to workers again.";
+            confirmBtn.textContent = "Yes, Resume";
+        } else {
+            message.textContent = "Are you sure you want to pause this job? Workers will not be able to see or submit to it.";
+            confirmBtn.textContent = "Yes, Pause";
+        }
+        pauseModal.classList.add('is-visible');
+    }
+
+    function showCancelModal() {
+        if (!cancelModal) return;
+        const message = document.getElementById('cancel-modal-message');
+        const pendingCount = allSubmissions.pending.length;
+        const awaitingCount = allSubmissions.resubmit_pending.length;
+        const totalToApprove = pendingCount + awaitingCount;
+        if (totalToApprove > 0) {
+            message.textContent = `This job has ${totalToApprove} submission(s) awaiting review. To cancel, these will be automatically approved. The remaining budget will be refunded. Are you sure?`;
+        } else {
+            message.textContent = "Are you sure you want to cancel this job? The entire remaining budget will be refunded to your wallet.";
+        }
+        cancelModal.classList.add('is-visible');
+    }
+
+    async function handleJobStatusUpdate(newStatus) {
+        const btn = document.getElementById('pause-confirm-btn');
+        const originalText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = 'Updating...';
+        try {
+            const token = await auth.currentUser.getIdToken();
+            const response = await fetch('/.netlify/functions/updateJobStatus', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ jobId, newStatus })
+            });
+            if (!response.ok) throw new Error("Failed to update status");
+            pauseModal.classList.remove('is-visible');
+        } catch(error) {
+            alert('Failed to update job status.');
+            console.error(error);
+        } finally {
+            btn.disabled = false;
+            btn.textContent = originalText;
+        }
+    }
+    
+    async function handleCancelJob() {
+        const btn = document.getElementById('cancel-confirm-btn');
+        const originalText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = 'Cancelling...';
+        try {
+            const token = await auth.currentUser.getIdToken();
+            const response = await fetch('/.netlify/functions/cancelJob', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ jobId })
+            });
+            if (!response.ok) throw new Error("Failed to cancel job");
+            cancelModal.classList.remove('is-visible');
+            showSuccessModal('Job has been cancelled successfully.');
+        } catch(error) {
+            alert('Failed to cancel job.');
+            console.error(error);
+        } finally {
+            btn.disabled = false;
+            btn.textContent = originalText;
+        }
+    }
+
     async function handleApproval() {
         if (!currentSubmissionId) return;
-
         const confirmBtn = document.getElementById('approval-confirm-btn');
         confirmBtn.disabled = true;
         confirmBtn.textContent = 'Approving...';
-        
         if(approvalModal) approvalModal.classList.remove('is-visible');
-
         try {
             const token = await auth.currentUser.getIdToken();
             const response = await fetch('/.netlify/functions/approveSubmission', {
@@ -255,14 +328,11 @@ document.addEventListener('componentsLoaded', () => {
                 headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                 body: JSON.stringify({ jobId: jobId, submissionId: currentSubmissionId })
             });
-
             const result = await response.json();
             if (!response.ok) {
                 throw new Error(result.error || 'Failed to approve submission.');
             }
-            
             showSuccessModal("Submission approved successfully and payment sent!");
-
         } catch (error) {
             console.error("Approval process failed:", error);
             alert(`Error: ${error.message}`);
@@ -280,11 +350,9 @@ document.addEventListener('componentsLoaded', () => {
             document.getElementById('rejection-error-message').style.display = 'block';
             return;
         }
-        
         const confirmBtn = document.getElementById('rejection-confirm-btn');
         confirmBtn.disabled = true;
         confirmBtn.textContent = 'Submitting...';
-
         try {
             const token = await auth.currentUser.getIdToken();
             const response = await fetch('/.netlify/functions/requestResubmission', {
@@ -338,14 +406,12 @@ document.addEventListener('componentsLoaded', () => {
             approveBtn.className = 'modal-btn modal-btn--confirm';
             approveBtn.textContent = '✔ Approve';
             approveBtn.onclick = () => { showApprovalModal(submissionId); proofModal.classList.remove('is-visible'); };
-            
             const rejectBtn = document.createElement('button');
             rejectBtn.className = 'modal-btn';
             rejectBtn.style.backgroundColor = '#EB5757';
             rejectBtn.style.color = 'white';
             rejectBtn.textContent = '✖ Reject';
             rejectBtn.onclick = () => { showRejectionModal(submissionId); proofModal.classList.remove('is-visible'); };
-
             if(subData.status === 'pending') proofModalFooter.appendChild(rejectBtn);
             proofModalFooter.appendChild(approveBtn);
         }
@@ -367,16 +433,21 @@ document.addEventListener('componentsLoaded', () => {
             }
         });
         allSubmissions = subs;
+        if (currentJobData) renderPage(currentJobData);
         const activeTab = submissionManagerSection.querySelector('.tab-btn.active')?.dataset.tab || 'pending';
         renderSubmissions(activeTab);
     });
 
-    onAuthStateChanged(auth, (user) => {
-        if (!user) { window.location.href = '/login.html'; }
-    });
+    onAuthStateChanged(auth, (user) => { if (!user) { window.location.href = '/login.html'; }});
 
     document.addEventListener('click', (e) => {
         const target = e.target;
+        
+        const actionButton = target.closest('.job-action-btn');
+        if (actionButton) {
+            if (actionButton.id === 'pause-job-btn' || actionButton.id === 'resume-job-btn') { showPauseModal(); }
+            if (actionButton.id === 'cancel-job-btn') { showCancelModal(); }
+        }
         
         const submissionActions = target.closest('.submission-actions');
         if (submissionActions) {
@@ -386,35 +457,40 @@ document.addEventListener('componentsLoaded', () => {
             if (target.matches('.btn-reject')) showRejectionModal(submissionId);
         }
         
-        if (target.id === 'approval-cancel-btn' || (target.closest('.modal-overlay') === approvalModal && !target.closest('.modal-content'))) {
-            approvalModal.classList.remove('is-visible');
-        }
-        if (target.id === 'approval-confirm-btn') {
-            handleApproval();
-        }
+        if (target.id === 'pause-confirm-btn') { handleJobStatusUpdate(currentJobData.status === 'paused' ? 'open' : 'paused'); }
+        if (target.id === 'cancel-confirm-btn') { handleCancelJob(); }
+        if (target.id === 'approval-confirm-btn') { handleApproval(); }
+        if (target.id === 'rejection-confirm-btn') { handleRejectionWithReason(); }
 
-        if (target.id === 'success-modal-close-btn' || (target.closest('.modal-overlay') === successModal && !target.closest('.modal-content'))) {
-            successModal.classList.remove('is-visible');
-        }
-        if (target.id === 'rejection-cancel-btn' || (target.closest('.modal-overlay') === rejectionModal && !target.closest('.modal-content'))) {
-            rejectionModal.classList.remove('is-visible');
-        }
-        if (target.id === 'rejection-confirm-btn') {
-            handleRejectionWithReason();
-        }
-        if (target.id === 'proof-modal-close-btn' || (target.closest('.modal-overlay') === proofModal && !target.closest('.modal-content'))) {
-            proofModal.classList.remove('is-visible');
-        }
+        if (target.id === 'pause-cancel-btn' || (target.closest('.modal-overlay') === pauseModal && !target.closest('.modal-content'))) { pauseModal.classList.remove('is-visible'); }
+        if (target.id === 'cancel-cancel-btn' || (target.closest('.modal-overlay') === cancelModal && !target.closest('.modal-content'))) { cancelModal.classList.remove('is-visible'); }
+        if (target.id === 'approval-cancel-btn' || (target.closest('.modal-overlay') === approvalModal && !target.closest('.modal-content'))) { approvalModal.classList.remove('is-visible'); }
+        if (target.id === 'success-modal-close-btn' || (target.closest('.modal-overlay') === successModal && !target.closest('.modal-content'))) { successModal.classList.remove('is-visible'); }
+        if (target.id === 'rejection-cancel-btn' || (target.closest('.modal-overlay') === rejectionModal && !target.closest('.modal-content'))) { rejectionModal.classList.remove('is-visible'); }
+        if (target.id === 'proof-modal-close-btn' || (target.closest('.modal-overlay') === proofModal && !target.closest('.modal-content'))) { proofModal.classList.remove('is-visible'); }
         
         const copyBtn = target.closest('.copy-worker-id-btn');
-        if (copyBtn) { /* ... Unchanged ... */ }
-        
-        const actionButton = target.closest('.job-action-btn');
-        if (actionButton) { /* ... Unchanged ... */ }
-        
+        if (copyBtn) {
+            const workerId = copyBtn.dataset.workerId;
+            navigator.clipboard.writeText(workerId).then(() => {
+                const icon = copyBtn.querySelector('i');
+                icon.className = 'fa-solid fa-check';
+                copyBtn.classList.add('copied');
+                setTimeout(() => { icon.className = 'fa-regular fa-copy'; copyBtn.classList.remove('copied'); }, 2000);
+            }).catch(err => console.error('Failed to copy ID: ', err));
+        }
         const accordionHeader = target.closest('.accordion-header');
-        if (accordionHeader) { /* ... Unchanged ... */ }
-        
+        if (accordionHeader) {
+            accordionHeader.classList.toggle('active');
+            const content = accordionHeader.nextElementSibling;
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+                content.classList.remove('open');
+            } else {
+                content.classList.add('open');
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+        }
         const tabButton = target.closest('.tab-btn');
         if (tabButton) {
             if (timerInterval) clearInterval(timerInterval);

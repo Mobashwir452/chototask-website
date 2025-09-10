@@ -423,3 +423,18 @@
     background-color: rgba(242, 201, 76, 0.15); /* Yellow */
     color: #F2C94C;
 }
+
+
+/* FILE: /client/css/client-job-details.css (Add this at the end) */
+
+/* --- Style for the "No Submissions" message box --- */
+.empty-list-message {
+    background: var(--client-card-bg);
+    border: 1px solid var(--client-card-border);
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: center;
+    color: var(--client-text-secondary);
+    font-weight: 500;
+    margin-top: 1rem;
+}
