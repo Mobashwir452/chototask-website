@@ -1,4 +1,4 @@
-// FILE: netlify/functions/adminManageSubmission.js (FINAL & CORRECTED)
+// FILE: netlify/functions/adminManageSubmission.js (FINAL & CORRECTED LOGIC)
 const admin = require('firebase-admin');
 
 try {
@@ -77,17 +77,15 @@ exports.handler = async (event, context) => {
                 transaction.update(jobRef, counterUpdates);
 
             } else if (action === 'reject' && originalStatus !== 'rejected') {
+                // ✅ THE FIX IS HERE: When rejecting, we only update the counters.
+                // We DO NOT touch the remainingBudget.
                 let counterUpdates = {
                     submissionsRejected: admin.firestore.FieldValue.increment(1)
                 };
                 if (originalStatus === 'pending') {
                     counterUpdates.submissionsPending = admin.firestore.FieldValue.increment(-1);
-                    // ✅ THE FIX IS HERE: Refund the budget for the rejected slot
-                    counterUpdates.remainingBudget = admin.firestore.FieldValue.increment(payout);
-                } else if (originalStatus === 'resubmit_pending') {
-                    // For resubmit_pending, the pending counter is not touched, but budget is still refunded.
-                    counterUpdates.remainingBudget = admin.firestore.FieldValue.increment(payout);
                 }
+                // No change to remainingBudget on rejection.
                 transaction.update(jobRef, counterUpdates);
             }
         });
