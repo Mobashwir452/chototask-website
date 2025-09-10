@@ -73,3 +73,29 @@
     width: 100%;
     padding: 0.8rem;
 }
+
+
+
+/* Add this to your existing modal CSS file or a relevant CSS file */
+
+.rejection-form {
+    width: 100%;
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.rejection-form textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid #ccc; /* Or your theme's border color */
+    font-family: inherit;
+    font-size: 1rem;
+    resize: vertical;
+}
+
+.rejection-form .error-message {
+    color: #e74c3c;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}

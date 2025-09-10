@@ -194,8 +194,26 @@
 .submission-actions { display: flex; gap: 0.5rem; flex-shrink: 0; }
 .action-btn { padding: 0.5rem 0.75rem; border-radius: 0.5rem; font-weight: 600; cursor: pointer; border: none; font-size: 0.8rem; }
 .btn-view { background-color: #2F80ED; color: white; }
-.btn-approve { background-color: #27AE60; color: white; }
-.btn-reject { background-color: #EB5757; color: white; }
+.btn-approve {
+    background-color: var(--client-accent-gradient); /* A pleasant, positive green */
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.btn-approve:hover {
+    background-color: #2dbf6d; /* A slightly brighter green on hover */
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.btn-reject {
+    background-color: #c94040; /* A slightly softer red that fits dark themes */
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-reject:hover {
+    background-color: #e74c3c; /* A brighter red on hover */
+    border-color: rgba(255, 255, 255, 0.3);
+}
 
 /* Accordion */
 .accordion { background: var(--client-card-bg); border: 1px solid var(--client-card-border); border-radius: 0.75rem; }
@@ -249,13 +267,13 @@
 
 /* Approve Button: A clear, positive green */
 .btn-approve {
-    background-color: #27AE60;
+    background-color: var(--client-card-bg);
     color: white;
 }
 
 /* Reject Button: A clear, negative red */
 .btn-reject {
-    background-color: #EB5757;
+    background-color: var(--client-card-bg);
     color: white;
 }
 

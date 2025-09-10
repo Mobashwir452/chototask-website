@@ -1,20 +1,22 @@
-// FILE: /client/js/client-job-details.js (FINAL WITH TIMER & COPY BUTTON)
+// FILE: /client/js/client-job-details.js (FULL CODE WITH ALL FEATURES)
 
 import { auth, db } from '/js/firebase-config.js';
 import { doc, onSnapshot, collection, query, updateDoc, getDoc, runTransaction, increment, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 document.addEventListener('componentsLoaded', () => {
-    // --- DOM Elements ---
+    // --- DOM Elements & State ---
     const jobDetailsContainer = document.getElementById('job-details-content');
     const submissionManagerSection = document.getElementById('submission-manager-section');
+    const successModal = document.getElementById('success-modal');
+    const rejectionModal = document.getElementById('rejection-modal');
     
     const urlParams = new URLSearchParams(window.location.search);
     const jobId = urlParams.get('id');
-
-    // This variable will hold all submissions fetched from Firestore.
-    let allSubmissions = { pending: [], approved: [], rejected: [] };
-    let timerInterval = null; // To hold the timer update interval
+    
+    let allSubmissions = { pending: [], approved: [], rejected: [], resubmit_pending: [] };
+    let timerInterval = null;
+    let currentSubmissionId = null; 
 
     if (!jobId) {
         jobDetailsContainer.innerHTML = `<h1 class="loading-title">Job Not Found</h1>`;
@@ -22,7 +24,6 @@ document.addEventListener('componentsLoaded', () => {
     }
 
     // --- RENDER FUNCTIONS ---
-    // Renders the main job overview card with stats.
     function renderPage(job) {
         const statusText = job.status.replace('_', ' ');
         const approvedCount = job.submissionsApproved || 0;
@@ -141,11 +142,68 @@ document.addEventListener('componentsLoaded', () => {
         }
     }
 
+    // --- NEW MODAL & WORKFLOW FUNCTIONS ---
+    function showSuccessModal(message) {
+        document.getElementById('success-modal-message').textContent = message;
+        successModal.classList.add('is-visible');
+    }
+
+    function showRejectionModal(submissionId) {
+        currentSubmissionId = submissionId;
+        document.getElementById('rejection-reason-textarea').value = '';
+        document.getElementById('rejection-error-message').style.display = 'none';
+        rejectionModal.classList.add('is-visible');
+    }
+
+    async function handleRejectionWithReason() {
+        const reasonTextarea = document.getElementById('rejection-reason-textarea');
+        const reason = reasonTextarea.value.trim();
+        const errorP = document.getElementById('rejection-error-message');
+
+        if (!reason) {
+            errorP.style.display = 'block';
+            return;
+        }
+        errorP.style.display = 'none';
+
+        const confirmBtn = document.getElementById('rejection-confirm-btn');
+        confirmBtn.disabled = true;
+        confirmBtn.textContent = 'Submitting...';
+
+        try {
+            const token = await auth.currentUser.getIdToken();
+            const response = await fetch('/.netlify/functions/requestResubmission', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    jobId: jobId,
+                    submissionId: currentSubmissionId,
+                    reason: reason
+                })
+            });
+
+            if (!response.ok) throw new Error('Failed to request resubmission.');
+            
+            rejectionModal.classList.remove('is-visible');
+            showSuccessModal('Rejection reason submitted. The worker can now resubmit.');
+
+        } catch (error) {
+            console.error(error);
+            alert('An error occurred. Please try again.');
+        } finally {
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = 'Submit Rejection';
+        }
+    }
+
     // --- TIMER FUNCTIONS ---
     function updateAllTimers() {
         const timerElements = document.querySelectorAll('.submission-timer');
         const now = Date.now();
-        const autoApproveDuration = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+        const autoApproveDuration = 24 * 60 * 60 * 1000;
 
         timerElements.forEach(el => {
             const submittedAt = parseInt(el.dataset.submittedAt, 10);
@@ -181,7 +239,7 @@ document.addEventListener('componentsLoaded', () => {
     
     const submissionsQuery = query(collection(db, "jobs", jobId, "submissions"), orderBy("submittedAt", "desc"));
     onSnapshot(submissionsQuery, (snapshot) => {
-        const submissions = { pending: [], approved: [], rejected: [] };
+        const submissions = { pending: [], approved: [], rejected: [], resubmit_pending: [] };
         snapshot.forEach(doc => {
             const sub = { id: doc.id, ...doc.data() };
             if (submissions[sub.status]) {
@@ -213,9 +271,8 @@ document.addEventListener('componentsLoaded', () => {
         const submissionRef = doc(db, "jobs", jobId, "submissions", submissionId);
         try {
             await runTransaction(db, async (transaction) => {
-                const jobDoc = await transaction.get(jobRef);
                 const submissionDoc = await transaction.get(submissionRef);
-                if (!jobDoc.exists() || !submissionDoc.exists()) throw new Error("Job or submission not found.");
+                if (!submissionDoc.exists()) throw new Error("Submission not found.");
                 if (submissionDoc.data().status !== 'pending') throw new Error("Submission already processed.");
                 
                 transaction.update(submissionRef, { status: 'approved' });
@@ -224,37 +281,15 @@ document.addEventListener('componentsLoaded', () => {
                     submissionsPending: increment(-1)
                 });
             });
-            alert("Submission approved successfully!");
+            showSuccessModal("Submission approved successfully!");
         } catch (error) {
             console.error("Approval transaction failed: ", error);
             alert(`Error: ${error.message}`);
         }
     }
     
-    async function handleRejection(submissionId) {
-        const jobRef = doc(db, "jobs", jobId);
-        const submissionRef = doc(db, "jobs", jobId, "submissions", submissionId);
-        try {
-            await runTransaction(db, async (transaction) => {
-                const submissionDoc = await transaction.get(submissionRef);
-                if (!submissionDoc.exists()) throw new Error("Submission not found.");
-                if (submissionDoc.data().status !== 'pending') throw new Error("Submission already processed.");
-
-                transaction.update(submissionRef, { status: 'rejected' });
-                transaction.update(jobRef, {
-                    submissionsRejected: increment(1),
-                    submissionsPending: increment(-1)
-                });
-            });
-            alert("Submission rejected.");
-        } catch (error) {
-            console.error("Rejection failed: ", error);
-            alert(`Error: ${error.message}`);
-        }
-    }
-
     async function showProofModal(submissionId) {
-        const proofModal = document.getElementById('proof-modal');
+        const proofModal = document.getElementById('proof-modal'); // Assuming proof modal exists in HTML
         const proofModalBody = document.getElementById('proof-modal-body');
         const proofModalFooter = document.getElementById('proof-modal-footer');
         const proofModalTitle = document.getElementById('proof-modal-title');
@@ -293,7 +328,7 @@ document.addEventListener('componentsLoaded', () => {
             rejectBtn.style.backgroundColor = '#EB5757';
             rejectBtn.style.color = 'white';
             rejectBtn.textContent = '✖ Reject';
-            rejectBtn.onclick = () => { handleRejection(submissionId); proofModal.classList.remove('is-visible'); };
+            rejectBtn.onclick = () => { showRejectionModal(submissionId); proofModal.classList.remove('is-visible'); };
 
             proofModalFooter.appendChild(rejectBtn);
             proofModalFooter.appendChild(approveBtn);
@@ -312,6 +347,19 @@ document.addEventListener('componentsLoaded', () => {
     document.addEventListener('click', (e) => {
         const target = e.target;
         
+        // --- MODAL CLOSE BUTTONS ---
+        if (target.id === 'success-modal-close-btn' || target.closest('.modal-overlay') === successModal && !target.closest('.modal-content')) {
+            successModal.classList.remove('is-visible');
+        }
+        if (target.id === 'rejection-cancel-btn' || target.closest('.modal-overlay') === rejectionModal && !target.closest('.modal-content')) {
+            rejectionModal.classList.remove('is-visible');
+        }
+        
+        // --- MODAL ACTION BUTTONS ---
+        if (target.id === 'rejection-confirm-btn') {
+            handleRejectionWithReason();
+        }
+
         const copyBtn = target.closest('.copy-worker-id-btn');
         if (copyBtn) {
             const workerId = copyBtn.dataset.workerId;
@@ -366,7 +414,7 @@ document.addEventListener('componentsLoaded', () => {
             const submissionId = submissionActions.dataset.submissionId;
             if (target.matches('.btn-view')) showProofModal(submissionId);
             if (target.matches('.btn-approve')) handleApproval(submissionId);
-            if (target.matches('.btn-reject')) handleRejection(submissionId);
+            if (target.matches('.btn-reject')) showRejectionModal(submissionId);
         }
 
         if (target.id === 'cancel-modal-close-btn') {

@@ -10,6 +10,7 @@
 
     <link rel="stylesheet" href="/client/css/client.css">
     <link rel="stylesheet" href="/client/css/client-job-details.css">
+    <link rel="stylesheet" href="/css/modal.css">
 </head>
 <body class="client-page">
     
@@ -28,26 +29,36 @@
              </div>
     </main>
 
-   <div class="modal-overlay" id="proof-modal">
-      <div class="modal-content">
-        <h3 id="proof-modal-title" class="modal-title">Review Proof</h3>
-        <div id="proof-modal-body" class="modal-body"></div>
-        <div class="modal-footer" id="proof-modal-footer">
-             </div>
-      </div>
+<div class="modal-overlay" id="success-modal">
+    <div class="modal-content">
+        <div class="modal-icon success">
+            <i class="fa-solid fa-check"></i>
+        </div>
+        <h3 class="modal-title">Success!</h3>
+        <p class="modal-message" id="success-modal-message">The submission has been approved.</p>
+        <button class="btn-submit" id="success-modal-close-btn">Done</button>
     </div>
+</div>
 
-    <div class="modal-overlay" id="cancel-job-modal">
-        <div class="modal-content">
-            <div class="modal-icon warning"><i class="fa-solid fa-triangle-exclamation"></i></div>
-            <h3 class="modal-title">Are you sure?</h3>
-            <p class="modal-message">Cancelling this job will stop all new submissions and refund the budget for any unfulfilled spots. This action cannot be undone.</p>
-            <div class="modal-footer">
-                <button class="modal-btn modal-btn--cancel" id="cancel-modal-close-btn">Keep Job</button>
-                <button class="modal-btn modal-btn--confirm" id="cancel-modal-confirm-btn">Yes, Cancel Job</button>
-            </div>
+<div class="modal-overlay" id="rejection-modal">
+    <div class="modal-content">
+        <div class="modal-icon error">
+            <i class="fa-solid fa-times"></i>
+        </div>
+        <h3 class="modal-title">Provide Rejection Reason</h3>
+        <p class="modal-message">Please explain why you are rejecting this submission. The worker will see this and have a chance to resubmit.</p>
+        
+        <div class="rejection-form">
+            <textarea id="rejection-reason-textarea" placeholder="e.g., The screenshot is blurry, please upload a clearer one." rows="4"></textarea>
+            <p class="error-message" id="rejection-error-message" style="display: none;">Reason cannot be empty.</p>
+        </div>
+
+        <div class="modal-footer">
+            <button class="modal-btn modal-btn--cancel" id="rejection-cancel-btn">Cancel</button>
+            <button class="modal-btn modal-btn--confirm" id="rejection-confirm-btn">Submit Rejection</button>
         </div>
     </div>
+</div>
 
     <div id="client-bottom-nav-placeholder"></div>
 
