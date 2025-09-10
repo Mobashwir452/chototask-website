@@ -414,3 +414,12 @@
     color: var(--client-text-primary);
     font-weight: 600;
 }
+
+
+/* FILE: /client/css/client-job-details.css (Add this at the end) */
+
+/* --- Style for Confirmation Modal Icon --- */
+.modal-icon.warning {
+    background-color: rgba(242, 201, 76, 0.15); /* Yellow */
+    color: #F2C94C;
+}
