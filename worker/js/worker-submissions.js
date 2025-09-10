@@ -1,4 +1,4 @@
-// === FILE: /worker/js/worker-submissions.js (FINAL & COMPLETE) ===
+// === FILE: /worker/js/worker-submissions.js (CORRECTED & FINAL) ===
 
 import { auth, db } from '/js/firebase-config.js';
 import { collectionGroup, query, where, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -11,8 +11,8 @@ document.addEventListener('componentsLoaded', () => {
     const submissionsList = document.getElementById('submissions-list');
 
     let allSubmissions = [];
-    let activeTab = 'pending'; // Default tab
-    let countdownIntervals = []; // To store and clear interval IDs
+    let activeTab = 'resubmit_required'; // Default to this tab to show the new item
+    let countdownIntervals = []; 
 
     // --- RENDER FUNCTIONS ---
     const renderHero = () => {
@@ -26,16 +26,17 @@ document.addEventListener('componentsLoaded', () => {
 
     const renderTabs = () => {
         const counts = {
-            pending: allSubmissions.filter(s => s.status === 'pending' || s.status === 'resubmitted_pending').length,
-            resubmit_required: allSubmissions.filter(s => s.status === 'rejected').length,
+            pending: allSubmissions.filter(s => s.status === 'pending').length,
+            // ✅ FIX: Count submissions with 'resubmit_pending' status
+            resubmit_required: allSubmissions.filter(s => s.status === 'resubmit_pending').length,
             approved: allSubmissions.filter(s => s.status === 'approved').length,
-            rejected_final: allSubmissions.filter(s => s.status === 'rejected_final').length,
+            rejected: allSubmissions.filter(s => s.status === 'rejected').length,
         };
         tabsContainer.innerHTML = `
             <button class="tab-btn ${activeTab === 'pending' ? 'active' : ''}" data-tab="pending">Pending <span class="count-badge">${counts.pending}</span></button>
             <button class="tab-btn resubmit-required ${activeTab === 'resubmit_required' ? 'active' : ''}" data-tab="resubmit_required">Resubmit Required <span class="count-badge">${counts.resubmit_required}</span></button>
             <button class="tab-btn ${activeTab === 'approved' ? 'active' : ''}" data-tab="approved">Approved <span class="count-badge">${counts.approved}</span></button>
-            <button class="tab-btn ${activeTab === 'rejected_final' ? 'active' : ''}" data-tab="rejected_final">Rejected <span class="count-badge">${counts.rejected_final}</span></button>
+            <button class="tab-btn ${activeTab === 'rejected' ? 'active' : ''}" data-tab="rejected">Rejected <span class="count-badge">${counts.rejected}</span></button>
         `;
     };
 
@@ -45,13 +46,15 @@ document.addEventListener('componentsLoaded', () => {
 
         let filteredSubmissions = [];
         if (activeTab === 'pending') {
-            filteredSubmissions = allSubmissions.filter(s => s.status === 'pending' || s.status === 'resubmitted_pending');
-        } else if (activeTab === 'resubmit_required') {
-            filteredSubmissions = allSubmissions.filter(s => s.status === 'rejected');
+            filteredSubmissions = allSubmissions.filter(s => s.status === 'pending');
+        } 
+        // ✅ FIX: Filter by 'resubmit_pending' for the correct tab
+        else if (activeTab === 'resubmit_required') {
+            filteredSubmissions = allSubmissions.filter(s => s.status === 'resubmit_pending');
         } else if (activeTab === 'approved') {
             filteredSubmissions = allSubmissions.filter(s => s.status === 'approved');
-        } else {
-             filteredSubmissions = allSubmissions.filter(s => s.status === 'rejected_final');
+        } else if (activeTab === 'rejected') {
+             filteredSubmissions = allSubmissions.filter(s => s.status === 'rejected');
         }
 
         if (filteredSubmissions.length === 0) {
@@ -59,21 +62,20 @@ document.addEventListener('componentsLoaded', () => {
             return;
         }
 
-        // REPLACE this part inside the `renderList` function in /worker/js/worker-submissions.js
-// This replaces the .map() part that generates each submission card
-
-submissionsList.innerHTML = filteredSubmissions.map(sub => {
+        submissionsList.innerHTML = filteredSubmissions.map(sub => {
             const submittedDate = sub.submittedAt ? sub.submittedAt.toDate().toLocaleDateString() : 'N/A';
-            const statusClass = `status-badge--${sub.status.split('_')[0]}`;
+            const statusClass = `status-badge--${sub.status.replace('_', '-')}`;
             
             let footerHTML = '';
             let timerHTML = '';
 
-            if (sub.status === 'pending' || sub.status === 'resubmitted_pending') {
-                timerHTML = `<div class="review-timer" id="review-timer-${sub.id}"></div>`;
+            if (sub.status === 'pending') {
+                const timerId = `review-timer-${sub.id}`;
+                timerHTML = `<div class="review-timer" id="${timerId}" data-submitted-at="${sub.submittedAt.toMillis()}">Awaiting review...</div>`;
             }
 
-            if (sub.status === 'rejected') {
+            // ✅ FIX: Logic for the resubmit_pending state
+            if (sub.status === 'resubmit_pending') {
                 const timerId = `timer-${sub.id}`;
                 footerHTML = `
                     <div class="card-footer">
@@ -82,8 +84,8 @@ submissionsList.innerHTML = filteredSubmissions.map(sub => {
                             <p>${sub.rejectionReason || 'No reason provided.'}</p>
                         </div>
                         <div class="resubmit-action">
-                            <span class="resubmit-timer" id="${timerId}">Calculating time left...</span>
-                            <a href="/worker/task-submission.html?id=${sub.jobId}&submissionId=${sub.id}" class="btn-resubmit">Resubmit Proof</a>
+                            <span class="resubmit-timer" id="${timerId}" data-rejection-timestamp="${sub.rejectionTimestamp.toMillis()}">Calculating time left...</span>
+                            <a href="/worker/task-resubmission.html?jobId=${sub.jobId}&submissionId=${sub.id}" class="btn-resubmit">Resubmit Proof</a>
                         </div>
                     </div>`;
             } else if (sub.status === 'approved') {
@@ -102,10 +104,10 @@ submissionsList.innerHTML = filteredSubmissions.map(sub => {
                         </div>
                         <div class="card-body">
                             <div class="info-item">
-                                <div class="icon-wrapper"><i class="fas fa-calendar-alt"></i></div> Submitted On: <strong>${submittedDate}</strong>
+                                <i class="fas fa-calendar-alt"></i> Submitted On: <strong>${submittedDate}</strong>
                             </div>
                             <div class="info-item">
-                                <div class="icon-wrapper"><i class="fas fa-sack-dollar"></i></div> Payout: <strong>৳${sub.payout || 0}</strong>
+                                <i class="fas fa-sack-dollar"></i> Payout: <strong>৳${sub.payout || 0}</strong>
                             </div>
                         </div>
                         ${timerHTML}
@@ -120,15 +122,13 @@ submissionsList.innerHTML = filteredSubmissions.map(sub => {
 
     const startReviewCountdownTimers = () => {
         const timers = document.querySelectorAll('.review-timer');
-        timers.forEach(timerEl => {
-            const subId = timerEl.id.replace('review-timer-', '');
-            const sub = allSubmissions.find(s => s.id === subId);
-            if (!sub || !sub.reviewBy) {
-                timerEl.textContent = 'Awaiting review...';
-                return;
-            };
+        const autoApproveDuration = 24 * 60 * 60 * 1000;
 
-            const deadline = sub.reviewBy.toDate();
+        timers.forEach(timerEl => {
+            const submittedAt = parseInt(timerEl.dataset.submittedAt, 10);
+            if (!submittedAt) return;
+            
+            const deadline = submittedAt + autoApproveDuration;
             
             const intervalId = setInterval(() => {
                 const now = new Date();
@@ -146,24 +146,29 @@ submissionsList.innerHTML = filteredSubmissions.map(sub => {
         });
     };
 
+    // ✅ FIX: Timer logic now uses rejectionTimestamp and calculates the 12-hour deadline
     const startResubmitCountdownTimers = () => {
         const timers = document.querySelectorAll('.resubmit-timer');
+        const resubmitDuration = 12 * 60 * 60 * 1000; // 12 hours in milliseconds
+
         timers.forEach(timerEl => {
-            const subId = timerEl.id.replace('timer-', '');
-            const sub = allSubmissions.find(s => s.id === subId);
-            if (!sub || !sub.resubmitDeadline) {
+            const rejectionTimestamp = parseInt(timerEl.dataset.rejectionTimestamp, 10);
+            if (!rejectionTimestamp) {
                 timerEl.textContent = 'Deadline passed';
                 return;
             }
 
-            const deadline = sub.resubmitDeadline.toDate();
+            const deadline = rejectionTimestamp + resubmitDuration;
             
             const intervalId = setInterval(() => {
                 const now = new Date();
                 const diff = deadline - now;
+
                 if (diff <= 0) {
                     clearInterval(intervalId);
                     timerEl.textContent = 'Time expired!';
+                    // Optionally hide the resubmit button
+                    timerEl.nextElementSibling.style.display = 'none';
                     return;
                 }
                 const hours = Math.floor(diff / (1000 * 60 * 60));
@@ -177,6 +182,7 @@ submissionsList.innerHTML = filteredSubmissions.map(sub => {
 
     const loadSubmissions = async (userId) => {
         try {
+            submissionsList.innerHTML = `<p class="empty-list-message">Loading your submissions...</p>`;
             const q = query(collectionGroup(db, 'submissions'), where("workerId", "==", userId), orderBy("submittedAt", "desc"));
             const querySnapshot = await getDocs(q);
             allSubmissions = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
