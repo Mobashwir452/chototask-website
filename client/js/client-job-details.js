@@ -1,4 +1,4 @@
-// FILE: /client/js/client-job-details.js (FINAL WITH BACKEND APPROVAL)
+// FILE: /client/js/client-job-details.js (FINAL & COMPLETE)
 
 import { auth, db } from '/js/firebase-config.js';
 import { doc, onSnapshot, collection, query, updateDoc, getDoc, runTransaction, increment, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -217,20 +217,32 @@ document.addEventListener('componentsLoaded', () => {
         update();
         timerInterval = setInterval(update, 1000);
     }
+    
+    // --- ✅ ALL HELPER FUNCTIONS MUST BE DEFINED HERE ---
+
+    function showSuccessModal(message) {
+        if (successModal) {
+            document.getElementById('success-modal-message').textContent = message;
+            successModal.classList.add('is-visible');
+        }
+    }
+
+    function showRejectionModal(submissionId) {
+        currentSubmissionId = submissionId;
+        if (rejectionModal) {
+            document.getElementById('rejection-reason-textarea').value = '';
+            document.getElementById('rejection-error-message').style.display = 'none';
+            rejectionModal.classList.add('is-visible');
+        }
+    }
 
     async function handleApproval(submissionId) {
         try {
             const token = await auth.currentUser.getIdToken();
             const response = await fetch('/.netlify/functions/approveSubmission', {
                 method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    jobId: jobId,
-                    submissionId: submissionId
-                })
+                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ jobId: jobId, submissionId: submissionId })
             });
 
             const result = await response.json();
@@ -325,6 +337,7 @@ document.addEventListener('componentsLoaded', () => {
         proofModal.classList.add('is-visible');
     }
 
+    // --- DATA LISTENERS ---
     onSnapshot(doc(db, "jobs", jobId), (docSnap) => {
         if (docSnap.exists()) {
             renderPage({ id: docSnap.id, ...docSnap.data() });
@@ -351,6 +364,7 @@ document.addEventListener('componentsLoaded', () => {
         submissionManagerSection.innerHTML = `<p class="empty-list-message">Could not load submissions.</p>`;
     });
 
+    // --- EVENT LISTENERS ---
     onAuthStateChanged(auth, (user) => {
         if (!user) { window.location.href = '/login.html'; }
     });
