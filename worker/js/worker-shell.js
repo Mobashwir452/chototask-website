@@ -1,54 +1,26 @@
-// FILE: /worker/js/worker-shell.js
+// FILE: /worker/js/worker-shell.js (FINAL & COMPLETE - WITH NOTIFICATIONS & ROBUST BALANCE LISTENER)
 
 import { auth, db } from '/js/firebase-config.js';
 import { signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { doc, onSnapshot, getDoc, updateDoc, serverTimestamp, collection, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-// --- CHECKLIST AND GUARD ---
-let isUserReady = false;
-let areComponentsReady = false;
-let didGlobalScriptsRun = false;
-let currentUserId = null;
-
-function runGlobalScripts() {
-    if (!isUserReady || !areComponentsReady || didGlobalScriptsRun) return;
-    didGlobalScriptsRun = true;
-    
-    // --- All global functions are called here safely ---
-    listenToWallet(currentUserId);
-    setActiveNavLink();
-    setupLogoutButton();
-    listenForNotifications(currentUserId); 
-}
-
 function listenToWallet(userId) {
-    // It looks for an HTML element with the ID 'header-balance'.
     const headerBalance = document.getElementById('header-balance');
-    
-    // If the user is not logged in or the element is not found, it does nothing.
-    if (!userId || !headerBalance) {
-        console.error("Wallet listener could not start: User ID or header balance element is missing.");
-        return;
-    }
-    
+    if (!userId || !headerBalance) return;
+
     const walletRef = doc(db, "wallets", userId);
-    
     onSnapshot(walletRef, (doc) => {
         const balance = doc.exists() ? (doc.data().balance ?? 0) : 0;
         headerBalance.textContent = `৳${balance.toLocaleString()}`;
     });
 }
 
-
 function setActiveNavLink() {
-    // Note: Ensure your worker bottom nav has the class 'worker-bottom-nav' for this to be more specific.
-    const navContainer = document.querySelector('.client-bottom-nav, .worker-bottom-nav');
+    const navContainer = document.querySelector('.worker-bottom-nav');
     if (!navContainer) return;
-
     const navLinks = navContainer.querySelectorAll('a.bottom-nav__link');
     const currentPath = window.location.pathname;
-
     navLinks.forEach(link => {
         link.classList.remove('active');
         const linkPath = new URL(link.href).pathname;
@@ -61,7 +33,6 @@ function setActiveNavLink() {
 function setupLogoutButton() {
     const logoutBtn = document.querySelector('.btn-logout');
     const logoutModal = document.getElementById('logout-confirmation-modal');
-    
     if (!logoutBtn || !logoutModal) return;
 
     const confirmBtn = logoutModal.querySelector('#logout-confirm-btn');
@@ -69,8 +40,8 @@ function setupLogoutButton() {
 
     logoutBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        // This line finds the menu's checkbox and unchecks it, closing the menu.
-        document.getElementById('worker-menu-toggle').checked = false;
+        const menuToggle = document.getElementById('worker-menu-toggle');
+        if (menuToggle) menuToggle.checked = false;
         logoutModal.classList.add('is-visible');
     });
 
@@ -84,19 +55,14 @@ function setupLogoutButton() {
             window.location.href = '/login.html';
         } catch (error) {
             console.error("Error signing out:", error);
-            logoutModal.classList.remove('is-visible');
         }
     });
 }
 
-
-// --- NOTIFICATION SYSTEM ---
-
 function listenForNotifications(userId) {
     const notificationBtn = document.getElementById('notification-btn');
     const notificationCountBadge = document.getElementById('notification-count');
-    const notificationPanel = document.getElementById('notification-panel');
-
+    
     if (!userId || !notificationBtn) return;
 
     let unreadListener, recentListener;
@@ -171,12 +137,9 @@ function listenForNotifications(userId) {
             if (isVisible && notificationCountBadge.style.display !== 'none') {
                 markNotificationsAsRead();
             }
-        } else {
-            console.error("Notification panel element not found in the DOM.");
         }
     });
 
-    // Helper for relative time
     function timeAgo(date) {
         const seconds = Math.floor((new Date() - date) / 1000);
         let interval = seconds / 31536000; if (interval > 1) return Math.floor(interval) + "y ago";
@@ -190,23 +153,31 @@ function listenForNotifications(userId) {
     setupListeners();
 }
 
+// --- INITIALIZATION ---
+function initializeGlobalScripts(userId) {
+    listenToWallet(userId);
+    setActiveNavLink();
+    setupLogoutButton();
+    listenForNotifications(userId);
+}
 
-
-// --- INITIALIZATION TRIGGERS ---
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        isUserReady = true;
-        currentUserId = user.uid;
-        runGlobalScripts();
+        // This robust logic waits for the header component to be loaded before running scripts.
+        const componentCheckInterval = setInterval(() => {
+            const headerBalanceElement = document.getElementById('header-balance');
+            const notificationButton = document.getElementById('notification-btn');
+            
+            if (headerBalanceElement && notificationButton) {
+                clearInterval(componentCheckInterval); // Stop checking
+                initializeGlobalScripts(user.uid); // Run all global functions
+            }
+        }, 100);
+
     } else {
         const protectedPaths = ['/worker/'];
         if (protectedPaths.some(path => window.location.pathname.startsWith(path))) {
             window.location.href = '/login.html';
         }
     }
-});
-
-document.addEventListener('componentsLoaded', () => {
-    areComponentsReady = true;
-    runGlobalScripts();
 });
