@@ -1,4 +1,4 @@
-// FILE: netlify/functions/approveSubmission.js (FINAL WITH ESCROW LOGIC)
+// FILE: netlify/functions/approveSubmission.js (FINAL CORRECTED VERSION)
 
 const admin = require('firebase-admin');
 
@@ -36,8 +36,8 @@ exports.handler = async (event, context) => {
             const jobDoc = await transaction.get(jobRef);
             const submissionDoc = await transaction.get(submissionRef);
 
-            // Security and validation checks
-            if (!jobDoc.exists() || !submissionDoc.exists()) {
+            // ✅ THE FIX IS HERE: Changed jobDoc.exists() to jobDoc.exists and submissionDoc.exists() to submissionDoc.exists
+            if (!jobDoc.exists || !submissionDoc.exists) {
                 throw new Error("Job or submission not found.");
             }
             if (jobDoc.data().clientId !== clientId) {
