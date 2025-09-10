@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submission Details | ChotoTask</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link rel="stylesheet" href="/worker/css/worker.css">
+    <link rel="stylesheet" href="/worker/css/worker-submission-details.css">
+</head>
+<body class="client-page">
+    
+    <header id="worker-header-placeholder"></header>
+    <div id="worker-menu-placeholder"></div>
+
+    <main class="container">
+        <div id="loading-container">
+            <h1 class="loading-title">Loading Submission Details...</h1>
+        </div>
+
+        <div id="details-card" class="details-card" style="display: none;">
+             </div>
+
+        <div class="modal-overlay" id="custom-notification-modal">
+            <div class="modal-content">
+                <div class="modal-icon"></div>
+                <h3 class="modal-title"></h3>
+                <p class="modal-message"></p>
+                <button class="modal-btn-ok">OK</button>
+            </div>
+        </div>
+    </main>
+    
+    <div id="worker-bottom-nav-placeholder"></div>
+
+    <script src="/js/component-loader.js"></script>
+    <script src="/worker/js/worker-shell.js" type="module"></script>
+    <script src="/worker/js/worker-submission-details.js" type="module"></script>
+</body>
+</html>

@@ -1,9 +1,12 @@
-// === FILE: /worker/js/worker-task-submission.js (CORRECTED) ===
+// === FILE: /worker/js/worker-task-submission.js (FINAL CORRECTED VERSION) ===
 
 import { auth, db, storage } from '/js/firebase-config.js';
 import { doc, getDoc, collection, addDoc, serverTimestamp, runTransaction, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+// Your ImgBB API Key
+const IMGBB_API_KEY = '2b154785f011c31f9c3b3a7ebae0f082';
 
 document.addEventListener('componentsLoaded', () => {
 
@@ -22,6 +25,7 @@ document.addEventListener('componentsLoaded', () => {
         return;
     }
 
+    // --- Custom Modal Function ---
     function showModal(type, title, message) {
         const modalOverlay = document.getElementById('custom-notification-modal');
         if (!modalOverlay) return;
@@ -36,7 +40,7 @@ document.addEventListener('componentsLoaded', () => {
         }
 
         const modalIcon = modalOverlay.querySelector('.modal-icon');
-        modalIcon.className = `modal-icon ${type}`;
+        modalIcon.className = `modal-icon ${type}`; // e.g., 'success' or 'error'
         modalOverlay.querySelector('.modal-title').textContent = title;
         modalOverlay.querySelector('.modal-message').textContent = message;
         modalOverlay.classList.add('is-visible');
@@ -117,55 +121,86 @@ document.addEventListener('componentsLoaded', () => {
             }
         });
     };
+    
+    // REPLACE this function in /worker/js/worker-task-submission.js
 
-    const handleProofSubmit = async (e) => {
-        e.preventDefault();
-        if (!currentUser) return showModal('error', 'Login Required', 'You must be logged in to submit proof.');
-        
-        const termsCheckbox = document.getElementById('submission-terms');
-        if (!termsCheckbox.checked) {
-            return showModal('error', 'Agreement Required', 'You must agree to the submission terms before proceeding.');
+// This function should be in your /worker/js/worker-task-submission.js file
+
+const handleProofSubmit = async (e) => {
+    e.preventDefault();
+    if (!currentUser) return showModal('error', 'Login Required', 'You must be logged in to submit proof.');
+    
+    const termsCheckbox = document.getElementById('submission-terms');
+    if (!termsCheckbox.checked) {
+        return showModal('error', 'Agreement Required', 'You must agree to the submission terms before proceeding.');
+    }
+
+    const submitBtn = e.target.querySelector('.btn-submit');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+    try {
+        // First, get the job details to save title and payout with the submission
+        const jobRef = doc(db, "jobs", jobId);
+        const jobSnap = await getDoc(jobRef);
+        if (!jobSnap.exists()) {
+            throw new Error("This job no longer exists.");
         }
+        const jobData = jobSnap.data();
 
-        const submitBtn = e.target.querySelector('.btn-submit');
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Submitting...';
-        try {
-            const proofInputs = Array.from(document.querySelectorAll('.proof-input, .proof-input-hidden'));
-            const submittedProofs = [];
-            for (const input of proofInputs) {
-                const type = input.dataset.type;
-                const instruction = input.dataset.instruction;
-                let answer = '';
-                if (type === 'screenshot') {
-                    const file = input.files[0];
-                    if (!file) throw new Error('Screenshot file is missing.');
-                    const storageRef = ref(storage, `proofs/${jobId}/${currentUser.uid}/${Date.now()}_${file.name}`);
-                    const snapshot = await uploadBytes(storageRef, file);
-                    answer = await getDownloadURL(snapshot.ref);
-                } else {
-                    answer = input.value;
-                }
-                submittedProofs.push({ type, instruction, answer });
+        const proofInputs = Array.from(document.querySelectorAll('.proof-input, .proof-input-hidden'));
+        const submittedProofs = [];
+        for (const input of proofInputs) {
+            const type = input.dataset.type;
+            const instruction = input.dataset.instruction;
+            let answer = '';
+            if (type === 'screenshot') {
+                const file = input.files[0];
+                if (!file) throw new Error('Screenshot file is missing.');
+                if (!IMGBB_API_KEY) throw new Error('Image hosting service is not configured.');
+                const formData = new FormData();
+                formData.append('image', file);
+                const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
+                const result = await response.json();
+                if (!result.success) throw new Error(result.error.message || 'Image upload failed.');
+                answer = result.data.url;
+            } else {
+                answer = input.value;
             }
-            const submissionData = { workerId: currentUser.uid, jobId: jobId, submittedAt: serverTimestamp(), status: 'pending', proofs: submittedProofs };
-            const jobRef = doc(db, "jobs", jobId);
-            const submissionsColRef = collection(db, "jobs", jobId, "submissions");
-            await runTransaction(db, async (transaction) => {
-                transaction.set(doc(submissionsColRef), submissionData);
-                transaction.update(jobRef, { submissionsPending: increment(1) });
-            });
-            
-            showModal('success', 'Success!', 'Proof submitted successfully!');
-
-        } catch (error) {
-            console.error('Submission failed:', error);
-            showModal('error', 'Submission Failed', `Error: ${error.message}`);
-        } finally {
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Submit Proof';
+            submittedProofs.push({ type, instruction, answer });
         }
-    };
+
+        // NEW: Add jobTitle, payout, and reviewBy deadline to the submission data
+        const now = new Date();
+        const reviewDeadline = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 24 hours from now
+
+        const submissionData = { 
+            workerId: currentUser.uid, 
+            jobId: jobId, 
+            jobTitle: jobData.title, // Add job title
+            payout: jobData.costPerWorker, // Add payout amount
+            submittedAt: serverTimestamp(), 
+            reviewBy: reviewDeadline, // Add review deadline
+            status: 'pending', 
+            proofs: submittedProofs,
+            submissionCount: 1
+        };
+        
+        const submissionsColRef = collection(db, "jobs", jobId, "submissions");
+        await runTransaction(db, async (transaction) => {
+            transaction.set(doc(submissionsColRef), submissionData);
+            transaction.update(jobRef, { submissionsPending: increment(1) });
+        });
+        
+        showModal('success', 'Success!', 'Proof submitted successfully!');
+        setTimeout(() => { window.location.href = '/worker/submissions.html'; }, 2000);
+
+    } catch (error) {
+        console.error('Submission failed:', error);
+        showModal('error', 'Submission Failed', `Error: ${error.message}`);
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Proof';
+    }
+};
 
     guidanceContainer.addEventListener('click', (e) => {
         const header = e.target.closest('.accordion-header');

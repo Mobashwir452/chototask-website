@@ -1,4 +1,4 @@
-// FILE: /client/js/client-job-details.js (FINAL - ACCORDION MOVED)
+// FILE: /client/js/client-job-details.js (FINAL WITH TIMER & COPY BUTTON)
 
 import { auth, db } from '/js/firebase-config.js';
 import { doc, onSnapshot, collection, query, updateDoc, getDoc, runTransaction, increment, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -8,17 +8,21 @@ document.addEventListener('componentsLoaded', () => {
     // --- DOM Elements ---
     const jobDetailsContainer = document.getElementById('job-details-content');
     const submissionManagerSection = document.getElementById('submission-manager-section');
-    // 'originalInfoSection' is no longer needed as a separate container
     
     const urlParams = new URLSearchParams(window.location.search);
     const jobId = urlParams.get('id');
+
+    // This variable will hold all submissions fetched from Firestore.
+    let allSubmissions = { pending: [], approved: [], rejected: [] };
+    let timerInterval = null; // To hold the timer update interval
 
     if (!jobId) {
         jobDetailsContainer.innerHTML = `<h1 class="loading-title">Job Not Found</h1>`;
         return;
     }
 
-    // --- RENDER FUNCTION ---
+    // --- RENDER FUNCTIONS ---
+    // Renders the main job overview card with stats.
     function renderPage(job) {
         const statusText = job.status.replace('_', ' ');
         const approvedCount = job.submissionsApproved || 0;
@@ -37,7 +41,6 @@ document.addEventListener('componentsLoaded', () => {
              actionButtonsHTML += `<button class="job-action-btn outline" id="cancel-job-btn"><i class="fa-solid fa-ban"></i> Cancel Job</button>`;
         }
         
-        // Accordion content is now generated here
         const instructionsHTML = job.instructions.map(i => `<li>${i}</li>`).join('');
         const restrictionsHTML = job.restrictions.map(r => `<li>${r}</li>`).join('');
         const proofsHTML = job.proofs.map(p => `<li>${p.instruction} <strong>(${p.type})</strong></li>`).join('');
@@ -50,47 +53,21 @@ document.addEventListener('componentsLoaded', () => {
                         <p class="job-id">ID: ${job.id}</p>
                         <span class="status-badge ${job.status}">${statusText}</span>
                     </div>
-
                     <div class="overview-stats">
-                        <div class="stat-item">
-                            <span class="stat-label"><i class="stat-icon fa-solid fa-users"></i> Workers Filled</span>
-                            <span class="stat-value">${approvedCount} / ${neededCount}</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label"><i class="stat-icon fa-solid fa-check"></i> Approved Submissions</span>
-                            <span class="stat-value">${approvedCount}</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label"><i class="stat-icon fa-solid fa-hourglass-half"></i> Pending Submissions</span>
-                            <span class="stat-value">${pendingCount}</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label"><i class="stat-icon fa-solid fa-times"></i> Rejected Submissions</span>
-                            <span class="stat-value">${rejectedCount}</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label"><i class="stat-icon fa-solid fa-coins"></i> Total Budget</span>
-                            <span class="stat-value">৳${job.totalCost.toLocaleString()}</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label"><i class="stat-icon fa-solid fa-hand-holding-dollar"></i> Cost Per Worker</span>
-                            <span class="stat-value">৳${job.costPerWorker.toLocaleString()}</span>
-                        </div>
+                        <div class="stat-item"><span class="stat-label"><i class="stat-icon fa-solid fa-users"></i> Workers Filled</span><span class="stat-value">${approvedCount} / ${neededCount}</span></div>
+                        <div class="stat-item"><span class="stat-label"><i class="stat-icon fa-solid fa-check"></i> Approved Submissions</span><span class="stat-value">${approvedCount}</span></div>
+                        <div class="stat-item"><span class="stat-label"><i class="stat-icon fa-solid fa-hourglass-half"></i> Pending Submissions</span><span class="stat-value">${pendingCount}</span></div>
+                        <div class="stat-item"><span class="stat-label"><i class="stat-icon fa-solid fa-times"></i> Rejected Submissions</span><span class="stat-value">${rejectedCount}</span></div>
+                        <div class="stat-item"><span class="stat-label"><i class="stat-icon fa-solid fa-coins"></i> Total Budget</span><span class="stat-value">৳${job.totalCost.toLocaleString()}</span></div>
+                        <div class="stat-item"><span class="stat-label"><i class="stat-icon fa-solid fa-hand-holding-dollar"></i> Cost Per Worker</span><span class="stat-value">৳${job.costPerWorker.toLocaleString()}</span></div>
                     </div>
-                    
                     <div class="overview-progress">
-                        <div class="progress-labels">
-                            <span>Completion</span>
-                            <strong>${progress.toFixed(0)}%</strong>
-                        </div>
+                        <div class="progress-labels"><span>Completion</span><strong>${progress.toFixed(0)}%</strong></div>
                         <div class="progress-bar"><div class="progress-bar__fill" style="width: ${progress.toFixed(2)}%;"></div></div>
                     </div>
-
                     <div class="accordion-container">
                         <div class="accordion">
-                            <button class="accordion-header">
-                                <span>Original Job Information</span><i class="fa-solid fa-chevron-down"></i>
-                            </button>
+                            <button class="accordion-header"><span>Original Job Information</span><i class="fa-solid fa-chevron-down"></i></button>
                             <div class="accordion-content">
                                 <div class="info-section"><h4>Instructions</h4><ul>${instructionsHTML}</ul></div>
                                 <div class="info-section"><h4>Rules</h4><ul>${restrictionsHTML}</ul></div>
@@ -98,32 +75,29 @@ document.addEventListener('componentsLoaded', () => {
                             </div>
                         </div>
                     </div>
-
-                    <div class="overview-actions">
-                        ${actionButtonsHTML}
-                    </div>
+                    <div class="overview-actions">${actionButtonsHTML}</div>
                 </div>
             </div>`;
     }
 
-    function renderSubmissions(submissions, activeTab = 'pending') {
+    function renderSubmissions(activeTab = 'pending') {
         submissionManagerSection.innerHTML = `
             <div class="block">
                 <div class="submission-manager">
                     <nav class="tabs-nav">
-                        <button class="tab-btn ${activeTab === 'pending' ? 'active' : ''}" data-tab="pending">Pending Review <span class="count-badge">${submissions.pending.length}</span></button>
-                        <button class="tab-btn ${activeTab === 'approved' ? 'active' : ''}" data-tab="approved">Approved <span class="count-badge">${submissions.approved.length}</span></button>
-                        <button class="tab-btn ${activeTab === 'rejected' ? 'active' : ''}" data-tab="rejected">Rejected <span class="count-badge">${submissions.rejected.length}</span></button>
+                        <button class="tab-btn ${activeTab === 'pending' ? 'active' : ''}" data-tab="pending">Pending Review <span class="count-badge">${allSubmissions.pending.length}</span></button>
+                        <button class="tab-btn ${activeTab === 'approved' ? 'active' : ''}" data-tab="approved">Approved <span class="count-badge">${allSubmissions.approved.length}</span></button>
+                        <button class="tab-btn ${activeTab === 'rejected' ? 'active' : ''}" data-tab="rejected">Rejected <span class="count-badge">${allSubmissions.rejected.length}</span></button>
                     </nav>
                     <div class="tab-content"></div>
                 </div>
             </div>`;
-        renderTabContent(activeTab, submissions);
+        renderTabContent(activeTab);
     }
 
-    function renderTabContent(status, submissions) {
+    function renderTabContent(status) {
         const contentContainer = submissionManagerSection.querySelector('.tab-content');
-        const subsToRender = submissions[status] || [];
+        const subsToRender = allSubmissions[status] || [];
         if (!contentContainer) return;
         
         if (subsToRender.length === 0) {
@@ -131,11 +105,24 @@ document.addEventListener('componentsLoaded', () => {
             return;
         }
 
-        contentContainer.innerHTML = subsToRender.map(sub => `
+        contentContainer.innerHTML = subsToRender.map(sub => {
+            const submittedAtTimestamp = sub.submittedAt.toMillis();
+            return `
             <div class="submission-card">
                 <div class="submission-info">
-                    <strong>Freelancer ID:</strong> ${sub.freelancerId.substring(0, 8)}...
-                    <span>Submitted: ${sub.submittedAt.toDate().toLocaleString()}</span>
+                    <div class="worker-info">
+                        <strong>Worker ID:</strong> ${sub.workerId.substring(0, 8)}...
+                        <button class="copy-worker-id-btn" data-worker-id="${sub.workerId}" title="Copy ID">
+                            <i class="fa-regular fa-copy"></i>
+                        </button>
+                    </div>
+                    <span>Submitted: ${new Date(submittedAtTimestamp).toLocaleString()}</span>
+                    ${status === 'pending' ? `
+                        <div class="submission-timer" data-submitted-at="${submittedAtTimestamp}">
+                            <i class="fa-solid fa-clock"></i>
+                            <span>Calculating...</span>
+                        </div>` 
+                    : ''}
                 </div>
                 <div class="submission-actions" data-submission-id="${sub.id}">
                     <button class="action-btn btn-view">View Proof</button>
@@ -144,7 +131,43 @@ document.addEventListener('componentsLoaded', () => {
                         <button class="action-btn btn-reject">✖ Reject</button>
                     ` : ''}
                 </div>
-            </div>`).join('');
+            </div>`;
+        }).join('');
+        
+        if (status === 'pending') {
+            startTimerUpdates();
+        } else {
+            if (timerInterval) clearInterval(timerInterval);
+        }
+    }
+
+    // --- TIMER FUNCTIONS ---
+    function updateAllTimers() {
+        const timerElements = document.querySelectorAll('.submission-timer');
+        const now = Date.now();
+        const autoApproveDuration = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
+        timerElements.forEach(el => {
+            const submittedAt = parseInt(el.dataset.submittedAt, 10);
+            const deadline = submittedAt + autoApproveDuration;
+            const timeLeft = deadline - now;
+
+            if (timeLeft > 0) {
+                const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft / 1000 / 60) % 60);
+                const seconds = Math.floor((timeLeft / 1000) % 60);
+                el.querySelector('span').textContent = `Auto-approves in: ${hours}h ${minutes}m ${seconds}s`;
+            } else {
+                el.querySelector('span').textContent = "Time expired. Awaiting auto-approval.";
+                el.classList.add('expired');
+            }
+        });
+    }
+
+    function startTimerUpdates() {
+        if (timerInterval) clearInterval(timerInterval);
+        updateAllTimers();
+        timerInterval = setInterval(updateAllTimers, 1000);
     }
 
     // --- DATA LISTENERS ---
@@ -155,8 +178,9 @@ document.addEventListener('componentsLoaded', () => {
             jobDetailsContainer.innerHTML = `<h1 class="loading-title">Job Not Found</h1>`;
         }
     });
-
-    onSnapshot(query(collection(db, "jobs", jobId, "submissions"), orderBy("submittedAt", "desc")), (snapshot) => {
+    
+    const submissionsQuery = query(collection(db, "jobs", jobId, "submissions"), orderBy("submittedAt", "desc"));
+    onSnapshot(submissionsQuery, (snapshot) => {
         const submissions = { pending: [], approved: [], rejected: [] };
         snapshot.forEach(doc => {
             const sub = { id: doc.id, ...doc.data() };
@@ -164,8 +188,13 @@ document.addEventListener('componentsLoaded', () => {
                 submissions[sub.status].push(sub);
             }
         });
+        
+        allSubmissions = submissions;
         const activeTab = submissionManagerSection.querySelector('.tab-btn.active')?.dataset.tab || 'pending';
-        renderSubmissions(submissions, activeTab);
+        renderSubmissions(activeTab);
+    }, (error) => {
+        console.error("Error fetching submissions: ", error);
+        submissionManagerSection.innerHTML = `<p class="empty-list-message">Could not load submissions. Check browser console.</p>`;
     });
 
     // --- HELPER FUNCTIONS ---
@@ -238,7 +267,7 @@ document.addEventListener('componentsLoaded', () => {
         }
 
         const subData = docSnap.data();
-        proofModalTitle.textContent = `Proof from ${subData.freelancerId.substring(0, 8)}`;
+        proofModalTitle.textContent = `Proof from ${subData.workerId.substring(0, 8)}`;
         
         let proofHTML = '';
         subData.proofs.forEach(proof => {
@@ -283,6 +312,21 @@ document.addEventListener('componentsLoaded', () => {
     document.addEventListener('click', (e) => {
         const target = e.target;
         
+        const copyBtn = target.closest('.copy-worker-id-btn');
+        if (copyBtn) {
+            const workerId = copyBtn.dataset.workerId;
+            navigator.clipboard.writeText(workerId).then(() => {
+                const icon = copyBtn.querySelector('i');
+                icon.className = 'fa-solid fa-check';
+                copyBtn.classList.add('copied');
+
+                setTimeout(() => {
+                    icon.className = 'fa-regular fa-copy';
+                    copyBtn.classList.remove('copied');
+                }, 2000);
+            }).catch(err => console.error('Failed to copy ID: ', err));
+        }
+
         const actionButton = target.closest('.job-action-btn');
         if (actionButton) {
             if (actionButton.id === 'pause-job-btn') updateJobStatus(jobId, 'paused');
@@ -307,11 +351,14 @@ document.addEventListener('componentsLoaded', () => {
         
         const tabButton = target.closest('.tab-btn');
         if (tabButton) {
+            if (timerInterval) clearInterval(timerInterval);
+            const newActiveTab = tabButton.dataset.tab;
             const tabsNav = tabButton.closest('.tabs-nav');
-            if (tabsNav && tabsNav.querySelector('.active')) {
-                tabsNav.querySelector('.active').classList.remove('active');
+            if(tabsNav){
+                tabsNav.querySelector('.active')?.classList.remove('active');
             }
             tabButton.classList.add('active');
+            renderTabContent(newActiveTab);
         }
 
         const submissionActions = target.closest('.submission-actions');

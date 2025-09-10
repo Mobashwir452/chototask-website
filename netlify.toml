@@ -9,3 +9,13 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+
+  # FILE: netlify.toml
+
+[functions]
+  included_files = ["./service-account.json"] # If you have a file
+
+# Schedule the function to run once every day at midnight UTC
+[functions."auto-approve-submissions"]
+  schedule = "0 0 * * *"

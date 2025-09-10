@@ -16,13 +16,29 @@
     align-items: center;
     text-align: center;
 }
-.summary-avatar {
+.summary-avatar-wrapper {
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid var(--client-card-border);
     margin-bottom: 1rem;
+    border: 3px solid var(--client-card-border);
+    overflow: hidden;
+}
+.summary-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.summary-initials-avatar {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--client-accent-gradient);
+    color: var(--client-text-dark);
+    font-size: 3rem;
+    font-weight: 700;
 }
 .summary-username {
     font-size: 1.75rem;
@@ -66,7 +82,7 @@
     color: var(--client-text-secondary);
 }
 
-/* --- About & Reviews Section --- */
+/* --- About, Reviews & Jobs Section --- */
 .section-title {
     font-size: 1.25rem;
     font-weight: 600;
@@ -94,7 +110,6 @@
 .review-rating { font-size: 0.9rem; }
 .review-comment { font-size: 0.9rem; color: var(--client-text-secondary); }
 
-/* --- Active Jobs Section --- */
 .job-list-item {
     display: flex;
     justify-content: space-between;
@@ -110,20 +125,3 @@
 .job-list-item:hover { background-color: rgba(0, 255, 205, 0.05); }
 .job-item-title { font-weight: 600; }
 .job-item-payout { font-weight: 700; color: #00FFCD; }
-
-
-/* === ADD THIS CSS FOR AVATAR PLACEHOLDER === */
-.summary-avatar-placeholder {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    background-color: var(--client-accent); /* Apnar theme-er accent color */
-    color: white;
-    font-size: 3rem;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 3px solid var(--client-card-border);
-    margin-bottom: 1rem;
-}

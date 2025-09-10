@@ -22,34 +22,31 @@ document.addEventListener('componentsLoaded', () => {
         return;
     }
 
-    // REPLACE this entire function in /worker/js/worker-client-profile.js
+    const renderSummary = (data) => {
+        const joinDate = data.memberSince ? data.memberSince.toDate().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'N/A';
+        const stats = data.stats || {};
+        const rating = (stats.rating || 0).toFixed(1);
+        const reviewCount = stats.reviewCount || 0;
 
-const renderSummary = (data) => {
-    const joinDate = data.memberSince ? data.memberSince.toDate().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'N/A';
-    const stats = data.stats || {};
-    const rating = (stats.rating || 0).toFixed(1);
-    const reviewCount = stats.reviewCount || 0;
+        let avatarHTML = '';
+        if (data.photoURL) {
+            avatarHTML = `<img src="${data.photoURL}" alt="Client Avatar" class="summary-avatar">`;
+        } else {
+            const initials = (data.fullName || 'C').charAt(0).toUpperCase();
+            avatarHTML = `<div class="summary-initials-avatar">${initials}</div>`;
+        }
 
-    let avatarHTML = '';
-    if (data.photoURL) {
-        avatarHTML = `<img src="${data.photoURL}" alt="Client Avatar" class="summary-avatar">`;
-    } else {
-        const initial = data.fullName ? data.fullName.charAt(0).toUpperCase() : '?';
-        avatarHTML = `<div class="summary-avatar-placeholder">${initial}</div>`;
-    }
-
-    summaryContainer.className = 'section-card client-summary-card';
-    summaryContainer.innerHTML = `
-        ${avatarHTML}
-        <h1 class="summary-username">${data.fullName || 'Client'}</h1>
-        <p class="summary-meta">${data.country || 'Unknown Location'} &bull; Joined ${joinDate}</p>
-        <div class="summary-rating">
-            <i class="fa-solid fa-star"></i>
-            <span>${rating}/5 (${reviewCount} reviews)</span>
-        </div>
-    `;
-};
-
+        summaryContainer.className = 'section-card client-summary-card';
+        summaryContainer.innerHTML = `
+            <div class="summary-avatar-wrapper">${avatarHTML}</div>
+            <h1 class="summary-username">${data.fullName || 'ChotoTask Client'}</h1>
+            <p class="summary-meta">${data.country || 'Unknown Location'} &bull; Joined ${joinDate}</p>
+            <div class="summary-rating">
+                <i class="fa-solid fa-star"></i>
+                <span>${rating}/5 (${reviewCount} reviews)</span>
+            </div>
+        `;
+    };
 
     const renderStats = (data) => {
         const stats = data.stats || {};
@@ -125,13 +122,10 @@ const renderSummary = (data) => {
             const clientDocRef = doc(db, "users", clientId);
             const clientDocSnap = await getDoc(clientDocRef);
 
-            if (!clientDocSnap.exists()) {
-                throw new Error("Client profile does not exist.");
-            }
+            if (!clientDocSnap.exists()) throw new Error("Client profile does not exist.");
 
             const clientData = clientDocSnap.data();
 
-            // Fetch reviews and jobs in parallel
             const reviewsQuery = query(collection(db, "users", clientId, "reviews"), orderBy("timestamp", "desc"), limit(5));
             const jobsQuery = query(collection(db, "jobs"), where("clientId", "==", clientId), where("status", "in", ["open", "active"]), limit(5));
             
@@ -140,7 +134,6 @@ const renderSummary = (data) => {
                 getDocs(jobsQuery)
             ]);
             
-            // Render all sections
             renderSummary(clientData);
             renderStats(clientData);
             renderAbout(clientData);
