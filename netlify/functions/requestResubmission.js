@@ -1,4 +1,4 @@
-// FILE: netlify/functions/requestResubmission.js (CORRECTED SYNTAX)
+// FILE: netlify/functions/requestResubmission.js (FINAL WITH COUNTER FIX)
 
 const admin = require('firebase-admin');
 
@@ -13,7 +13,6 @@ try {
 const db = admin.firestore();
 
 exports.handler = async (event, context) => {
-    // Authentication check using the Bearer Token
     if (!event.headers.authorization || !event.headers.authorization.startsWith('Bearer ')) {
         return { statusCode: 401, body: JSON.stringify({ success: false, error: 'Unauthorized: No token provided.' }) };
     }
@@ -32,18 +31,24 @@ exports.handler = async (event, context) => {
         const jobRef = db.collection('jobs').doc(jobId);
         const submissionRef = db.collection('jobs').doc(jobId).collection('submissions').doc(submissionId);
         
-        const jobDoc = await jobRef.get();
+        // ✅ THE FIX IS HERE: Using a transaction to update both documents at once.
+        await db.runTransaction(async (transaction) => {
+            const jobDoc = await transaction.get(jobRef);
+            if (!jobDoc.exists || jobDoc.data().clientId !== clientId) {
+                throw new Error('Forbidden: You do not own this job.');
+            }
 
-        // ✅ THE FIX IS HERE: Changed jobDoc.exists() to jobDoc.exists
-        if (!jobDoc.exists || jobDoc.data().clientId !== clientId) {
-             return { statusCode: 403, body: JSON.stringify({ success: false, error: 'Forbidden: You do not own this job.' }) };
-        }
+            // 1. Update the submission document
+            transaction.update(submissionRef, {
+                status: 'resubmit_pending',
+                rejectionReason: reason,
+                rejectionTimestamp: admin.firestore.FieldValue.serverTimestamp()
+            });
 
-        // Update the submission document
-        await submissionRef.update({
-            status: 'resubmit_pending',
-            rejectionReason: reason,
-            rejectionTimestamp: admin.firestore.FieldValue.serverTimestamp()
+            // 2. Decrement the pending counter on the main job document
+            transaction.update(jobRef, {
+                submissionsPending: admin.firestore.FieldValue.increment(-1)
+            });
         });
 
         return {
@@ -53,6 +58,10 @@ exports.handler = async (event, context) => {
 
     } catch (error) {
         console.error("Error in requestResubmission function:", error);
+        // If the error is our custom "Forbidden" error, send a 403 status code
+        if (error.message.startsWith('Forbidden')) {
+            return { statusCode: 403, body: JSON.stringify({ success: false, error: error.message }) };
+        }
         return { statusCode: 500, body: JSON.stringify({ success: false, error: error.message }) };
     }
 };

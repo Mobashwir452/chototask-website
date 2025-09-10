@@ -385,3 +385,32 @@
     font-weight: 600; 
     color: #EB5757; 
 }
+
+
+/* FILE: /client/css/client-job-details.css (Add this at the end) */
+
+/* --- Styles for the Awaiting Resubmission Card --- */
+.resubmit-card-info {
+    width: 100%;
+    background: rgba(242, 201, 76, 0.1); /* Yellowish warning color */
+    border-left: 3px solid #F2C94C;
+    padding: 0.75rem;
+    margin-top: 1rem;
+    border-radius: 0.25rem;
+}
+
+.resubmit-card-info p {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.9rem;
+    color: var(--client-text-secondary);
+    line-height: 1.5;
+}
+
+.resubmit-card-info p:last-child {
+    margin-bottom: 0;
+}
+
+.resubmit-card-info strong {
+    color: var(--client-text-primary);
+    font-weight: 600;
+}
