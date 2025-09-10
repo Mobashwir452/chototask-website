@@ -1,4 +1,4 @@
-// FILE: netlify/functions/adminManageSubmission.js (NEW FILE)
+// FILE: netlify/functions/adminManageSubmission.js (FINAL & CORRECTED)
 const admin = require('firebase-admin');
 
 try {
@@ -40,7 +40,10 @@ exports.handler = async (event, context) => {
             const jobDoc = await transaction.get(jobRef);
             const submissionDoc = await transaction.get(submissionRef);
 
-            if (!jobDoc.exists() || !submissionDoc.exists()) throw new Error("Job or submission not found.");
+            // ✅ THE FIX IS HERE: Changed .exists() to .exists for Admin SDK
+            if (!jobDoc.exists || !submissionDoc.exists) {
+                throw new Error("Job or submission not found.");
+            }
             
             const subData = submissionDoc.data();
             const jobData = jobDoc.data();
@@ -49,43 +52,43 @@ exports.handler = async (event, context) => {
             const payout = subData.payout;
             const originalStatus = subData.status;
 
-            // Update submission status
-            transaction.update(submissionRef, { status: action === 'approve' ? 'approved' : 'rejected' });
+            // Update submission status first
+            const newStatus = action === 'approve' ? 'approved' : 'rejected';
+            transaction.update(submissionRef, { status: newStatus });
 
-            if (action === 'approve') {
-                // Only proceed with payment if the submission wasn't already approved
-                if (originalStatus !== 'approved') {
-                    if ((jobData.remainingBudget || 0) < payout) throw new Error("Job budget is insufficient.");
-                    
-                    const workerWalletRef = db.collection('wallets').doc(workerId);
-                    const clientWalletRef = db.collection('wallets').doc(clientId);
+            if (action === 'approve' && originalStatus !== 'approved') {
+                if ((jobData.remainingBudget || 0) < payout) throw new Error("Job budget is insufficient.");
+                
+                const workerWalletRef = db.collection('wallets').doc(workerId);
+                const clientWalletRef = db.collection('wallets').doc(clientId);
 
-                    transaction.set(workerWalletRef, {
-                        balance: admin.firestore.FieldValue.increment(payout),
-                        totalEarned: admin.firestore.FieldValue.increment(payout)
-                    }, { merge: true });
+                transaction.set(workerWalletRef, {
+                    balance: admin.firestore.FieldValue.increment(payout),
+                    totalEarned: admin.firestore.FieldValue.increment(payout)
+                }, { merge: true });
 
-                    transaction.update(clientWalletRef, {
-                        escrow: admin.firestore.FieldValue.increment(-payout),
-                        totalSpent: admin.firestore.FieldValue.increment(payout)
-                    });
-                    
-                    // Update job counters only if changing from a pending state
-                    if (originalStatus === 'pending' || originalStatus === 'resubmit_pending') {
-                         transaction.update(jobRef, {
-                            submissionsApproved: admin.firestore.FieldValue.increment(1),
-                            submissionsPending: originalStatus === 'pending' ? admin.firestore.FieldValue.increment(-1) : 0,
-                            remainingBudget: admin.firestore.FieldValue.increment(-payout)
-                        });
-                    }
+                transaction.update(clientWalletRef, {
+                    escrow: admin.firestore.FieldValue.increment(-payout),
+                    totalSpent: admin.firestore.FieldValue.increment(payout)
+                });
+                
+                let counterUpdates = {
+                    submissionsApproved: admin.firestore.FieldValue.increment(1),
+                    remainingBudget: admin.firestore.FieldValue.increment(-payout)
+                };
+                if (originalStatus === 'pending') {
+                    counterUpdates.submissionsPending = admin.firestore.FieldValue.increment(-1);
                 }
-            } else { // Action is 'reject'
-                if (originalStatus === 'pending' || originalStatus === 'resubmit_pending') {
-                    transaction.update(jobRef, {
-                        submissionsRejected: admin.firestore.FieldValue.increment(1),
-                        submissionsPending: originalStatus === 'pending' ? admin.firestore.FieldValue.increment(-1) : 0,
-                    });
+                transaction.update(jobRef, counterUpdates);
+
+            } else if (action === 'reject' && originalStatus !== 'rejected') {
+                let counterUpdates = {
+                    submissionsRejected: admin.firestore.FieldValue.increment(1)
+                };
+                if (originalStatus === 'pending') {
+                    counterUpdates.submissionsPending = admin.firestore.FieldValue.increment(-1);
                 }
+                transaction.update(jobRef, counterUpdates);
             }
         });
 
