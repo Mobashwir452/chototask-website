@@ -97,7 +97,7 @@ document.addEventListener('componentsLoaded', () => {
         const checkboxHTML = `
             <div class="form-group-checkbox">
                 <input type="checkbox" id="submission-terms" required>
-                <label for="submission-terms">I understand that the client has 24 hours to review my submission. If rejected, I will have 6 hours to resubmit my proof once. Failure to resubmit in time will result in task cancellation.</label>
+                <label for="submission-terms">I understand that the client has 24 hours to review my submission. If rejected, I will have 12 hours to resubmit my proof once. Failure to resubmit in time will result in task cancellation.</label>
             </div>`;
 
         proofFormContainer.innerHTML = `
@@ -122,85 +122,76 @@ document.addEventListener('componentsLoaded', () => {
         });
     };
     
-    // REPLACE this function in /worker/js/worker-task-submission.js
-
-// This function should be in your /worker/js/worker-task-submission.js file
-
-const handleProofSubmit = async (e) => {
-    e.preventDefault();
-    if (!currentUser) return showModal('error', 'Login Required', 'You must be logged in to submit proof.');
-    
-    const termsCheckbox = document.getElementById('submission-terms');
-    if (!termsCheckbox.checked) {
-        return showModal('error', 'Agreement Required', 'You must agree to the submission terms before proceeding.');
-    }
-
-    const submitBtn = e.target.querySelector('.btn-submit');
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Submitting...';
-    try {
-        // First, get the job details to save title and payout with the submission
-        const jobRef = doc(db, "jobs", jobId);
-        const jobSnap = await getDoc(jobRef);
-        if (!jobSnap.exists()) {
-            throw new Error("This job no longer exists.");
+    const handleProofSubmit = async (e) => {
+        e.preventDefault();
+        if (!currentUser) return showModal('error', 'Login Required', 'You must be logged in to submit proof.');
+        
+        const termsCheckbox = document.getElementById('submission-terms');
+        if (!termsCheckbox.checked) {
+            return showModal('error', 'Agreement Required', 'You must agree to the submission terms before proceeding.');
         }
-        const jobData = jobSnap.data();
 
-        const proofInputs = Array.from(document.querySelectorAll('.proof-input, .proof-input-hidden'));
-        const submittedProofs = [];
-        for (const input of proofInputs) {
-            const type = input.dataset.type;
-            const instruction = input.dataset.instruction;
-            let answer = '';
-            if (type === 'screenshot') {
-                const file = input.files[0];
-                if (!file) throw new Error('Screenshot file is missing.');
-                if (!IMGBB_API_KEY) throw new Error('Image hosting service is not configured.');
-                const formData = new FormData();
-                formData.append('image', file);
-                const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
-                const result = await response.json();
-                if (!result.success) throw new Error(result.error.message || 'Image upload failed.');
-                answer = result.data.url;
-            } else {
-                answer = input.value;
+        const submitBtn = e.target.querySelector('.btn-submit');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting...';
+
+        try {
+            const jobRef = doc(db, "jobs", jobId);
+            const jobSnap = await getDoc(jobRef);
+            if (!jobSnap.exists()) {
+                throw new Error("This job no longer exists.");
             }
-            submittedProofs.push({ type, instruction, answer });
+            const jobData = jobSnap.data();
+
+            const proofInputs = Array.from(document.querySelectorAll('.proof-input, .proof-input-hidden'));
+            const submittedProofs = [];
+            for (const input of proofInputs) {
+                const type = input.dataset.type;
+                const instruction = input.dataset.instruction;
+                let answer = '';
+                if (type === 'screenshot') {
+                    const file = input.files[0];
+                    if (!file) throw new Error('Screenshot file is missing.');
+                    const formData = new FormData();
+                    formData.append('image', file);
+                    const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
+                    const result = await response.json();
+                    if (!result.success) throw new Error(result.error.message || 'Image upload failed.');
+                    answer = result.data.url;
+                } else {
+                    answer = input.value;
+                }
+                submittedProofs.push({ type, instruction, answer });
+            }
+
+            const submissionData = { 
+                workerId: currentUser.uid, 
+                jobId: jobId, 
+                clientId: jobData.clientId, // This is the critical fix
+                jobTitle: jobData.title,
+                payout: jobData.costPerWorker,
+                submittedAt: serverTimestamp(), 
+                status: 'pending', 
+                proofs: submittedProofs,
+                submissionCount: 1
+            };
+            
+            const submissionsColRef = collection(db, "jobs", jobId, "submissions");
+            await runTransaction(db, async (transaction) => {
+                transaction.set(doc(submissionsColRef), submissionData);
+                transaction.update(jobRef, { submissionsPending: increment(1) });
+            });
+            
+            showModal('success', 'Success!', 'Proof submitted successfully!');
+            setTimeout(() => { window.location.href = '/worker/submissions.html'; }, 2000);
+
+        } catch (error) {
+            console.error('Submission failed:', error);
+            showModal('error', 'Submission Failed', `Error: ${error.message}`);
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Submit Proof';
         }
-
-        // NEW: Add jobTitle, payout, and reviewBy deadline to the submission data
-        const now = new Date();
-        const reviewDeadline = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 24 hours from now
-
-        const submissionData = { 
-            workerId: currentUser.uid, 
-            jobId: jobId, 
-            jobTitle: jobData.title, // Add job title
-            payout: jobData.costPerWorker, // Add payout amount
-            submittedAt: serverTimestamp(), 
-            reviewBy: reviewDeadline, // Add review deadline
-            status: 'pending', 
-            proofs: submittedProofs,
-            submissionCount: 1
-        };
-        
-        const submissionsColRef = collection(db, "jobs", jobId, "submissions");
-        await runTransaction(db, async (transaction) => {
-            transaction.set(doc(submissionsColRef), submissionData);
-            transaction.update(jobRef, { submissionsPending: increment(1) });
-        });
-        
-        showModal('success', 'Success!', 'Proof submitted successfully!');
-        setTimeout(() => { window.location.href = '/worker/submissions.html'; }, 2000);
-
-    } catch (error) {
-        console.error('Submission failed:', error);
-        showModal('error', 'Submission Failed', `Error: ${error.message}`);
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Submit Proof';
-    }
-};
+    };
 
     guidanceContainer.addEventListener('click', (e) => {
         const header = e.target.closest('.accordion-header');
