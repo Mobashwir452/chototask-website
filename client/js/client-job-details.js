@@ -1,4 +1,4 @@
-// FILE: /client/js/client-job-details.js (FINAL WITH ALL FEATURES)
+// FILE: /client/js/client-job-details.js (FINAL WITH BACKEND APPROVAL)
 
 import { auth, db } from '/js/firebase-config.js';
 import { doc, onSnapshot, collection, query, updateDoc, getDoc, runTransaction, increment, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -218,42 +218,32 @@ document.addEventListener('componentsLoaded', () => {
         timerInterval = setInterval(update, 1000);
     }
 
-    const submissionsQuery = query(collection(db, "jobs", jobId, "submissions"), orderBy("submittedAt", "desc"));
-    onSnapshot(submissionsQuery, (snapshot) => {
-        const subs = { pending: [], approved: [], rejected: [], resubmit_pending: [] };
-        snapshot.forEach(doc => {
-            const sub = { id: doc.id, ...doc.data() };
-            if (subs[sub.status]) {
-                subs[sub.status].push(sub);
+    async function handleApproval(submissionId) {
+        try {
+            const token = await auth.currentUser.getIdToken();
+            const response = await fetch('/.netlify/functions/approveSubmission', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    jobId: jobId,
+                    submissionId: submissionId
+                })
+            });
+
+            const result = await response.json();
+            if (!response.ok) {
+                throw new Error(result.error || 'Failed to approve submission.');
             }
-        });
-        
-        allSubmissions = subs;
-        const activeTab = submissionManagerSection.querySelector('.tab-btn.active')?.dataset.tab || 'pending';
-        renderSubmissions(activeTab);
-    }, (error) => {
-        console.error("Error fetching submissions: ", error);
-        submissionManagerSection.innerHTML = `<p class="empty-list-message">Could not load submissions.</p>`;
-    });
-    
-    onSnapshot(doc(db, "jobs", jobId), (docSnap) => {
-        if (docSnap.exists()) {
-            renderPage({ id: docSnap.id, ...docSnap.data() });
-        } else {
-            jobDetailsContainer.innerHTML = `<h1 class="loading-title">Job Not Found</h1>`;
+            
+            showSuccessModal("Submission approved successfully and payment sent!");
+
+        } catch (error) {
+            console.error("Approval process failed:", error);
+            alert(`Error: ${error.message}`);
         }
-    });
-
-    function showSuccessModal(message) {
-        document.getElementById('success-modal-message').textContent = message;
-        successModal.classList.add('is-visible');
-    }
-
-    function showRejectionModal(submissionId) {
-        currentSubmissionId = submissionId;
-        document.getElementById('rejection-reason-textarea').value = '';
-        document.getElementById('rejection-error-message').style.display = 'none';
-        rejectionModal.classList.add('is-visible');
     }
 
     async function handleRejectionWithReason() {
@@ -287,27 +277,6 @@ document.addEventListener('componentsLoaded', () => {
         } finally {
             confirmBtn.disabled = false;
             confirmBtn.textContent = 'Submit Rejection';
-        }
-    }
-
-    async function handleApproval(submissionId) {
-        const jobRef = doc(db, "jobs", jobId);
-        const submissionRef = doc(db, "jobs", jobId, "submissions", submissionId);
-        try {
-            await runTransaction(db, async (transaction) => {
-                const submissionDoc = await transaction.get(submissionRef);
-                if (!submissionDoc.exists()) throw new Error("Submission not found.");
-                if (submissionDoc.data().status !== 'pending') throw new Error("Submission already processed.");
-                transaction.update(submissionRef, { status: 'approved' });
-                transaction.update(jobRef, {
-                    submissionsApproved: increment(1),
-                    submissionsPending: increment(-1)
-                });
-            });
-            showSuccessModal("Submission approved successfully!");
-        } catch (error) {
-            console.error("Approval transaction failed: ", error);
-            alert(`Error: ${error.message}`);
         }
     }
     
@@ -356,6 +325,32 @@ document.addEventListener('componentsLoaded', () => {
         proofModal.classList.add('is-visible');
     }
 
+    onSnapshot(doc(db, "jobs", jobId), (docSnap) => {
+        if (docSnap.exists()) {
+            renderPage({ id: docSnap.id, ...docSnap.data() });
+        } else {
+            jobDetailsContainer.innerHTML = `<h1 class="loading-title">Job Not Found</h1>`;
+        }
+    });
+    
+    const submissionsQuery = query(collection(db, "jobs", jobId, "submissions"), orderBy("submittedAt", "desc"));
+    onSnapshot(submissionsQuery, (snapshot) => {
+        const subs = { pending: [], approved: [], rejected: [], resubmit_pending: [] };
+        snapshot.forEach(doc => {
+            const sub = { id: doc.id, ...doc.data() };
+            if (subs[sub.status]) {
+                subs[sub.status].push(sub);
+            }
+        });
+        
+        allSubmissions = subs;
+        const activeTab = submissionManagerSection.querySelector('.tab-btn.active')?.dataset.tab || 'pending';
+        renderSubmissions(activeTab);
+    }, (error) => {
+        console.error("Error fetching submissions: ", error);
+        submissionManagerSection.innerHTML = `<p class="empty-list-message">Could not load submissions.</p>`;
+    });
+
     onAuthStateChanged(auth, (user) => {
         if (!user) { window.location.href = '/login.html'; }
     });
@@ -386,7 +381,7 @@ document.addEventListener('componentsLoaded', () => {
         }
         const actionButton = target.closest('.job-action-btn');
         if (actionButton) {
-            // Placeholder for future actions like pause/cancel
+            // Placeholder for actions like pause/cancel
         }
         const accordionHeader = target.closest('.accordion-header');
         if (accordionHeader) {
