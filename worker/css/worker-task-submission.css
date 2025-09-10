@@ -118,15 +118,19 @@
 .proof-group { margin-bottom: 1.5rem; }
 .proof-group label { display: block; font-weight: 500; margin-bottom: 0.5rem; }
 .proof-group label .proof-type { font-size: 0.8rem; color: var(--client-text-secondary); }
+
+
+
 .proof-input { 
     width: 100%; 
     padding: 0.8rem; 
     background: rgba(0,0,0,0.2); 
     border: 1px solid var(--client-card-border); 
     border-radius: 0.5rem; 
-    color: var(--); 
+    color: var(--client-text-primary); /* ✅ FIX: সঠিক ভ্যারিয়েবল ব্যবহার করা হয়েছে */
     font-size: 1rem; 
-    font-family: inherit; }
+    font-family: inherit; 
+}
 
 textarea.proof-input { min-height: 100px; resize: vertical; }
 .proof-input:focus { outline: none; border-color: #00FFCD; }

@@ -438,3 +438,62 @@
     font-weight: 500;
     margin-top: 1rem;
 }
+
+
+
+
+/* Add this CSS to the end of /client/css/client-job-details.css */
+.stat-item-full {
+    grid-column: 1 / -1; /* Makes the item span the full width */
+}
+.editable-section {
+    background: rgba(0,0,0,0.1);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-top: 1rem;
+}
+.btn-edit {
+    background: none;
+    border: 1px solid var(--client-card-border);
+    color: var(--client-text-secondary);
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-weight: 500;
+}
+.btn-edit:hover {
+    border-color: #00FFCD;
+    color: #00FFCD;
+}
+.edit-inputs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+.form-input-small {
+    width: 100%;
+    padding: 0.5rem;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--client-card-border);
+    color: var(--client-text-primary);
+    border-radius: 0.25rem;
+}
+.edit-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+.btn-nav-small {
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    border: 1px solid var(--client-card-border);
+    background: none;
+    color: var(--client-text-secondary);
+    font-weight: 500;
+    cursor: pointer;
+}
+.btn-nav-small.primary {
+    background: var(--client-accent-gradient);
+    color: var(--client-text-dark);
+    border-color: transparent;
+}

@@ -3,39 +3,35 @@
 /* --- Filter Controls --- */
 .filter-controls {
     display: flex;
-    gap: 0.5rem;
+    border-bottom: 2px solid var(--client-card-border);
     margin-bottom: 2rem;
-    overflow-x: auto; /* Allows horizontal scrolling on small screens */
-    padding-bottom: 0.5rem; /* Space for scrollbar */
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    gap: 1.5rem;
+    overflow-x: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
-.filter-controls::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, and Opera */
-}
+.filter-controls::-webkit-scrollbar { display: none; }
 
 .filter-btn {
-    padding: 0.6rem 1rem;
-    border-radius: 20px;
-    border: 1px solid var(--client-card-border);
-    background-color: var(--client-card-bg);
+    padding: 0.75rem 0.25rem;
+    background: none;
+    border: none;
     color: var(--client-text-secondary);
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s ease;
-    white-space: nowrap; /* Prevents button text from wrapping */
+    position: relative;
+    border-bottom: 3px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+    white-space: nowrap;
 }
-
 .filter-btn:hover {
-    border-color: #00FFCD;
     color: var(--client-text-primary);
 }
-
 .filter-btn.active {
-    background: var(--client-accent-gradient);
-    color: var(--client-text-dark);
+    color: #00FFCD;
     font-weight: 600;
-    border-color: transparent;
+    border-bottom-color: #00FFCD;
+    background: none; /* Ensure no gradient background */
 }
 
 /* --- Job Card Styles --- */
@@ -67,21 +63,40 @@
     margin: 0;
 }
 
-/* --- Status Badge --- */
-.status-badge {
-    padding: 0.3rem 0.75rem;
+/* === NEW: Job Card Status Badge Styles (Corrected) === */
+.job-card__header .status-badge {
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0.4rem 0.8rem;
     border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    white-space: nowrap;
     text-transform: capitalize;
-    flex-shrink: 0; /* Prevents badge from shrinking */
+    white-space: nowrap;
 }
-.status-badge.pending_review { background-color: #F2C94C; color: #333; }
-.status-badge.open { background-color: #27AE60; color: white; }
-.status-badge.completed { background-color: #2F80ED; color: white; }
-.status-badge.rejected { background-color: #EB5757; color: white; }
-.status-badge.in-progress { background-color: #9B51E0; color: white; }
+
+.status-badge.active,
+.status-badge.open {
+    background-color: rgba(0, 255, 205, 0.15);
+    color: #00FFCD;
+}
+
+.status-badge.paused,
+.status-badge.pending_review {
+    background-color: rgba(242, 201, 76, 0.15);
+    color: #F2C94C;
+}
+
+.status-badge.cancelled {
+    background-color: rgba(235, 87, 87, 0.15);
+    color: #EB5757;
+}
+
+.status-badge.completed {
+    background-color: rgba(47, 128, 237, 0.15);
+    color: #2F80ED;
+}
+
+
+
 
 /* --- NEW: Stats Grid with Icons --- */
 .job-card__stats-grid {
@@ -183,4 +198,43 @@
     padding: 3rem;
     text-align: center;
     color: var(--client-text-secondary);
+}
+
+
+
+/* FILE: /client/css/client-my-jobs.css */
+
+/* --- Job Card Status Badge Styles --- */
+.job-card__status {
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    text-transform: capitalize;
+    white-space: nowrap;
+}
+
+/* Active or Open jobs - Positive Color */
+.job-card__status.active,
+.job-card__status.open {
+    background-color: rgba(0, 255, 205, 0.15);
+    color: #00FFCD;
+}
+
+/* Paused jobs - Attention Color */
+.job-card__status.paused {
+    background-color: rgba(242, 201, 76, 0.15);
+    color: #F2C94C;
+}
+
+/* Cancelled jobs - Negative Color */
+.job-card__status.cancelled {
+    background-color: rgba(235, 87, 87, 0.15);
+    color: #EB5757;
+}
+
+/* Completed jobs - Success Color */
+.job-card__status.completed {
+    background-color: rgba(47, 128, 237, 0.15);
+    color: #2F80ED;
 }
