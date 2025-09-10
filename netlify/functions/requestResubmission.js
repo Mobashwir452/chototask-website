@@ -1,4 +1,4 @@
-// FILE: netlify/functions/requestResubmission.js
+// FILE: netlify/functions/requestResubmission.js (CORRECTED & FINAL)
 
 const admin = require('firebase-admin');
 
@@ -13,20 +13,36 @@ try {
 const db = admin.firestore();
 
 exports.handler = async (event, context) => {
-    // Authenticate user
-    if (!context.clientContext || !context.clientContext.user) {
-        return { statusCode: 401, body: JSON.stringify({ success: false, error: 'Unauthorized' }) };
+    // --- NEW, CORRECT AUTHENTICATION CHECK ---
+    // This now verifies the token sent from the client-side fetch request.
+    if (!event.headers.authorization || !event.headers.authorization.startsWith('Bearer ')) {
+        return { statusCode: 401, body: JSON.stringify({ success: false, error: 'Unauthorized: No token provided.' }) };
     }
+    const idToken = event.headers.authorization.split('Bearer ')[1];
     
     try {
+        // Verify the token to get the user's UID
+        const decodedToken = await admin.auth().verifyIdToken(idToken);
+        const clientId = decodedToken.uid; // The authenticated client's UID
+
+        // --- END OF NEW AUTH CHECK ---
+
         const { jobId, submissionId, reason } = JSON.parse(event.body);
 
         if (!jobId || !submissionId || !reason) {
             return { statusCode: 400, body: JSON.stringify({ success: false, error: 'Missing required fields.' }) };
         }
 
+        const jobRef = db.collection('jobs').doc(jobId);
         const submissionRef = db.collection('jobs').doc(jobId).collection('submissions').doc(submissionId);
         
+        // Security check: Ensure the person making the request is the job owner
+        const jobDoc = await jobRef.get();
+        if (!jobDoc.exists() || jobDoc.data().clientId !== clientId) {
+             return { statusCode: 403, body: JSON.stringify({ success: false, error: 'Forbidden: You do not own this job.' }) };
+        }
+
+        // Update the submission document
         await submissionRef.update({
             status: 'resubmit_pending',
             rejectionReason: reason,

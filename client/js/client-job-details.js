@@ -1,4 +1,4 @@
-// FILE: /client/js/client-job-details.js (FULL CODE WITH ALL FEATURES)
+// FILE: /client/js/client-job-details.js (FINAL CORRECTED VERSION)
 
 import { auth, db } from '/js/firebase-config.js';
 import { doc, onSnapshot, collection, query, updateDoc, getDoc, runTransaction, increment, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -10,6 +10,7 @@ document.addEventListener('componentsLoaded', () => {
     const submissionManagerSection = document.getElementById('submission-manager-section');
     const successModal = document.getElementById('success-modal');
     const rejectionModal = document.getElementById('rejection-modal');
+    const proofModal = document.getElementById('proof-modal');
     
     const urlParams = new URLSearchParams(window.location.search);
     const jobId = urlParams.get('id');
@@ -142,7 +143,6 @@ document.addEventListener('componentsLoaded', () => {
         }
     }
 
-    // --- NEW MODAL & WORKFLOW FUNCTIONS ---
     function showSuccessModal(message) {
         document.getElementById('success-modal-message').textContent = message;
         successModal.classList.add('is-visible');
@@ -199,7 +199,6 @@ document.addEventListener('componentsLoaded', () => {
         }
     }
 
-    // --- TIMER FUNCTIONS ---
     function updateAllTimers() {
         const timerElements = document.querySelectorAll('.submission-timer');
         const now = Date.now();
@@ -228,7 +227,6 @@ document.addEventListener('componentsLoaded', () => {
         timerInterval = setInterval(updateAllTimers, 1000);
     }
 
-    // --- DATA LISTENERS ---
     onSnapshot(doc(db, "jobs", jobId), (docSnap) => {
         if (docSnap.exists()) {
             renderPage({ id: docSnap.id, ...docSnap.data() });
@@ -255,7 +253,6 @@ document.addEventListener('componentsLoaded', () => {
         submissionManagerSection.innerHTML = `<p class="empty-list-message">Could not load submissions. Check browser console.</p>`;
     });
 
-    // --- HELPER FUNCTIONS ---
     async function updateJobStatus(id, newStatus) {
         const jobRef = doc(db, "jobs", id);
         try {
@@ -289,10 +286,14 @@ document.addEventListener('componentsLoaded', () => {
     }
     
     async function showProofModal(submissionId) {
-        const proofModal = document.getElementById('proof-modal'); // Assuming proof modal exists in HTML
+        const proofModalTitle = document.getElementById('proof-modal-title');
         const proofModalBody = document.getElementById('proof-modal-body');
         const proofModalFooter = document.getElementById('proof-modal-footer');
-        const proofModalTitle = document.getElementById('proof-modal-title');
+        
+        if (!proofModalTitle || !proofModalBody || !proofModalFooter) {
+            console.error('Proof modal elements not found in the HTML.');
+            return;
+        }
         
         const submissionRef = doc(db, "jobs", jobId, "submissions", submissionId);
         const docSnap = await getDoc(submissionRef);
@@ -316,7 +317,7 @@ document.addEventListener('componentsLoaded', () => {
         });
         proofModalBody.innerHTML = proofHTML;
 
-        proofModalFooter.innerHTML = `<button class="modal-btn modal-btn--cancel" id="proof-modal-close-footer">Close</button>`;
+        proofModalFooter.innerHTML = `<button class="modal-btn modal-btn--cancel" id="proof-modal-close-btn">Close</button>`;
         if (subData.status === 'pending') {
             const approveBtn = document.createElement('button');
             approveBtn.className = 'modal-btn modal-btn--confirm';
@@ -337,7 +338,6 @@ document.addEventListener('componentsLoaded', () => {
         proofModal.classList.add('is-visible');
     }
 
-    // --- EVENT LISTENERS ---
     onAuthStateChanged(auth, (user) => {
         if (!user) {
             window.location.href = '/login.html';
@@ -347,15 +347,16 @@ document.addEventListener('componentsLoaded', () => {
     document.addEventListener('click', (e) => {
         const target = e.target;
         
-        // --- MODAL CLOSE BUTTONS ---
-        if (target.id === 'success-modal-close-btn' || target.closest('.modal-overlay') === successModal && !target.closest('.modal-content')) {
+        if (target.id === 'success-modal-close-btn' || (target.closest('.modal-overlay') === successModal && !target.closest('.modal-content'))) {
             successModal.classList.remove('is-visible');
         }
-        if (target.id === 'rejection-cancel-btn' || target.closest('.modal-overlay') === rejectionModal && !target.closest('.modal-content')) {
+        if (target.id === 'rejection-cancel-btn' || (target.closest('.modal-overlay') === rejectionModal && !target.closest('.modal-content'))) {
             rejectionModal.classList.remove('is-visible');
         }
+        if (target.id === 'proof-modal-close-btn' || (target.closest('.modal-overlay') === proofModal && !target.closest('.modal-content'))) {
+            proofModal.classList.remove('is-visible');
+        }
         
-        // --- MODAL ACTION BUTTONS ---
         if (target.id === 'rejection-confirm-btn') {
             handleRejectionWithReason();
         }
@@ -367,7 +368,6 @@ document.addEventListener('componentsLoaded', () => {
                 const icon = copyBtn.querySelector('i');
                 icon.className = 'fa-solid fa-check';
                 copyBtn.classList.add('copied');
-
                 setTimeout(() => {
                     icon.className = 'fa-regular fa-copy';
                     copyBtn.classList.remove('copied');
@@ -423,9 +423,6 @@ document.addEventListener('componentsLoaded', () => {
         if (target.id === 'cancel-modal-confirm-btn') {
             updateJobStatus(jobId, 'cancelled');
             document.getElementById('cancel-job-modal')?.classList.remove('is-visible');
-        }
-        if (target.id === 'proof-modal' || target.id === 'proof-modal-close-footer') {
-            document.getElementById('proof-modal')?.classList.remove('is-visible');
         }
     });
 });
