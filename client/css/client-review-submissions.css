@@ -1,11 +1,52 @@
-/* FILE: /client/css/client-review-submissions.css (NEW FILE) */
+/* FILE: /client/css/client-review-submissions.css (FINAL & COMPLETE) */
+
+/* --- Page Hero & General Layout --- */
+.page-hero {
+    padding: 2.5rem 1rem;
+    text-align: center;
+    position: relative;
+    margin-bottom: 1rem;
+}
+.page-hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--client-accent-gradient);
+}
+.page-hero__icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    margin: 0 auto 1.5rem auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--client-card-bg);
+    border: 1px solid var(--client-card-border);
+    color: #00FFCD;
+}
+.page-hero__title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+}
+.page-hero__subtitle {
+    font-size: 1rem;
+    color: var(--client-text-secondary);
+    max-width: 400px;
+    margin: 0 auto;
+}
 
 /* --- Tab Navigation --- */
 .tabs-nav {
     display: flex;
     border-bottom: 2px solid var(--client-card-border);
-    margin: 2rem 0;
+    margin-bottom: 2rem;
     gap: 1.5rem;
+    flex-wrap: wrap;
 }
 .tab-btn {
     padding: 0.75rem 0.25rem;
@@ -23,16 +64,22 @@
 .count-badge { background-color: rgba(255,255,255,0.1); color: var(--client-text-secondary); font-size: 0.75rem; padding: 0.1rem 0.5rem; border-radius: 10px; margin-left: 0.5rem; }
 .tab-btn.active .count-badge { background-color: #00FFCD; color: var(--client-text-dark); }
 
+/* --- Submission List --- */
+.empty-list-message {
+    background: var(--client-card-bg);
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: center;
+    color: var(--client-text-secondary);
+}
+
 /* --- Submission Card --- */
 .submission-card {
     background: var(--client-card-bg);
     border: 1px solid var(--client-card-border);
     border-radius: 1rem;
     padding: 1.5rem;
-    margin-bottom: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+    margin-bottom: 1.5rem;
 }
 .card-header {
     display: flex;
@@ -40,6 +87,7 @@
     align-items: flex-start;
     gap: 1rem;
     padding-bottom: 1rem;
+    margin-bottom: 1rem;
     border-bottom: 1px solid var(--client-card-border);
 }
 .job-title-link {
@@ -47,39 +95,163 @@
     font-weight: 600;
     color: var(--client-text-primary);
     text-decoration: none;
+    line-height: 1.3;
 }
 .job-title-link:hover { color: #00FFCD; }
 
+.status-badge {
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    text-transform: capitalize;
+    white-space: nowrap;
+}
+.status-badge--pending, .status-badge--resubmit-pending { background-color: rgba(242, 201, 76, 0.15); color: #F2C94C; }
+.status-badge--approved { background-color: rgba(0, 255, 205, 0.15); color: #00FFCD; }
+.status-badge--rejected { background-color: rgba(235, 87, 87, 0.15); color: #EB5757; }
+
 .card-body {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
-    flex-wrap: wrap;
 }
-.worker-info { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; }
-.copy-worker-id-btn { background: none; border: none; color: var(--client-text-secondary); cursor: pointer; }
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    color: var(--client-text-secondary);
+}
+.info-item i { font-size: 0.9rem; color: var(--client-text-secondary); }
+.info-item strong { color: var(--client-text-primary); font-weight: 600; }
+.copy-worker-id-btn { background: none; border: none; color: var(--client-text-secondary); cursor: pointer; font-size: 1rem; padding: 0 0.25rem; }
 .copy-worker-id-btn:hover { color: white; }
-.submission-date { font-size: 0.9rem; color: var(--client-text-secondary); }
 
-.card-actions { display: flex; gap: 0.75rem; }
-.action-btn { 
-    padding: 0.6rem 1rem; 
-    border-radius: 0.5rem; 
-    font-weight: 600; 
-    cursor: pointer; 
-    border: none; 
-    font-size: 0.85rem; 
-    transition: transform 0.2s ease, background-color 0.2s ease; 
-}
-.action-btn:hover { 
-    transform: scale(1.05); 
+.card-footer {
+    padding-top: 1rem;
+    margin-top: 1rem;
+    border-top: 1px solid var(--client-card-border);
+    display: flex;
+    flex-wrap: wrap; /* Allows items to wrap to the next line */
+    justify-content: flex-end; /* Aligns items to the right by default */
+    gap: 1rem;
 }
 
-.empty-list-message {
+
+.review-timer {
+    font-size: 0.9rem;
+    text-align: center;
+    color: var(--client-text-secondary);
+    background-color: rgba(0,0,0,0.2);
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    width: 100%; /* Timer takes full width, pushing buttons to the next line */
+    order: -1; /* Ensures timer always appears first */
+    margin-bottom: 1rem;
+}
+
+.review-timer strong {
+    color: #F2C94C; /* Yellowish color for the time */
+    font-weight: 600;
+}
+
+
+.card-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center; /* Center buttons horizontally */
+    flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+    width: 100%; /* Ensure actions take full width for centering */
+}
+.action-btn { padding: 0.6rem 1rem; border-radius: 0.5rem; font-weight: 600; cursor: pointer; border: none; font-size: 0.85rem; transition: transform 0.2s ease; }
+.action-btn:hover { transform: scale(1.05); }
+.btn-view { background: var(--client-accent-gradient); color: var(--client-text-dark); }
+.btn-approve { background-color: #27AE60; color: white; }
+.btn-reject { background-color: #c94040; color: white; }
+
+/* --- Modal Styles (for Success, Rejection, and Proof) --- */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0s 0.3s;
+}
+.modal-overlay.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease;
+}
+.modal-content {
     background: var(--client-card-bg);
+    border: 1px solid var(--client-card-border);
     border-radius: 1rem;
     padding: 2rem;
     text-align: center;
+    max-width: 400px;
+    width: 100%;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+.modal-overlay.is-visible .modal-content {
+    transform: scale(1);
+}
+.modal-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin: 0 auto 1.5rem auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+}
+.modal-icon.success { background-color: rgba(0, 255, 205, 0.15); color: #00FFCD; }
+.modal-icon.error { background-color: rgba(235, 87, 87, 0.15); color: #EB5757; }
+.modal-title { font-size: 1.5rem; font-weight: 600; margin: 0 0 0.5rem 0; color: var(--client-text-primary); }
+.modal-message { color: var(--client-text-secondary); margin: 0 0 2rem 0; line-height: 1.6; }
+
+/* --- Rejection Modal Specifics --- */
+.rejection-form { width: 100%; margin-bottom: 1.5rem; text-align: left; }
+.rejection-form textarea { width: 100%; padding: 0.75rem; border-radius: 0.5rem; background: rgba(0,0,0,0.2); border: 1px solid var(--client-card-border); color: var(--client-text-primary); font-family: inherit; font-size: 1rem; resize: vertical; }
+.rejection-form .error-message { color: #e74c3c; font-size: 0.9rem; margin-top: 0.5rem; }
+.modal-footer { display: flex; gap: 1rem; }
+.modal-btn { flex: 1; padding: 0.8rem; border: none; border-radius: 0.5rem; font-size: 1rem; font-weight: 600; cursor: pointer; transition: transform 0.2s ease; }
+.modal-btn:hover { transform: scale(1.03); }
+.modal-btn--confirm { background: var(--client-accent-gradient); color: var(--client-text-dark); }
+.modal-btn--cancel { background: rgba(255, 255, 255, 0.1); color: var(--client-text-primary); border: 1px solid var(--client-card-border); }
+
+/* --- Proof Modal Specifics --- */
+.modal-body { max-height: 60vh; overflow-y: auto; text-align: left; }
+.proof-item { margin-bottom: 1.5rem; }
+.proof-item h5 { font-size: 0.9rem; color: #00FFCD; margin: 0 0 0.5rem 0; }
+.proof-item p { background: rgba(0,0,0,0.2); padding: 0.75rem; border-radius: 0.25rem; margin: 0; color: var(--client-text-primary); word-wrap: break-word; }
+.proof-item img { max-width: 100%; border-radius: 0.5rem; margin-top: 0.5rem; }
+
+
+/* FILE: /client/css/client-review-submissions.css (Add this at the end) */
+
+/* --- Auto-Approve Timer Box Style --- */
+.review-timer {
+    font-size: 0.9rem;
+    text-align: center;
     color: var(--client-text-secondary);
+    background-color: rgba(0,0,0,0.2);
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    width: 100%; /* Ensures it takes the full width inside the footer */
+    order: -1; /* Puts the timer before the action buttons */
+}
+
+.review-timer strong {
+    color: #F2C94C; /* Yellowish color for the time */
+    font-weight: 600;
 }

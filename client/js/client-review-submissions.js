@@ -1,4 +1,4 @@
-// FILE: /client/js/client-review-submissions.js (FINAL & COMPLETE)
+// FILE: /client/js/client-review-submissions.js (FINAL & CORRECTED)
 
 import { auth, db } from '/js/firebase-config.js';
 import { collectionGroup, query, where, orderBy, onSnapshot, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -17,7 +17,8 @@ document.addEventListener('componentsLoaded', () => {
     let allSubmissions = [];
     let activeTab = 'pending';
     let currentUser = null;
-    let currentActionInfo = {}; // Will store jobId and submissionId for modals
+    let currentActionInfo = {};
+    let timerInterval = null;
 
     // --- RENDER FUNCTIONS ---
     const renderHero = () => {
@@ -45,6 +46,8 @@ document.addEventListener('componentsLoaded', () => {
     };
 
     const renderList = () => {
+        if (timerInterval) clearInterval(timerInterval);
+        
         const filtered = allSubmissions.filter(s => s.status === activeTab);
         if (filtered.length === 0) {
             listContainer.innerHTML = `<p class="empty-list-message">No submissions in this category.</p>`;
@@ -52,9 +55,11 @@ document.addEventListener('componentsLoaded', () => {
         }
 
         listContainer.innerHTML = filtered.map(sub => {
-            const submittedDate = sub.submittedAt ? sub.submittedAt.toDate().toLocaleString() : 'N/A';
-            let actionsHTML = `<button class="action-btn btn-view" data-job-id="${sub.jobId}" data-submission-id="${sub.id}">View Proof</button>`;
+            // ✅ THE FIX IS HERE: Added .toDate() to convert the Firestore timestamp
+            const submittedDate = sub.submittedAt ? sub.submittedAt.toDate().toLocaleDateString() : 'N/A';
+            const statusClass = `status-badge--${sub.status.replace('_', '-')}`;
             
+            let actionsHTML = `<button class="action-btn btn-view" data-job-id="${sub.jobId}" data-submission-id="${sub.id}">View Proof</button>`;
             if (activeTab === 'pending' || activeTab === 'resubmit_pending') {
                 actionsHTML += `<button class="action-btn btn-approve" data-job-id="${sub.jobId}" data-submission-id="${sub.id}">✔ Approve</button>`;
             }
@@ -62,21 +67,62 @@ document.addEventListener('componentsLoaded', () => {
                  actionsHTML += `<button class="action-btn btn-reject" data-job-id="${sub.jobId}" data-submission-id="${sub.id}">✖ Reject</button>`;
             }
 
+            let timerHTML = '';
+            if (sub.status === 'pending' && sub.submittedAt) {
+                timerHTML = `<div class="review-timer" data-submitted-at="${sub.submittedAt.toMillis()}">Calculating review time...</div>`;
+            }
+
             return `
                 <div class="submission-card">
                     <div class="card-header">
                         <a href="/client/job-details.html?id=${sub.jobId}" class="job-title-link">${sub.jobTitle || 'Job Title Not Found'}</a>
+                        <span class="status-badge ${statusClass}">${sub.status.replace('_', ' ')}</span>
                     </div>
                     <div class="card-body">
-                        <div class="worker-info">
-                            Worker ID: <strong>${sub.workerId.substring(0, 8)}...</strong>
-                            <button class="copy-worker-id-btn" data-worker-id="${sub.workerId}"><i class="fa-solid fa-copy"></i></button>
+                        <div class="info-item">
+                            <i class="fas fa-user"></i> Worker ID: <strong>${sub.workerId.substring(0, 8)}...</strong>
                         </div>
-                        <span class="submission-date">Submitted: ${submittedDate}</span>
+                        <div class="info-item">
+                            <i class="fas fa-calendar-alt"></i> Submitted On: <strong>${submittedDate}</strong>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-sack-dollar"></i> Payout: <strong>৳${sub.payout || 0}</strong>
+                        </div>
                     </div>
+                    ${timerHTML ? `<div class="card-footer">${timerHTML}</div>` : ''}
                     <div class="card-actions">${actionsHTML}</div>
                 </div>`;
         }).join('');
+
+        if (activeTab === 'pending') {
+            startClientReviewTimers();
+        }
+    };
+
+    const startClientReviewTimers = () => {
+        const timerElements = document.querySelectorAll('.review-timer');
+        const autoApproveDuration = 24 * 60 * 60 * 1000;
+
+        const update = () => {
+            timerElements.forEach(timerEl => {
+                const submittedAt = parseInt(timerEl.dataset.submittedAt, 10);
+                if (!submittedAt) return;
+
+                const deadline = submittedAt + autoApproveDuration;
+                const now = Date.now();
+                const diff = deadline - now;
+
+                if (diff <= 0) {
+                    timerEl.innerHTML = `<strong>Review time has expired</strong>`;
+                    return;
+                }
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                timerEl.innerHTML = `Auto-approves in: <strong>${hours}h ${minutes}m</strong>`;
+            });
+        };
+        update();
+        timerInterval = setInterval(update, 1000);
     };
 
     const listenToAllSubmissions = (clientId) => {
@@ -94,8 +140,7 @@ document.addEventListener('componentsLoaded', () => {
             listContainer.innerHTML = `<p class="empty-list-message">Could not load submissions. Please check Firestore console for required index.</p>`;
         });
     };
-
-    // --- MODAL & ACTION LOGIC ---
+    
     const showSuccessModal = (message) => {
         if (successModal) {
             document.getElementById('success-modal-message').textContent = message;
@@ -114,7 +159,7 @@ document.addEventListener('componentsLoaded', () => {
 
     const handleApproval = async (jobId, submissionId) => {
         try {
-            const token = await auth.currentUser.getIdToken();
+            const token = await currentUser.getIdToken();
             const response = await fetch('/.netlify/functions/approveSubmission', {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
@@ -141,7 +186,7 @@ document.addEventListener('componentsLoaded', () => {
         confirmBtn.textContent = 'Submitting...';
 
         try {
-            const token = await auth.currentUser.getIdToken();
+            const token = await currentUser.getIdToken();
             const { jobId, submissionId } = currentActionInfo;
             const response = await fetch('/.netlify/functions/requestResubmission', {
                 method: 'POST',
@@ -187,6 +232,22 @@ document.addEventListener('componentsLoaded', () => {
         });
         proofModalBody.innerHTML = proofHTML;
         proofModalFooter.innerHTML = `<button class="modal-btn modal-btn--cancel" id="proof-modal-close-btn">Close</button>`;
+        
+        if (subData.status === 'pending') {
+            const approveBtn = document.createElement('button');
+            approveBtn.className = 'modal-btn modal-btn--confirm';
+            approveBtn.textContent = '✔ Approve';
+            approveBtn.onclick = () => { handleApproval(jobId, submissionId); proofModal.classList.remove('is-visible'); };
+            const rejectBtn = document.createElement('button');
+            rejectBtn.className = 'modal-btn';
+            rejectBtn.style.backgroundColor = '#EB5757';
+            rejectBtn.style.color = 'white';
+            rejectBtn.textContent = '✖ Reject';
+            rejectBtn.onclick = () => { showRejectionModal(jobId, submissionId); proofModal.classList.remove('is-visible'); };
+            proofModalFooter.appendChild(rejectBtn);
+            proofModalFooter.appendChild(approveBtn);
+        }
+
         proofModal.classList.add('is-visible');
     };
 
@@ -201,18 +262,15 @@ document.addEventListener('componentsLoaded', () => {
     });
 
     listContainer.addEventListener('click', e => {
-        const target = e.target.closest('button'); // More robustly finds the button
+        const target = e.target.closest('button');
         if (!target) return;
-
         const submissionId = target.dataset.submissionId;
         const jobId = target.dataset.jobId;
-
         if (target.matches('.btn-approve')) handleApproval(jobId, submissionId);
         if (target.matches('.btn-reject')) showRejectionModal(jobId, submissionId);
         if (target.matches('.btn-view')) showProofModal(jobId, submissionId);
         if (target.matches('.copy-worker-id-btn')) {
             navigator.clipboard.writeText(target.dataset.workerId);
-            // Optional: Add a visual feedback
             const icon = target.querySelector('i');
             if (icon) {
                 icon.className = 'fa-solid fa-check';
@@ -221,7 +279,6 @@ document.addEventListener('componentsLoaded', () => {
         }
     });
     
-    // Listeners for closing modals
     document.getElementById('success-modal-close-btn').addEventListener('click', () => successModal.classList.remove('is-visible'));
     document.getElementById('rejection-cancel-btn').addEventListener('click', () => rejectionModal.classList.remove('is-visible'));
     document.getElementById('rejection-confirm-btn').addEventListener('click', handleRejectionWithReason);
@@ -229,7 +286,10 @@ document.addEventListener('componentsLoaded', () => {
         if(e.target === successModal) successModal.classList.remove('is-visible');
         if(e.target === rejectionModal) rejectionModal.classList.remove('is-visible');
         if(e.target === proofModal) proofModal.classList.remove('is-visible');
-        if(e.target.id === 'proof-modal-close-btn') proofModal.classList.remove('is-visible');
+        const proofModalCloseBtn = document.getElementById('proof-modal-close-btn');
+        if (proofModalCloseBtn && e.target === proofModalCloseBtn) {
+            proofModal.classList.remove('is-visible');
+        }
     });
 
     // --- INITIALIZATION ---

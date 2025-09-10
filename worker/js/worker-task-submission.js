@@ -1,11 +1,9 @@
-// === FILE: /worker/js/worker-task-submission.js (FINAL CORRECTED VERSION) ===
+// FILE: /worker/js/worker-task-submission.js (FINAL & COMPLETE)
 
-import { auth, db, storage } from '/js/firebase-config.js';
-import { doc, getDoc, collection, addDoc, serverTimestamp, runTransaction, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+import { auth, db } from '/js/firebase-config.js';
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-// Your ImgBB API Key
 const IMGBB_API_KEY = '2b154785f011c31f9c3b3a7ebae0f082';
 
 document.addEventListener('componentsLoaded', () => {
@@ -25,11 +23,9 @@ document.addEventListener('componentsLoaded', () => {
         return;
     }
 
-    // --- Custom Modal Function ---
     function showModal(type, title, message) {
         const modalOverlay = document.getElementById('custom-notification-modal');
         if (!modalOverlay) return;
-
         if (!modalOverlay.dataset.listenersAttached) {
             const closeModal = () => modalOverlay.classList.remove('is-visible');
             modalOverlay.querySelector('.modal-btn-ok').addEventListener('click', closeModal);
@@ -38,9 +34,7 @@ document.addEventListener('componentsLoaded', () => {
             });
             modalOverlay.dataset.listenersAttached = 'true';
         }
-
-        const modalIcon = modalOverlay.querySelector('.modal-icon');
-        modalIcon.className = `modal-icon ${type}`; // e.g., 'success' or 'error'
+        modalOverlay.querySelector('.modal-icon').className = `modal-icon ${type}`;
         modalOverlay.querySelector('.modal-title').textContent = title;
         modalOverlay.querySelector('.modal-message').textContent = message;
         modalOverlay.classList.add('is-visible');
@@ -87,19 +81,16 @@ document.addEventListener('componentsLoaded', () => {
                 case 'link':
                     fieldHTML = `<input type="url" id="${inputId}" class="proof-input" placeholder="https://..." required data-type="link" data-instruction="${proof.instruction}">`;
                     break;
-                case 'text':
                 default:
                     fieldHTML = `<textarea id="${inputId}" class="proof-input" placeholder="Enter text proof..." required data-type="text" data-instruction="${proof.instruction}"></textarea>`;
             }
             return `<div class="proof-group"><label for="${inputId}">${proof.instruction} <span class="proof-type">(${proof.type})</span></label>${fieldHTML}</div>`;
         }).join('');
-
         const checkboxHTML = `
             <div class="form-group-checkbox">
                 <input type="checkbox" id="submission-terms" required>
                 <label for="submission-terms">I understand that the client has 24 hours to review my submission. If rejected, I will have 12 hours to resubmit my proof once. Failure to resubmit in time will result in task cancellation.</label>
             </div>`;
-
         proofFormContainer.innerHTML = `
             <form id="proof-submission-form" class="proof-submission-form">
                 <h3>Submit Your Proof</h3>
@@ -108,9 +99,7 @@ document.addEventListener('componentsLoaded', () => {
                 <button type="submit" class="btn-submit" id="main-submit-btn">Submit Proof</button>
             </form>
         `;
-
         proofFormContainer.querySelector('#proof-submission-form').addEventListener('submit', handleProofSubmit);
-
         job.proofs.forEach((proof, index) => {
             if (proof.type === 'screenshot') {
                 const fileInput = document.getElementById(`proof-input-${index}`);
@@ -125,24 +114,14 @@ document.addEventListener('componentsLoaded', () => {
     const handleProofSubmit = async (e) => {
         e.preventDefault();
         if (!currentUser) return showModal('error', 'Login Required', 'You must be logged in to submit proof.');
-        
         const termsCheckbox = document.getElementById('submission-terms');
         if (!termsCheckbox.checked) {
             return showModal('error', 'Agreement Required', 'You must agree to the submission terms before proceeding.');
         }
-
         const submitBtn = e.target.querySelector('.btn-submit');
         submitBtn.disabled = true;
         submitBtn.textContent = 'Submitting...';
-
         try {
-            const jobRef = doc(db, "jobs", jobId);
-            const jobSnap = await getDoc(jobRef);
-            if (!jobSnap.exists()) {
-                throw new Error("This job no longer exists.");
-            }
-            const jobData = jobSnap.data();
-
             const proofInputs = Array.from(document.querySelectorAll('.proof-input, .proof-input-hidden'));
             const submittedProofs = [];
             for (const input of proofInputs) {
@@ -163,28 +142,24 @@ document.addEventListener('componentsLoaded', () => {
                 }
                 submittedProofs.push({ type, instruction, answer });
             }
-
-            const submissionData = { 
-                workerId: currentUser.uid, 
-                jobId: jobId, 
-                clientId: jobData.clientId, // This is the critical fix
-                jobTitle: jobData.title,
-                payout: jobData.costPerWorker,
-                submittedAt: serverTimestamp(), 
-                status: 'pending', 
-                proofs: submittedProofs,
-                submissionCount: 1
-            };
-            
-            const submissionsColRef = collection(db, "jobs", jobId, "submissions");
-            await runTransaction(db, async (transaction) => {
-                transaction.set(doc(submissionsColRef), submissionData);
-                transaction.update(jobRef, { submissionsPending: increment(1) });
+            const token = await currentUser.getIdToken();
+            const response = await fetch('/.netlify/functions/createSubmission', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    jobId: jobId,
+                    proofs: submittedProofs
+                })
             });
-            
-            showModal('success', 'Success!', 'Proof submitted successfully!');
+            const result = await response.json();
+            if (!response.ok) {
+                throw new Error(result.error || 'Failed to submit proof.');
+            }
+            showModal('success', 'Success!', result.message);
             setTimeout(() => { window.location.href = '/worker/submissions.html'; }, 2000);
-
         } catch (error) {
             console.error('Submission failed:', error);
             showModal('error', 'Submission Failed', `Error: ${error.message}`);
@@ -209,7 +184,6 @@ document.addEventListener('componentsLoaded', () => {
             currentUser = user;
             const docRef = doc(db, "jobs", jobId);
             const docSnap = await getDoc(docRef);
-
             if (docSnap.exists()) {
                 const jobData = docSnap.data();
                 renderHeader(jobData);
