@@ -1,4 +1,4 @@
-// FILE: netlify/functions/approveSubmission.js
+// FILE: netlify/functions/approveSubmission.js (FINAL & CORRECTED)
 
 const admin = require('firebase-admin');
 
@@ -58,21 +58,22 @@ exports.handler = async (event, context) => {
             const workerWalletRef = db.collection('wallets').doc(workerId);
 
             // 3. Perform all database updates
-            // a. Update the submission status
+            // a. Update submission status
             transaction.update(submissionRef, { 
                 status: 'approved',
-                reviewBy: clientId, // Optional: Log who reviewed it
+                reviewBy: clientId,
                 reviewedAt: admin.firestore.FieldValue.serverTimestamp()
             });
 
-            // b. Update the job counters
+            // b. Update job counters
             transaction.update(jobRef, {
                 submissionsApproved: admin.firestore.FieldValue.increment(1),
                 submissionsPending: admin.firestore.FieldValue.increment(-1)
             });
 
-            // c. Update the worker's wallet balance
-            transaction.update(workerWalletRef, {
+            // ✅ THE FIX IS HERE: Changed transaction.update to transaction.set with { merge: true }
+            // This is more robust and ensures the wallet document is created if it doesn't exist.
+            transaction.set(workerWalletRef, {
                 balance: admin.firestore.FieldValue.increment(payout),
                 totalEarned: admin.firestore.FieldValue.increment(payout)
             }, { merge: true });
