@@ -1,4 +1,4 @@
-// FILE: netlify/functions/approveSubmission.js (FINAL & CORRECTED)
+// FILE: netlify/functions/approveSubmission.js (FINAL WITH ESCROW LOGIC)
 
 const admin = require('firebase-admin');
 
@@ -37,7 +37,7 @@ exports.handler = async (event, context) => {
             const submissionDoc = await transaction.get(submissionRef);
 
             // Security and validation checks
-            if (!jobDoc.exists || !submissionDoc.exists) {
+            if (!jobDoc.exists() || !submissionDoc.exists()) {
                 throw new Error("Job or submission not found.");
             }
             if (jobDoc.data().clientId !== clientId) {
@@ -48,37 +48,48 @@ exports.handler = async (event, context) => {
             }
 
             const submissionData = submissionDoc.data();
+            const jobData = jobDoc.data();
             const workerId = submissionData.workerId;
             const payout = submissionData.payout;
             
             if (!workerId || typeof payout !== 'number' || payout <= 0) {
                 throw new Error("Invalid submission data. Cannot process payment.");
             }
+            if ((jobData.remainingBudget || 0) < payout) {
+                throw new Error("Job budget is insufficient to pay the worker.");
+            }
 
             const workerWalletRef = db.collection('wallets').doc(workerId);
+            const clientWalletRef = db.collection('wallets').doc(clientId);
 
             // 3. Perform all database updates
-            // a. Update submission status
+            // a. Update the submission status
             transaction.update(submissionRef, { 
                 status: 'approved',
                 reviewBy: clientId,
                 reviewedAt: admin.firestore.FieldValue.serverTimestamp()
             });
 
-            // b. Update job counters
+            // b. Update the job counters and budget
             transaction.update(jobRef, {
                 submissionsApproved: admin.firestore.FieldValue.increment(1),
-                submissionsPending: admin.firestore.FieldValue.increment(-1)
+                submissionsPending: admin.firestore.FieldValue.increment(-1),
+                remainingBudget: admin.firestore.FieldValue.increment(-payout)
             });
 
-            // ✅ THE FIX IS HERE: Changed transaction.update to transaction.set with { merge: true }
-            // This is more robust and ensures the wallet document is created if it doesn't exist.
+            // c. Update the worker's wallet (add money)
             transaction.set(workerWalletRef, {
                 balance: admin.firestore.FieldValue.increment(payout),
                 totalEarned: admin.firestore.FieldValue.increment(payout)
             }, { merge: true });
 
-            // d. Create a transaction log for the worker
+            // d. Update client's wallet (release money from escrow)
+            transaction.update(clientWalletRef, {
+                escrow: admin.firestore.FieldValue.increment(-payout),
+                totalSpent: admin.firestore.FieldValue.increment(payout)
+            });
+
+            // e. Create a transaction log for the worker
             const workerTransactionRef = db.collection('transactions').doc();
             transaction.set(workerTransactionRef, {
                 userId: workerId,

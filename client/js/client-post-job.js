@@ -23,6 +23,7 @@ document.addEventListener('componentsLoaded', () => {
     const modalMessage = document.getElementById('modal-message');
     const modalCloseBtn = document.getElementById('modal-close-btn');
 
+
     const showModal = (type, title, message) => {
         if (!modal) return;
         modalTitle.textContent = title;
@@ -215,61 +216,57 @@ document.addEventListener('componentsLoaded', () => {
 
     if (form) {
         form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (!currentUser) {
-                showModal('error', 'Not Logged In', 'You must be logged in to post a job.');
-                return;
+        e.preventDefault();
+        if (!currentUser) {
+            showModal('error', 'Not Logged In', 'You must be logged in to post a job.');
+            return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Posting...';
+
+        try {
+            // Collect all job data into a single object
+            const jobData = {
+                title: document.getElementById('job-title').value,
+                category: document.getElementById('job-category').value,
+                instructions: Array.from(document.getElementById('instruction-list').querySelectorAll('input')).map(i => i.value),
+                restrictions: Array.from(document.getElementById('restriction-list').querySelectorAll('input')).map(i => i.value),
+                proofs: Array.from(document.getElementById('proof-list').querySelectorAll('.list-item')).map(item => ({ type: item.dataset.proofType, instruction: item.querySelector('input').value })),
+                workersNeeded: parseInt(document.getElementById('workers-needed').value),
+                costPerWorker: parseFloat(document.getElementById('cost-per-worker').value),
+                totalCost: parseFloat(document.getElementById('summary-total').textContent.replace('৳', '')),
+                submissionCooldown: parseInt(document.getElementById('submission-cooldown').value),
+                status: 'pending_review',
+            };
+            
+            const token = await currentUser.getIdToken();
+            const response = await fetch('/.netlify/functions/postJob', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jobData)
+            });
+
+            const result = await response.json();
+            if (!response.ok) {
+                throw new Error(result.error || 'Failed to post job.');
             }
 
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Posting...';
-            const totalCost = parseFloat(summaryTotal.textContent.replace('৳', ''));
+            showModal('success', 'Success!', 'Your job has been submitted for review.');
+            document.getElementById('modal-close-btn').onclick = () => {
+                window.location.href = '/client/my-jobs.html';
+            };
 
-            try {
-                const walletRef = doc(db, 'wallets', currentUser.uid);
-                const walletSnap = await getDoc(walletRef);
-                if (!walletSnap.exists() || walletSnap.data().balance < totalCost) {
-                    throw new Error("Insufficient funds. Please deposit money into your wallet.");
-                }
-                
-                const jobData = {
-                    clientId: currentUser.uid,
-                    title: document.getElementById('job-title').value,
-                    category: document.getElementById('job-category').value,
-                    instructions: Array.from(instructionList.querySelectorAll('input')).map(i => i.value),
-                    restrictions: Array.from(restrictionList.querySelectorAll('input')).map(i => i.value),
-                    proofs: Array.from(proofList.querySelectorAll('.list-item')).map(item => ({ type: item.dataset.proofType, instruction: item.querySelector('input').value })),
-                    workersNeeded: parseInt(workersNeededInput.value),
-                    costPerWorker: parseFloat(costPerWorkerInput.value),
-                    totalCost: totalCost,
-                    submissionCooldown: parseInt(document.getElementById('submission-cooldown').value),
-                    status: 'pending_review',
-                    createdAt: serverTimestamp(),
-                    submissionsReceived: 0
-                };
-
-                await runTransaction(db, async (transaction) => {
-                    const clientWalletRef = doc(db, "wallets", currentUser.uid);
-                    const clientWalletDoc = await transaction.get(clientWalletRef);
-                    const newBalance = clientWalletDoc.data().balance - totalCost;
-                    transaction.update(clientWalletRef, { balance: newBalance });
-                    transaction.set(doc(collection(db, "jobs")), jobData);
-                });
-                
-                showModal('success', 'Success!', 'Your job has been submitted for review.');
-                if (modalCloseBtn) {
-                    modalCloseBtn.onclick = () => {
-                        window.location.href = '/client/my-jobs.html';
-                    };
-                }
-
-            } catch (error) {
-                console.error("Error posting job:", error);
-                showModal('error', 'Submission Failed', `Error: ${error.message}`);
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Post Job';
-            }
-        });
+        } catch (error) {
+            console.error("Error posting job:", error);
+            showModal('error', 'Submission Failed', `Error: ${error.message}`);
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Post Job';
+        }
+    });
     }
 
     if (steps.length > 0) {
