@@ -14,29 +14,41 @@ let currentUserId = null;
 function runGlobalScripts() {
     if (!isUserReady || !areComponentsReady || didGlobalScriptsRun) return;
     didGlobalScriptsRun = true;
+    
+    // --- All global functions are called here safely ---
     listenToWallet(currentUserId);
     setActiveNavLink();
     setupLogoutButton();
-    
-    // ✅ ADD THIS LINE
     listenForNotifications(currentUserId); 
 }
 
-// --- GLOBAL FUNCTIONS ---
 function listenToWallet(userId) {
+    // It looks for an HTML element with the ID 'header-balance'.
     const headerBalance = document.getElementById('header-balance');
-    if (!userId || !headerBalance) return;
-    onSnapshot(doc(db, "wallets", userId), (doc) => {
+    
+    // If the user is not logged in or the element is not found, it does nothing.
+    if (!userId || !headerBalance) {
+        console.error("Wallet listener could not start: User ID or header balance element is missing.");
+        return;
+    }
+    
+    const walletRef = doc(db, "wallets", userId);
+    
+    onSnapshot(walletRef, (doc) => {
         const balance = doc.exists() ? (doc.data().balance ?? 0) : 0;
         headerBalance.textContent = `৳${balance.toLocaleString()}`;
     });
 }
 
+
 function setActiveNavLink() {
-    const navContainer = document.querySelector('.client-bottom-nav');
+    // Note: Ensure your worker bottom nav has the class 'worker-bottom-nav' for this to be more specific.
+    const navContainer = document.querySelector('.client-bottom-nav, .worker-bottom-nav');
     if (!navContainer) return;
+
     const navLinks = navContainer.querySelectorAll('a.bottom-nav__link');
     const currentPath = window.location.pathname;
+
     navLinks.forEach(link => {
         link.classList.remove('active');
         const linkPath = new URL(link.href).pathname;
@@ -46,7 +58,6 @@ function setActiveNavLink() {
     });
 }
 
-// ✅ REPLACED LOGOUT FUNCTION
 function setupLogoutButton() {
     const logoutBtn = document.querySelector('.btn-logout');
     const logoutModal = document.getElementById('logout-confirmation-modal');
@@ -56,33 +67,27 @@ function setupLogoutButton() {
     const confirmBtn = logoutModal.querySelector('#logout-confirm-btn');
     const cancelBtn = logoutModal.querySelector('#logout-cancel-btn');
 
-    // When the main logout button is clicked, show the modal
     logoutBtn.addEventListener('click', (e) => {
         e.preventDefault();
-
-        // ✅ FIX: This line finds the menu's checkbox and unchecks it, closing the menu.
+        // This line finds the menu's checkbox and unchecks it, closing the menu.
         document.getElementById('worker-menu-toggle').checked = false;
-
         logoutModal.classList.add('is-visible');
     });
 
-    // When the "Cancel" button inside the modal is clicked, hide it
     cancelBtn.addEventListener('click', () => {
         logoutModal.classList.remove('is-visible');
     });
 
-    // When the final "Logout" button is clicked, perform the sign out
     confirmBtn.addEventListener('click', async () => {
         try {
             await signOut(auth);
             window.location.href = '/login.html';
         } catch (error) {
             console.error("Error signing out:", error);
-            logoutModal.classList.remove('is-visible'); // Hide modal on error
+            logoutModal.classList.remove('is-visible');
         }
     });
 }
-
 
 
 // --- NOTIFICATION SYSTEM ---
