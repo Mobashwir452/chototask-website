@@ -10,7 +10,6 @@ try {
 
 const db = admin.firestore();
 
-// Helper function to check for admin status
 async function isAdmin(uid) {
     const userDoc = await db.collection('users').doc(uid).get();
     return userDoc.exists && userDoc.data().isAdmin === true;
@@ -40,10 +39,7 @@ exports.handler = async (event, context) => {
             const jobDoc = await transaction.get(jobRef);
             const submissionDoc = await transaction.get(submissionRef);
 
-            // ✅ THE FIX IS HERE: Changed .exists() to .exists for Admin SDK
-            if (!jobDoc.exists || !submissionDoc.exists) {
-                throw new Error("Job or submission not found.");
-            }
+            if (!jobDoc.exists || !submissionDoc.exists) throw new Error("Job or submission not found.");
             
             const subData = submissionDoc.data();
             const jobData = jobDoc.data();
@@ -52,7 +48,6 @@ exports.handler = async (event, context) => {
             const payout = subData.payout;
             const originalStatus = subData.status;
 
-            // Update submission status first
             const newStatus = action === 'approve' ? 'approved' : 'rejected';
             transaction.update(submissionRef, { status: newStatus });
 
@@ -87,6 +82,11 @@ exports.handler = async (event, context) => {
                 };
                 if (originalStatus === 'pending') {
                     counterUpdates.submissionsPending = admin.firestore.FieldValue.increment(-1);
+                    // ✅ THE FIX IS HERE: Refund the budget for the rejected slot
+                    counterUpdates.remainingBudget = admin.firestore.FieldValue.increment(payout);
+                } else if (originalStatus === 'resubmit_pending') {
+                    // For resubmit_pending, the pending counter is not touched, but budget is still refunded.
+                    counterUpdates.remainingBudget = admin.firestore.FieldValue.increment(payout);
                 }
                 transaction.update(jobRef, counterUpdates);
             }
