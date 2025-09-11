@@ -4,10 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Withdraw Funds | ChotoTask</title>
-    
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
     <link rel="stylesheet" href="/worker/css/worker.css">
     <link rel="stylesheet" href="/client/css/client-billing.css">
     <link rel="stylesheet" href="/worker/css/worker-withdraw.css">
@@ -20,7 +18,7 @@
     <main>
         <div class="block">
             <section class="page-hero">
-                <div class="page-hero__icon" style="font-size: 1.5rem;"><i class="fa-solid fa-money-bill-transfer"></i></div>
+                <div class="page-hero__icon" style="font-size: 1.75rem;"><i class="fa-solid fa-money-bill-transfer"></i></div>
                 <h1 class="page-hero__title">Withdraw Funds</h1>
                 <p class="page-hero__subtitle">Withdraw your earnings to your preferred account.</p>
             </section>
@@ -34,7 +32,7 @@
                         <h2 id="current-balance">৳...</h2>
                     </div>
                     <div id="withdraw-section">
-                        <p class="empty-list-message">Loading withdrawal methods...</p>
+                        <p class="empty-list-message">Loading...</p>
                     </div>
                 </div>
             </section>
@@ -42,13 +40,8 @@
 
         <div class="block">
             <section class="list-section container">
-                <div class="list-header">
-                    <h3>Recent Transactions</h3>
-                    <a href="/worker/transactions.html">View All &rarr;</a>
-                </div>
-                <div class="list-content" id="transaction-history-list">
-                    <p class="empty-list-message">Loading history...</p>
-                </div>
+                <div class="list-header"><h3>Recent Transactions</h3><a href="/worker/transactions.html">View All &rarr;</a></div>
+                <div class="list-content" id="transaction-history-list"></div>
             </section>
         </div>
         
@@ -62,7 +55,6 @@
     </main>
 
     <div id="worker-bottom-nav-placeholder"></div>
-
     <script src="/js/component-loader.js"></script>
     <script src="/worker/js/worker-shell.js" type="module"></script>
     <script src="/worker/js/worker-withdraw.js" type="module"></script>

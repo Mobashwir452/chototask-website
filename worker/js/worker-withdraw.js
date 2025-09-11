@@ -15,6 +15,7 @@ document.addEventListener('componentsLoaded', () => {
     const infoModalCloseBtn = document.getElementById('info-modal-close-btn');
 
     let currentUser = null;
+    let savedMethod = null;
     let countdownIntervals = [];
 
     // --- MODAL & UI FUNCTIONS ---
@@ -40,50 +41,64 @@ document.addEventListener('componentsLoaded', () => {
 
     // --- RENDER FUNCTIONS ---
     const renderWithdrawSection = (user) => {
-        const methods = user.withdrawalMethods || [];
-        if (methods.length === 0) {
+        // Based on your DB structure, we look for single fields
+        if (user.withdrawalMethod && user.accountNumber) {
+            savedMethod = {
+                methodName: user.withdrawalMethod,
+                accountDetails: user.accountNumber
+            };
+            
             withdrawSection.innerHTML = `
-                <div class="no-methods-box">
-                    <p>You have no withdrawal methods saved.</p>
-                    <a href="/worker/personal-info.html" class="btn-submit">Add a Method Now</a>
-                </div>`;
-            return;
+                <form class="withdraw-form" id="withdraw-form">
+                    <div>
+                        <h3 class="instruction-header">Your Saved Method</h3>
+                        <div class="saved-methods-container">
+                             <div class="method-card selected">
+                                <i class="icon fa-solid fa-wallet"></i>
+                                <div class="details">
+                                    <p class="method-name">${savedMethod.methodName}</p>
+                                    <p class="method-details">${savedMethod.accountDetails}</p>
+                                </div>
+                            </div>
+                            <a href="/worker/personal-info.html" style="font-size: 0.9rem; text-align: right; color: #00FFCD; display: block; margin-top: 0.5rem;">Change Method</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="instruction-header">Enter Amount</h3>
+                        <div class="amount-input-group">
+                            <input type="number" id="withdraw-amount" class="form-input" placeholder="Amount (e.g., 50)" min="50" required>
+                            <button type="submit" class="btn-submit">Request Withdrawal</button>
+                        </div>
+                    </div>
+                    <p id="form-message" style="text-align: center; min-height: 1.2em;"></p>
+                </form>`;
+        } else {
+            withdrawSection.innerHTML = `
+                <form class="withdraw-form" id="withdraw-form-new">
+                     <h3 class="instruction-header">Add a Method to Withdraw</h3>
+                     <div class="form-group">
+                        <label for="withdraw-method">Method</label>
+                        <select id="withdraw-method" class="form-input">
+                            <option value="Bkash">Bkash</option>
+                            <option value="Nagad">Nagad</option>
+                            <option value="Bank">Bank Transfer</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="withdraw-account">Account Number / Details</label>
+                        <input type="text" id="withdraw-account" class="form-input" placeholder="e.g., 017..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="withdraw-amount">Amount</label>
+                        <input type="number" id="withdraw-amount" class="form-input" placeholder="Amount (e.g., 50)" min="50" required>
+                    </div>
+                    <button type="submit" class="btn-submit">Request Withdrawal</button>
+                    <p id="form-message" style="text-align: center; min-height: 1.2em;"></p>
+                </form>`;
         }
 
-        const methodsHTML = methods.map(m => `
-            <div class="method-card" data-method-id="${m.id}">
-                <i class="icon fa-solid fa-wallet"></i>
-                <div class="details">
-                    <p class="method-name">${m.methodName}</p>
-                    <p class="method-details">${m.accountDetails}</p>
-                </div>
-            </div>`).join('');
-
-        withdrawSection.innerHTML = `
-            <form class="withdraw-form" id="withdraw-form">
-                <div>
-                    <h3 class="instruction-header">1. Select a Method</h3>
-                    <div class="saved-methods-container">${methodsHTML}</div>
-                </div>
-                <div>
-                    <h3 class="instruction-header">2. Enter Amount</h3>
-                    <div class="amount-input-group">
-                        <input type="number" id="withdraw-amount" class="form-input" placeholder="Amount (e.g., 50)" min="50" required>
-                        <button type="submit" class="btn-submit">Request Withdrawal</button>
-                    </div>
-                </div>
-                <p id="form-message" style="text-align: center; min-height: 1.2em;"></p>
-            </form>`;
-
-        const form = document.getElementById('withdraw-form');
-        form.addEventListener('submit', handleWithdrawalRequest);
-        form.querySelector('.saved-methods-container').addEventListener('click', e => {
-            const card = e.target.closest('.method-card');
-            if (card) {
-                form.querySelectorAll('.method-card').forEach(c => c.classList.remove('selected'));
-                card.classList.add('selected');
-            }
-        });
+        const form = document.getElementById('withdraw-form') || document.getElementById('withdraw-form-new');
+        if (form) form.addEventListener('submit', handleWithdrawalRequest);
     };
 
     const renderHistory = (transactions) => {
@@ -104,7 +119,7 @@ document.addEventListener('componentsLoaded', () => {
             const icon = isCredit ? 'fa-arrow-down' : 'fa-arrow-up';
             
             let timerHTML = '';
-            if (tx.status === 'pending' && tx.type === 'withdrawal') {
+            if (tx.status === 'pending' && tx.type === 'withdrawal' && tx.createdAt) {
                 timerHTML = `<div class="review-timer" data-requested-at="${tx.createdAt.toMillis()}"></div>`;
             }
 
@@ -129,7 +144,7 @@ document.addEventListener('componentsLoaded', () => {
     
     const startCountdownTimers = () => {
         const timerElements = document.querySelectorAll('.review-timer');
-        const payoutDuration = 24 * 60 * 60 * 1000; // 24 hours
+        const payoutDuration = 24 * 60 * 60 * 1000;
 
         timerElements.forEach(timerEl => {
             const requestedAt = parseInt(timerEl.dataset.requestedAt, 10);
@@ -143,7 +158,7 @@ document.addEventListener('componentsLoaded', () => {
 
                 if (diff <= 0) {
                     timerEl.innerHTML = `<strong>Payout processing overdue.</strong>`;
-                    clearInterval(intervalId);
+                    if (intervalId) clearInterval(intervalId);
                     return;
                 }
                 const hours = Math.floor(diff / (1000 * 60 * 60));
@@ -151,9 +166,9 @@ document.addEventListener('componentsLoaded', () => {
                 timerEl.innerHTML = `Admin will process in approx: <strong>${hours}h ${minutes}m</strong>`;
             };
             
-            const intervalId = setInterval(update, 60000); // Update every minute
+            const intervalId = setInterval(update, 60000);
             countdownIntervals.push(intervalId);
-            update(); // Run once immediately
+            update();
         });
     };
 
@@ -161,12 +176,21 @@ document.addEventListener('componentsLoaded', () => {
     const handleWithdrawalRequest = async (e) => {
         e.preventDefault();
         const form = e.target;
-        const selectedMethodCard = form.querySelector('.method-card.selected');
         const amount = form.querySelector('#withdraw-amount').value;
         const messageEl = form.querySelector('#form-message');
+        let methodToSubmit;
 
-        if (!selectedMethodCard) {
-            showMessageInForm(form, 'Please select a withdrawal method.', true);
+        if (form.id === 'withdraw-form') {
+            methodToSubmit = savedMethod;
+        } else {
+            methodToSubmit = {
+                methodName: form.querySelector('#withdraw-method').value,
+                accountDetails: form.querySelector('#withdraw-account').value
+            };
+        }
+
+        if (!methodToSubmit) {
+            showMessageInForm(form, 'Please select or provide a withdrawal method.', true);
             return;
         }
         
@@ -179,13 +203,13 @@ document.addEventListener('componentsLoaded', () => {
             const response = await fetch('/.netlify/functions/requestWithdrawal', {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ amount, methodId: selectedMethodCard.dataset.methodId })
+                body: JSON.stringify({ amount, method: methodToSubmit })
             });
             const result = await response.json();
             if (!response.ok) throw new Error(result.error);
             
-            showInfoModal('Success!', 'Your withdrawal request has been submitted and is now pending admin approval.');
-            withdrawSection.innerHTML = `<div class="no-methods-box"><p style="font-size:1.2rem; color: #00FFCD;">Request Sent!</p><p>You will be notified once the admin processes your request.</p></div>`;
+            showInfoModal('Success!', 'Your withdrawal request has been submitted!');
+            withdrawSection.innerHTML = `<div class="no-methods-box" style="border: 2px solid #00FFCD;"><p style="font-size:1.2rem; color: #00FFCD;">Request Sent!</p><p>You will be notified once the admin processes your request.</p></div>`;
 
         } catch (error) {
             showMessageInForm(form, error.message, true);
@@ -227,13 +251,15 @@ document.addEventListener('componentsLoaded', () => {
         if (user) {
             currentUser = user;
             const userDocRef = doc(db, "users", user.uid);
-            const userDoc = await getDoc(userDocRef);
             
-            if (userDoc.exists()) {
-                renderWithdrawSection(userDoc.data());
-            } else {
-                withdrawSection.innerHTML = `<p class="empty-list-message">Could not load your profile.</p>`;
-            }
+            onSnapshot(userDocRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    renderWithdrawSection(docSnap.data());
+                } else {
+                    withdrawSection.innerHTML = `<p class="empty-list-message">Could not load your profile.</p>`;
+                }
+            });
+
             listenToHistory(user.uid);
         } else {
             window.location.href = '/login.html';
