@@ -1,0 +1,119 @@
+/* FILE: /worker/css/worker-withdraw.css (FINAL & COMPLETE) */
+
+/* --- Page Hero Styles (Matches Client Side) --- */
+.page-hero {
+    padding: 2.5rem 1rem;
+    text-align: center;
+    position: relative;
+    margin-bottom: 1rem;
+}
+.page-hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--client-accent-gradient);
+}
+.page-hero__icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    margin: 0 auto 1.5rem auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--client-card-bg);
+    border: 1px solid var(--client-card-border);
+    color: #00FFCD;
+    font-size: 1.75rem;
+}
+.page-hero__title { font-size: 1.75rem; font-weight: 700; margin: 0 0 0.5rem 0; }
+.page-hero__subtitle { font-size: 1rem; color: var(--client-text-secondary); max-width: 400px; margin: 0 auto; }
+
+/* --- Withdraw Form --- */
+.withdraw-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.saved-methods-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.method-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background-color: rgba(0,0,0,0.2);
+    padding: 1rem;
+    border-radius: 0.75rem;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.method-card.selected {
+    border-color: #00FFCD;
+}
+
+.method-card .icon {
+    font-size: 1.5rem;
+    color: #00FFCD;
+}
+
+.method-card .details p { margin: 0; }
+.method-card .details .method-name { font-weight: 600; color: var(--client-text-primary); }
+.method-card .details .method-details { font-size: 0.9rem; color: var(--client-text-secondary); }
+
+.no-methods-box {
+    text-align: center;
+    padding: 2rem;
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 0.75rem;
+}
+.no-methods-box p { margin: 0 0 1rem 0; }
+.no-methods-box a.btn-submit { display: inline-block; width: auto; padding: 0.75rem 1.5rem; }
+
+.amount-input-group {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    align-items: center;
+}
+#withdraw-amount {
+    font-size: 1.2rem;
+    padding: 0.75rem;
+}
+
+.instruction-header {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--client-text-secondary);
+    border-left: 3px solid #00FFCD;
+    padding-left: 1rem;
+}
+
+.transaction-card-wrapper {
+    margin-bottom: 1rem;
+}
+
+.review-timer {
+    font-size: 0.85rem;
+    text-align: center;
+    color: var(--client-text-secondary);
+    background-color: rgba(0,0,0,0.2);
+    padding: 0.5rem;
+    border-radius: 0 0 0.75rem 0.75rem;
+    margin-top: -1rem;
+    position: relative;
+    z-index: 1;
+}
+.review-timer strong {
+    color: var(--client-text-primary);
+}

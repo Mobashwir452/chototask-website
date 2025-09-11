@@ -5,14 +5,26 @@ import { signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth
 import { doc, onSnapshot, getDoc, updateDoc, serverTimestamp, collection, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
+// FILE: /worker/js/worker-shell.js
+// REPLACE the listenToWallet function with this new version
+
 function listenToWallet(userId) {
     const headerBalance = document.getElementById('header-balance');
-    if (!userId || !headerBalance) return;
+    const pageBalance = document.getElementById('current-balance'); // For withdraw.html
+
+    if (!userId) return;
 
     const walletRef = doc(db, "wallets", userId);
     onSnapshot(walletRef, (doc) => {
         const balance = doc.exists() ? (doc.data().balance ?? 0) : 0;
-        headerBalance.textContent = `৳${balance.toLocaleString()}`;
+        const formattedBalance = `৳${balance.toLocaleString()}`;
+        
+        if (headerBalance) {
+            headerBalance.textContent = formattedBalance;
+        }
+        if (pageBalance) {
+            pageBalance.textContent = formattedBalance;
+        }
     });
 }
 

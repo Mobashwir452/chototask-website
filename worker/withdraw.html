@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Withdraw Funds | ChotoTask</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link rel="stylesheet" href="/worker/css/worker.css">
+    <link rel="stylesheet" href="/client/css/client-billing.css">
+    <link rel="stylesheet" href="/worker/css/worker-withdraw.css">
+</head>
+<body class="client-page">
+    
+    <header id="worker-header-placeholder"></header>
+    <div id="worker-menu-placeholder"></div>
+
+    <main>
+        <div class="block">
+            <section class="page-hero">
+                <div class="page-hero__icon" style="font-size: 1.5rem;"><i class="fa-solid fa-money-bill-transfer"></i></div>
+                <h1 class="page-hero__title">Withdraw Funds</h1>
+                <p class="page-hero__subtitle">Withdraw your earnings to your preferred account.</p>
+            </section>
+        </div>
+
+        <div class="block">
+            <section class="container">
+                <div class="billing-card">
+                    <div class="balance-header">
+                        <p>Available Balance</p>
+                        <h2 id="current-balance">৳...</h2>
+                    </div>
+                    <div id="withdraw-section">
+                        <p class="empty-list-message">Loading withdrawal methods...</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="block">
+            <section class="list-section container">
+                <div class="list-header">
+                    <h3>Recent Transactions</h3>
+                    <a href="/worker/transactions.html">View All &rarr;</a>
+                </div>
+                <div class="list-content" id="transaction-history-list">
+                    <p class="empty-list-message">Loading history...</p>
+                </div>
+            </section>
+        </div>
+        
+        <div class="modal-overlay" id="info-modal" style="display: none;">
+            <div class="modal-content" style="background: var(--client-card-bg); color: white;">
+                 <h3 id="info-modal-title" style="color: white;"></h3>
+                 <p id="info-modal-message"></p>
+                 <button class="btn-submit" id="info-modal-close-btn">OK</button>
+            </div>
+        </div>
+    </main>
+
+    <div id="worker-bottom-nav-placeholder"></div>
+
+    <script src="/js/component-loader.js"></script>
+    <script src="/worker/js/worker-shell.js" type="module"></script>
+    <script src="/worker/js/worker-withdraw.js" type="module"></script>
+</body>
+</html>
