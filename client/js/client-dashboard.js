@@ -28,7 +28,9 @@ document.addEventListener('componentsLoaded', () => {
         statTotalSpent.textContent = `${CURRENCY}${totalSpent.toLocaleString()}`;
     };
 
-    const renderJobs = (jobs) => {
+    // এই নতুন ফাংশনটি দিয়ে আপনার পুরনো renderJobs ফাংশনটি প্রতিস্থাপন করুন
+
+const renderJobs = (jobs) => {
     if (!jobListContainer) return;
     
     if (jobListHeader) {
@@ -44,55 +46,79 @@ document.addEventListener('componentsLoaded', () => {
         const total = job.workersNeeded || 1;
         const progress = total > 0 ? (completed / total) * 100 : 0;
         
-        // ✅ FIX: The card is now wrapped in a link
+        // ✅ পরিবর্তন: ওয়ার্কার ড্যাশবোর্ডের মতো নতুন লেআউট
         return `
             <a href="/client/job-details.html?id=${job.id}" class="list-item-link">
                 <div class="list-item-card">
-                    <h5>${job.title}</h5>
-                    <div class="job-progress">
-                        <span>${completed}/${total} Submissions</span>
-                        <span>${progress.toFixed(0)}%</span>
+                    <div class="card-top-section">
+                        <h5 class="job-title">${job.title}</h5>
+                        <div class="budget-amount"><strong>${CURRENCY}${(job.budgetTotal || 0).toLocaleString()}</strong></div>
                     </div>
+
                     <div class="progress-bar">
                         <div class="progress-bar__fill" style="width: ${progress}%;"></div>
+                    </div>
+
+                    <div class="card-bottom-section">
+                        <span><i class="fa-solid fa-users"></i> ${completed}/${total} Submissions</span>
+                        <span><i class="fa-solid fa-tag"></i> ${job.category}</span>
                     </div>
                 </div>
             </a>
         `;
     }).join('');
 };
+
+
+// Helper function to format time
+function timeAgo(date) {
+    if (!date) return '';
+    const seconds = Math.floor((new Date() - date) / 1000);
+    let interval = seconds / 31536000; if (interval > 1) return Math.floor(interval) + "y ago";
+    interval = seconds / 2592000; if (interval > 1) return Math.floor(interval) + "mo ago";
+    interval = seconds / 86400; if (interval > 1) return Math.floor(interval) + "d ago";
+    interval = seconds / 3600; if (interval > 1) return Math.floor(interval) + "h ago";
+    interval = seconds / 60; if (interval > 1) return Math.floor(interval) + "m ago";
+    return "Just now";
+}
     
-    const renderActivity = (activities) => {
-        if (!activityListContainer) return;
-        if (activities.length === 0) {
-            activityListContainer.innerHTML = '<p class="empty-list-message">No recent activity.</p>';
-            return;
-        }
+    // এই নতুন ফাংশনটি দিয়ে আপনার পুরনো renderActivity ফাংশনটি প্রতিস্থাপন করুন
+const renderActivity = (activities) => {
+    if (!activityListContainer) return;
+    if (activities.length === 0) {
+        activityListContainer.innerHTML = '<p class="empty-list-message">No recent activity.</p>';
+        return;
+    }
 
-        const iconMap = {
-            'DEPOSIT_SUCCESS': 'fa-plus',
-            'deposit_requested': 'fa-plus',
-            'JOB_POSTED': 'fa-briefcase',
-            'SUBMISSION_APPROVED': 'fa-check',
-            'SUBMISSION_REJECTED': 'fa-times',
-            'TICKET_CREATED': 'fa-ticket',
-            'TICKET_REPLY_ADMIN': 'fa-headset',
-            'SUBMISSION_NEW': 'fa-inbox',
-            'default': 'fa-bell'
-        };
-
-        activityListContainer.innerHTML = activities.map(activity => {
-            const iconClass = iconMap[activity.type] || iconMap['default'];
-            return `
-                <div class="list-item-card activity-item">
-                    <div class="activity-item__icon">
-                        <i class="fa-solid ${iconClass}"></i>
-                    </div>
-                    <p class="activity-item__text">${activity.text || activity.message}</p>
-                </div>
-            `;
-        }).join('');
+    const iconMap = {
+        'DEPOSIT_SUCCESS': 'fa-plus',
+        'deposit_requested': 'fa-plus',
+        'JOB_POSTED': 'fa-briefcase',
+        'SUBMISSION_APPROVED': 'fa-check',
+        'SUBMISSION_REJECTED': 'fa-times',
+        'TICKET_CREATED': 'fa-ticket',
+        'TICKET_REPLY_ADMIN': 'fa-headset',
+        'SUBMISSION_NEW': 'fa-inbox',
+        'default': 'fa-bell'
     };
+
+    activityListContainer.innerHTML = activities.map(activity => {
+        const iconClass = iconMap[activity.type] || iconMap['default'];
+        // ✅ পরিবর্তন: টাইমস্ট্যাম্প ফরম্যাট করা হচ্ছে
+        const timestamp = timeAgo(activity.timestamp?.toDate());
+
+        // ✅ পরিবর্তন: নতুন টাইমস্ট্যাম্প এলিমেন্ট যোগ করা হয়েছে
+        return `
+            <div class="list-item-card activity-item">
+                <div class="activity-item__icon">
+                    <i class="fa-solid ${iconClass}"></i>
+                </div>
+                <p class="activity-item__text">${activity.text || activity.message}</p>
+                <span class="activity-item__timestamp">${timestamp}</span>
+            </div>
+        `;
+    }).join('');
+};
 
     // --- DATA FETCHING FUNCTIONS ---
     const fetchDashboardData = async (userId) => {

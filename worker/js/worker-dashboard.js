@@ -73,24 +73,41 @@ const renderJobs = (jobs) => {
     }).join('');
 };
     
-    const renderActivity = (activities) => {
-        if (!activityListContainer) return;
-        if (activities.length === 0) {
-            activityListContainer.innerHTML = '<p class="empty-list-message">No recent activity.</p>';
-            return;
-        }
-        activityListContainer.innerHTML = activities.map(activity => {
-            const timestamp = timeAgo(activity.timestamp?.toDate());
-            return `
-                <a href="${activity.refLink || '#'}" class="list-item-link">
-                    <div class="list-item-card">
-                        <p style="margin: 0; font-weight: 500;">${activity.text}</p>
-                        <small style="color: var(--client-text-secondary);">${timestamp}</small>
-                    </div>
-                </a>
-            `;
-        }).join('');
+// এই নতুন ফাংশনটি দিয়ে আপনার পুরনো renderActivity ফাংশনটি প্রতিস্থাপন করুন
+
+const renderActivity = (activities) => {
+    if (!activityListContainer) return;
+    if (activities.length === 0) {
+        activityListContainer.innerHTML = '<p class="empty-list-message">No recent activity.</p>';
+        return;
+    }
+
+    // ওয়ার্কারের জন্য অ্যাক্টিভিটি আইকন ম্যাপ
+    const iconMap = {
+        'withdrawal_approved': 'fa-check',
+        'withdrawal_rejected': 'fa-times',
+        'submission_approved': 'fa-sack-dollar',
+        'submission_rejected': 'fa-exclamation-triangle',
+        'default': 'fa-bell'
     };
+
+    activityListContainer.innerHTML = activities.map(activity => {
+        const iconClass = iconMap[activity.type] || iconMap['default'];
+        const timestamp = timeAgo(activity.timestamp?.toDate());
+        const tag = activity.refLink ? 'a' : 'div';
+        const href = activity.refLink ? `href="${activity.refLink}"` : '';
+
+        return `
+            <${tag} ${href} class="list-item-card activity-item">
+                <div class="activity-item__icon">
+                    <i class="fa-solid ${iconClass}"></i>
+                </div>
+                <p class="activity-item__text">${activity.text}</p>
+                <span class="activity-item__timestamp">${timestamp}</span>
+            </${tag}>
+        `;
+    }).join('');
+};
 
     // DATA FETCHING
     const fetchDashboardData = async (userId) => {

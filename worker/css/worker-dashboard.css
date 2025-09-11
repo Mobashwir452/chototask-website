@@ -178,3 +178,49 @@ a.list-item-link {
     text-align: center;
     color: var(--client-text-secondary);
 }
+
+
+
+
+/* === ADD THIS TO THE END of worker-dashboard.css === */
+
+/* --- Activity Card Styles (Matches Client Dashboard) --- */
+.activity-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none; /* In case the item is a link */
+}
+
+.activity-item__icon {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--client-accent-gradient); /* Secondary circle color */
+    color: var(--client-text-dark); /* Icon color */
+    font-size: 1rem;
+}
+
+.activity-item__text {
+    flex-grow: 1; /* Pushes timestamp to the right */
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--client-text-primary);
+}
+
+.activity-item__timestamp {
+    font-size: 0.8rem;
+    color: var(--client-text-secondary);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* Optional: Remove old text color fix if it exists */
+#activity-list .list-item-card p {
+    /* This can be removed as .activity-item__text now handles it */
+    color: var(--client-text-primary); 
+}
