@@ -78,8 +78,10 @@ const handleProcess = async (requestId) => {
 
 // এই নতুন ফাংশনটি দিয়ে আপনার পুরনো processWithdrawal ফাংশনটি প্রতিস্থাপন করুন
 
+// এই নতুন ফাংশনটি দিয়ে আপনার পুরনো processWithdrawal ফাংশনটি প্রতিস্থাপন করুন
+
 const processWithdrawal = async (originalRequestData, requestId, newStatus) => {
-    const { workerId, amount, userTransactionId } = originalRequestData;
+    const { workerId, amount, userTransactionId, method } = originalRequestData;
     
     const walletRef = doc(db, "wallets", workerId);
     const requestRef = doc(db, "withdrawalRequests", requestId);
@@ -115,7 +117,14 @@ const processWithdrawal = async (originalRequestData, requestId, newStatus) => {
                 escrow: increment(-amount),
                 balance: increment(amount) 
             });
-            batch.update(userTransactionRef, { status: 'rejected' });
+            
+            // ✅ পরিবর্তন: রিজেক্ট হলে স্ট্যাটাস, টাইপ এবং বিবরণ আপডেট করা হচ্ছে
+            batch.update(userTransactionRef, { 
+                status: 'rejected',
+                type: 'adjustment', // টাইপ পরিবর্তন করে 'adjustment' করা হলো
+                description: `Withdrawal request via ${method.methodName} rejected` // বিবরণ পরিবর্তন
+            });
+
             batch.set(activityRef, {
                 userId: workerId,
                 userRole: 'worker',
@@ -127,7 +136,6 @@ const processWithdrawal = async (originalRequestData, requestId, newStatus) => {
 
         await batch.commit();
 
-        // alert() এর পরিবর্তে কাস্টম মোডাল দেখানো হচ্ছে
         hideAdminModal();
         modalTitle.textContent = 'Success';
         modalBody.innerHTML = `
@@ -142,7 +150,6 @@ const processWithdrawal = async (originalRequestData, requestId, newStatus) => {
     } catch (error) {
         console.error("Error processing withdrawal:", error);
         
-        // এররের জন্যও কাস্টম মোডাল দেখানো হচ্ছে
         hideAdminModal();
         modalTitle.textContent = 'Error';
         modalBody.innerHTML = `

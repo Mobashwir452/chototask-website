@@ -59,40 +59,49 @@ document.addEventListener('componentsLoaded', () => {
         }).join('');
     };
     
-    const fetchTransactions = (filterType = 'all') => {
-        if (!currentUserId) return;
-        if (transactionsUnsubscribe) {
-            transactionsUnsubscribe();
-        }
+    // এই নতুন ফাংশনটি দিয়ে আপনার পুরনো fetchTransactions ফাংশনটি প্রতিস্থাপন করুন
 
-        // ✅ UPDATED: Query now uses 'workerId' instead of 'clientId'
-        let q = query(
-            collection(db, "transactions"), 
-            where("workerId", "==", currentUserId), 
-            orderBy("createdAt", "desc")
-        );
-        
-        if (filterType !== 'all') {
-            q = query(q, where("type", "==", filterType));
-        }
+// এই নতুন ফাংশনটি দিয়ে আপনার পুরনো fetchTransactions ফাংশনটি প্রতিস্থাপন করুন
 
-        transactionsUnsubscribe = onSnapshot(q, (snapshot) => {
-            const transactions = snapshot.docs.map(doc => {
-                const data = doc.data();
-                return {
-                    id: doc.id,
-                    amount: data.amount,
-                    type: data.type,
-                    description: data.description,
-                    date: data.createdAt ? data.createdAt.toDate().toLocaleDateString() : 'N/A'
-                };
-            });
-            renderTransactions(transactions);
-        }, (error) => {
-            console.error("Error fetching transactions: ", error);
-            listContainer.innerHTML = `<p class="empty-state">No transactions found for this filter.</p>`;
+const fetchTransactions = (filterType = 'all') => {
+    if (!currentUserId) return;
+    if (transactionsUnsubscribe) {
+        transactionsUnsubscribe();
+    }
+
+    let q = query(
+        collection(db, "transactions"), 
+        where("userId", "==", currentUserId), 
+        orderBy("createdAt", "desc")
+    );
+    
+    if (filterType !== 'all') {
+        q = query(q, where("type", "==", filterType));
+
+        // ✅ নতুন কোড: যদি ফিল্টারের ধরন 'withdrawal' হয়, 
+        // তাহলে শুধু 'approved' স্ট্যাটাসের গুলোই দেখাও
+        if (filterType === 'withdrawal') {
+            q = query(q, where("status", "==", "approved"));
+        }
+    }
+
+    transactionsUnsubscribe = onSnapshot(q, (snapshot) => {
+        const transactions = snapshot.docs.map(doc => {
+            const data = doc.data();
+            return {
+                id: doc.id,
+                amount: data.amount,
+                type: data.type,
+                description: data.description,
+                date: data.createdAt ? data.createdAt.toDate().toLocaleDateString() : 'N/A'
+            };
         });
-    };
+        renderTransactions(transactions);
+    }, (error) => {
+        console.error("Error fetching transactions: ", error);
+        listContainer.innerHTML = `<p class="empty-state">Could not load transactions. Please try again.</p>`;
+    });
+};
 
     filterButtons.forEach(button => {
         button.addEventListener('click', () => {
