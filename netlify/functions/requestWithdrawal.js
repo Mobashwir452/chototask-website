@@ -34,9 +34,9 @@ exports.handler = async (event, context) => {
 
         await db.runTransaction(async (transaction) => {
             const walletDoc = await transaction.get(workerWalletRef);
-            if (!walletDoc.exists() || (walletDoc.data().balance || 0) < withdrawalAmount) {
+            if (!walletDoc.exists || (walletDoc.data().balance || 0) < withdrawalAmount) { // <--- () ছাড়া সঠিক রূপ
                 throw new Error("Insufficient balance for this withdrawal request.");
-            }
+            }   
 
             transaction.update(workerWalletRef, {
                 balance: admin.firestore.FieldValue.increment(-withdrawalAmount),
