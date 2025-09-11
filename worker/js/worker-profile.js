@@ -1,7 +1,7 @@
 // FILE: /worker/js/worker-profile.js (FINAL & COMPLETE)
 
 import { auth, db } from '/js/firebase-config.js';
-import { doc, getDoc, setDoc, updateDoc, onSnapshot, collection, query, where, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { doc, getDoc, setDoc, updateDoc, onSnapshot, collection, query, where, getCountFromServer, collectionGroup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 document.addEventListener('componentsLoaded', () => {
@@ -177,7 +177,7 @@ document.addEventListener('componentsLoaded', () => {
         try {
             const userDocRef = doc(db, "users", userId);
             const walletDocRef = doc(db, "wallets", userId);
-            const submissionsRef = collection(db, "submissions");
+            const submissionsRef = collectionGroup(db, 'submissions');
 
             // Use onSnapshot to listen for real-time user/wallet updates
             onSnapshot(userDocRef, (userDoc) => {

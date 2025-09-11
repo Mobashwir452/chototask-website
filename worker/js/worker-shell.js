@@ -28,14 +28,24 @@ function listenToWallet(userId) {
     });
 }
 
+
+
+// এই নতুন ফাংশনটি দিয়ে আপনার পুরনো setActiveNavLink ফাংশনটি প্রতিস্থাপন করুন
+
 function setActiveNavLink() {
-    const navContainer = document.querySelector('.worker-bottom-nav');
+    // ✅ ক্লায়েন্ট সাইডের মতো সঠিক placeholder ID ব্যবহার করা হয়েছে
+    const navContainer = document.getElementById('worker-bottom-nav-placeholder');
     if (!navContainer) return;
+
+    // ✅ ক্লায়েন্ট সাইডের মতোই সহজ এবং কার্যকর লজিক ব্যবহার করা হয়েছে
     const navLinks = navContainer.querySelectorAll('a.bottom-nav__link');
     const currentPath = window.location.pathname;
+
     navLinks.forEach(link => {
         link.classList.remove('active');
         const linkPath = new URL(link.href).pathname;
+        
+        // হুবহু পাথ মিললে 'active' ক্লাস যোগ করা হচ্ছে
         if (linkPath === currentPath) {
             link.classList.add('active');
         }
