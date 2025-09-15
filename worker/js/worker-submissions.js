@@ -34,7 +34,7 @@ document.addEventListener('componentsLoaded', () => {
         };
         tabsContainer.innerHTML = `
             <button class="tab-btn ${activeTab === 'pending' ? 'active' : ''}" data-tab="pending">Pending <span class="count-badge">${counts.pending}</span></button>
-            <button class="tab-btn resubmit-required ${activeTab === 'resubmit_required' ? 'active' : ''}" data-tab="resubmit_required">Resubmit Required <span class="count-badge">${counts.resubmit_required}</span></button>
+            <button class="tab-btn resubmit-required ${activeTab === 'resubmit_required' ? 'active' : ''}" data-tab="resubmit_required">Resubmit <span class="count-badge">${counts.resubmit_required}</span></button>
             <button class="tab-btn ${activeTab === 'approved' ? 'active' : ''}" data-tab="approved">Approved <span class="count-badge">${counts.approved}</span></button>
             <button class="tab-btn ${activeTab === 'rejected' ? 'active' : ''}" data-tab="rejected">Rejected <span class="count-badge">${counts.rejected}</span></button>
         `;
