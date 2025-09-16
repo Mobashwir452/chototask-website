@@ -67,6 +67,9 @@
     padding-bottom: 1rem;
 }
 
+/* === REPLACE the old .list-header styles with this new RESPONSIVE version === */
+
+/* This is the default style for DESKTOP view */
 .list-header {
     display: flex;
     justify-content: space-between;
@@ -78,6 +81,15 @@
     border-bottom: 2px solid transparent;
     border-image-source: var(--client-accent-gradient);
     border-image-slice: 1;
+}
+
+/* This style will apply ONLY on screens 767px or smaller (MOBILE view) */
+@media (max-width: 767px) {
+    .list-header {
+        /* This negative margin trick breaks the header out of the parent .container's padding */
+        margin-left: -1rem;
+        margin-right: -1rem;
+    }
 }
 
 .list-header h3 {

@@ -82,21 +82,29 @@
 
 /* FILE: /css/client-dashboard.css */
 
+/* === REPLACE the old .list-header style with this new RESPONSIVE version === */
+
+/* This is the default style for DESKTOP view */
 .list-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem; /* Increased space below the header */
-    
-    /* FIX: Added styles for the new design */
+    margin-bottom: 1.5rem;
     background-color: var(--client-card-bg);
     padding: 1rem 1.5rem;
     border-top: 2px solid transparent;
     border-bottom: 2px solid transparent;
     border-image-source: var(--client-accent-gradient);
     border-image-slice: 1;
-   
-    
+}
+
+/* This style will apply ONLY on screens 767px or smaller (MOBILE view) */
+@media (max-width: 767px) {
+    .list-header {
+        /* This negative margin trick breaks the header out of the parent .container's padding */
+        margin-left: -1rem;
+        margin-right: -1rem;
+    }
 }
 
 .list-header h3 {
