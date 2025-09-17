@@ -76,7 +76,7 @@
 }
 
 .hero-buttons .btn-accent {
-    background: linear-gradient(90deg, var(--color-accent-secondary), var(--color-accent-primary));
+    background: linear-gradient(90deg, var(--color-dark-secondary), var(--color-dark-primary));
 }
 
 .section-light {

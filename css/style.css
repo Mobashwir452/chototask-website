@@ -123,8 +123,8 @@ header {
 }
 
 .btn-accent { 
-    background: linear-gradient(90deg, var(--color-accent-secondary), var(--color-accent-primary)); 
-    color: var(--color-dark-primary); 
+    background: linear-gradient(90deg, var(--color-dark-secondary), var(--color-dark-primary));
+    color: var(--color-text-light); 
 }
 
 .btn-light { 
@@ -152,8 +152,10 @@ background: linear-gradient(90deg, var(--color-dark-secondary), var(--color-dark
     color: var(--color-text-dark); 
 }
 
+/* === REPLACE the entire "Mobile Menu Styles" section in /css/style.css with this === */
+
 /* =================================== */
-/* Mobile Menu Styles                  */
+/* Mobile Menu Styles (NEW DESIGN 2)   */
 /* =================================== */
 
 .menu-button { 
@@ -190,7 +192,7 @@ background: linear-gradient(90deg, var(--color-dark-secondary), var(--color-dark
     z-index: 100;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
+    transition: opacity 0.3s ease, visibility 0s 0.3s;
 }
 
 .mobile-menu-content {
@@ -211,6 +213,7 @@ background: linear-gradient(90deg, var(--color-dark-secondary), var(--color-dark
 .menu-toggle-input:checked ~ .mobile-menu-container {
     opacity: 1;
     visibility: visible;
+    transition: opacity 0.3s ease;
 }
 
 .menu-toggle-input:checked ~ .mobile-menu-container .mobile-menu-content {
@@ -261,13 +264,15 @@ background: linear-gradient(90deg, var(--color-dark-secondary), var(--color-dark
     border-radius: 0.75rem;
     font-weight: 600;
     text-decoration: none;
-    color: var(--color-text-dark);
-    background-color: var(--color-light-card);
-    transition: background-color 0.2s, transform 0.2s;
+    
+    /* ✅ পরিবর্তন: ডিজাইনের মতো ডার্ক গ্রেডিয়েন্ট ব্যাকগ্রাউন্ড */
+    background: linear-gradient(90deg, var(--color-dark-secondary), var(--color-dark-primary));
+    color: var(--color-text-light);
+    
+    transition: transform 0.2s;
 }
 
 .mobile-menu-link:hover {
-    background-color: #e9ecef;
     transform: scale(1.02);
 }
 
@@ -279,7 +284,9 @@ background: linear-gradient(90deg, var(--color-dark-secondary), var(--color-dark
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--color-accent-secondary), var(--color-accent-primary));
+    
+    /* ✅ পরিবর্তন: ডিজাইনের মতো সাদা ব্যাকগ্রাউন্ড এবং ডার্ক আইকন */
+    background-color: var(--white);
     color: var(--color-dark-primary);
 }
 
@@ -288,10 +295,15 @@ background: linear-gradient(90deg, var(--color-dark-secondary), var(--color-dark
 }
 
 .get-started-btn {
-    margin-top: auto;
+    margin-top: auto; /* Pushes button to the bottom */
     width: 100%;
     justify-content: center;
     padding: 0.8rem 1.5rem;
+    
+    /* ✅ পরিবর্তন: ডিজাইনের মতো ডার্ক গ্রেডিয়েন্ট বাটন */
+    background: linear-gradient(90deg, var(--color-dark-secondary), var(--color-dark-primary));
+    color: var(--color-text-light);
+    border: none;
 }
 
 /* =================================== */
@@ -460,4 +472,32 @@ main.has-end-cta > .block:last-child {
 /* Ensure no gap for any end-CTA block, even if hidden */
 main.has-end-cta > .block.block--end-cta {
   margin-bottom: 0 !important;
+}
+
+
+
+
+
+
+/* === Hero Icon Logo Overlay === */
+
+/* First, ensure the top layer can contain the positioned logo */
+.hero-icon-top {
+    position: relative; /* This is important for positioning the logo inside */
+}
+
+/* Now, add the logo as a pseudo-element */
+.hero-icon-top::before {
+    content: ''; /* Required for pseudo-elements */
+    position: absolute;
+    inset: 0; /* Makes it cover the entire parent element */
+    
+    /* Your logo path */
+    background-image: url('/Logo/Logo1.png'); 
+    
+    background-size: 80%; /* Adjust size as needed, 80% is a good start */
+    background-position: center;
+    background-repeat: no-repeat;
+    
+    
 }
