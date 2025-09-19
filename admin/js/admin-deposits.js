@@ -11,8 +11,8 @@ const modalBody = document.getElementById('admin-modal-body');
 const modalCloseBtn = document.getElementById('admin-modal-close-btn');
 
 // --- MODAL CONTROLS ---
-const showAdminModal = () => adminModal.style.display = 'flex';
-const hideAdminModal = () => adminModal.style.display = 'none';
+const showAdminModal = () => adminModal.classList.add('visible');
+const hideAdminModal = () => adminModal.classList.remove('visible');
 if (modalCloseBtn) modalCloseBtn.addEventListener('click', hideAdminModal);
 adminModal.addEventListener('click', (e) => {
     if (e.target === adminModal) hideAdminModal();
