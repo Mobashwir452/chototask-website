@@ -16,6 +16,7 @@
 [functions]
   included_files = ["./service-account.json"] # If you have a file
 
-# Schedule the function to run once every day at midnight UTC
+# === CHANGED: Schedule a "0 * * * *" kore din ===
+# Schedule the function to run once every hour
 [functions."auto-approve-submissions"]
-  schedule = "0 0 * * *"
+  schedule = "0 * * * *"
