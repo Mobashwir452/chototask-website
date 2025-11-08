@@ -638,9 +638,18 @@ header#client-header-placeholder {
     transform: scale(1.03);
 }
 
+/* "Approve" বাটনের জন্য সবুজ আউটলাইন স্টাইল */
 .modal-btn--confirm {
-    background: var(--client-accent-gradient);
-    color: var(--client-text-dark);
+    background: transparent;
+    color: #27AE60; /* Green Text */
+    border: 1px solid #27AE60; /* Green Border */
+}
+
+/* হোভার করলে সলিড সবুজ হবে */
+.modal-btn--confirm:hover {
+    background: #27AE60;
+    color: white;
+    transform: scale(1.03); /* আগের হোভার ইফেক্টটি ঠিক রাখা হলো */
 }
 
 .modal-btn--cancel {
