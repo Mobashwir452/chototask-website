@@ -203,3 +203,16 @@ onAuthStateChanged(auth, (user) => {
         }
     }
 });
+
+
+/* === Add Favicon to All Worker Pages === */
+(function() {
+    const faviconLink = document.createElement('link');
+    faviconLink.rel = 'icon';
+    faviconLink.type = 'image/png';
+    faviconLink.href = '/Logo/Logo1.png'; // আপনার লোগোর সঠিক পাথ
+    document.head.appendChild(faviconLink);
+})();
+
+/* === Your existing worker-shell.js code continues below === */
+// ... (আপনার বাকি কোড) ...
