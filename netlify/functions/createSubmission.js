@@ -1,4 +1,4 @@
-// FILE: netlify/functions/createSubmission.js (NEW FILE)
+// FILE: netlify/functions/createSubmission.js (UPDATED WITH SLOT CHECK)
 
 const admin = require('firebase-admin');
 
@@ -36,9 +36,28 @@ exports.handler = async (event, context) => {
                 throw new Error("This job no longer exists.");
             }
             const jobData = jobDoc.data();
-            const cooldownSeconds = jobData.submissionCooldown || 0;
 
-            // 2. The Cooldown Check
+            
+            // ===================================================================
+            // === START: RACE CONDITION FIX (নতুন কোডটি এখানে) ===
+            // ===================================================================
+            // কাউন্টারগুলো পড়ুন (0 fallback সহ)
+            const approved = jobData.submissionsApproved || 0;
+            const pending = jobData.submissionsPending || 0;
+            const needed = jobData.workersNeeded || 0;
+
+            // মূল ভ্যালিডেশন: স্লট কি পূর্ণ?
+            if ((approved + pending) >= needed) {
+                // যদি জবটি পূর্ণ হয়ে যায়, তবে এরর দিন
+                throw new Error("Sorry, this job is already full or no longer accepting submissions.");
+            }
+            // ===================================================================
+            // === END: RACE CONDITION FIX ===
+            // ===================================================================
+
+
+            // 2. The Cooldown Check (আপনার আগের কোড)
+            const cooldownSeconds = jobData.submissionCooldown || 0;
             if (cooldownSeconds > 0) {
                 const lastSubmissionQuery = submissionsColRef
                     .where('workerId', '==', workerId)
@@ -60,7 +79,7 @@ exports.handler = async (event, context) => {
                 }
             }
             
-            // 3. If cooldown check passes, create the submission
+            // 3. If slot check and cooldown check passes, create the submission
             const newSubmissionRef = submissionsColRef.doc();
             const submissionData = { 
                 workerId: workerId, 
@@ -74,6 +93,7 @@ exports.handler = async (event, context) => {
                 submissionCount: 1
             };
             
+            // এই দুটি কাজ একসাথে (atomically) হবে
             transaction.set(newSubmissionRef, submissionData);
             transaction.update(jobRef, { submissionsPending: admin.firestore.FieldValue.increment(1) });
         });
@@ -82,6 +102,7 @@ exports.handler = async (event, context) => {
 
     } catch (error) {
         console.error("Error in createSubmission function:", error);
+        // আমাদের কাস্টম এররগুলো ওয়ার্কারকে দেখানো হবে
         return { statusCode: 500, body: JSON.stringify({ success: false, error: error.message }) };
     }
 };

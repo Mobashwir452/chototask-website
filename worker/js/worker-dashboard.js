@@ -34,11 +34,9 @@ document.addEventListener('componentsLoaded', () => {
         statTotalEarned.textContent = `${CURRENCY}${(wallet?.totalEarned ?? 0).toLocaleString()}`;
     };
 
-// এই নতুন ফাংশনটি দিয়ে আপনার পুরনো renderJobs ফাংশনটি প্রতিস্থাপন করুন
-
-
-// এই নতুন ফাংশনটি দিয়ে আপনার পুরনো renderJobs ফাংশনটি প্রতিস্থাপন করুন
-
+// ===================================================================
+// === START: renderJobs ফাংশনটি আপডেট করা হয়েছে ===
+// ===================================================================
 const renderJobs = (jobs) => {
     if (!jobListContainer) return;
     if (jobs.length === 0) {
@@ -46,10 +44,12 @@ const renderJobs = (jobs) => {
         return;
     }
     jobListContainer.innerHTML = jobs.map(job => {
-        // প্রোগ্রেস বার ক্যালকুলেশন
-        const received = job.submissionsApproved || 0;
+        // --- CHANGED: স্লট কাউন্ট লজিক আপডেট করা হয়েছে ---
+        const approved = job.submissionsApproved || 0;
+        const pending = job.submissionsPending || 0; // নতুন: পেন্ডিং কাউন্ট যোগ করা হয়েছে
+        const slotsTaken = approved + pending; // নতুন: এটিই স্লটের আসল সংখ্যা
         const needed = job.workersNeeded || 0;
-        const progressPercent = needed > 0 ? (received / needed) * 100 : 0;
+        const progressPercent = needed > 0 ? (slotsTaken / needed) * 100 : 0; // প্রোগ্রেস বারও আপডেট করা হয়েছে
 
         return `
             <a href="/worker/job-details.html?id=${job.id}" class="list-item-link">
@@ -64,7 +64,7 @@ const renderJobs = (jobs) => {
                     </div>
                     
                     <div class="card-bottom-section">
-                        <span><i class="fa-solid fa-users"></i> ${received}/${needed} Submitted</span>
+                        <span><i class="fa-solid fa-users"></i> ${slotsTaken}/${needed} Filled</span>
                         <span><i class="fa-solid fa-tag"></i> ${job.category}</span>
                     </div>
                 </div>
@@ -72,9 +72,10 @@ const renderJobs = (jobs) => {
         `;
     }).join('');
 };
+// ===================================================================
+// === END: renderJobs ফাংশন আপডেট ===
+// ===================================================================
     
-// এই নতুন ফাংশনটি দিয়ে আপনার পুরনো renderActivity ফাংশনটি প্রতিস্থাপন করুন
-
 const renderActivity = (activities) => {
     if (!activityListContainer) return;
     if (activities.length === 0) {
@@ -82,7 +83,6 @@ const renderActivity = (activities) => {
         return;
     }
 
-    // ওয়ার্কারের জন্য অ্যাক্টিভিটি আইকন ম্যাপ
     const iconMap = {
         'withdrawal_approved': 'fa-check',
         'withdrawal_rejected': 'fa-times',
@@ -122,8 +122,6 @@ const renderActivity = (activities) => {
             const pendingQuery = query(submissionsRef, where("workerId", "==", userId), where("status", "==", "pending"));
             const completedQuery = query(submissionsRef, where("workerId", "==", userId), where("status", "==", "approved"));
             const jobsQuery = query(jobsRef, where("status", "in", ["open", "active"]), orderBy("createdAt", "desc"), limit(3));
-            
-            // ✅ পরিবর্তন: অ্যাক্টিভিটি আনার জন্য নতুন কোয়েরি যোগ করা হয়েছে
             const activityQuery = query(activitiesRef, where("userId", "==", userId), orderBy("timestamp", "desc"), limit(3));
 
             const [
@@ -131,13 +129,13 @@ const renderActivity = (activities) => {
                 pendingSnapshot,
                 completedSnapshot,
                 jobsSnapshot,
-                activitySnapshot // ✅ পরিবর্তন
+                activitySnapshot 
             ] = await Promise.all([
                 walletPromise,
                 getCountFromServer(pendingQuery),
                 getCountFromServer(completedQuery),
                 getDocs(jobsQuery),
-                getDocs(activityQuery) // ✅ পরিবর্তন
+                getDocs(activityQuery) 
             ]);
 
             // Process Stats & Wallet
@@ -152,7 +150,6 @@ const renderActivity = (activities) => {
             const realJobs = jobsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             renderJobs(realJobs);
             
-            // ✅ পরিবর্তন: অ্যাক্টিভিটি রেন্ডার করা হচ্ছে
             const activities = activitySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             renderActivity(activities);
 

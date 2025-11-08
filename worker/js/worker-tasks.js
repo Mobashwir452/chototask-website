@@ -1,4 +1,4 @@
-// FILE: /worker/js/worker-tasks.js (FINAL MOBILE-FIRST REDESIGN)
+// FILE: /worker/js/worker-tasks.js (UPDATED FOR RACE CONDITION)
 
 import { auth, db } from '/js/firebase-config.js';
 import { collection, query, where, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -23,8 +23,9 @@ document.addEventListener('componentsLoaded', () => {
         return map[category] || map['default'];
     };
 
-// === REPLACE THE OLD renderTasks FUNCTION WITH THIS NEW ONE ===
-
+// ===================================================================
+// === START: renderTasks ফাংশনটি আপডেট করা হয়েছে ===
+// ===================================================================
 const renderTasks = (tasks) => {
     if (!taskListContainer) return;
     if (tasks.length === 0) {
@@ -33,12 +34,15 @@ const renderTasks = (tasks) => {
     }
 
     taskListContainer.innerHTML = tasks.map(task => {
-        const completed = task.submissionsApproved || 0;
+        // --- CHANGED: স্লট কাউন্ট লজিক আপডেট করা হয়েছে ---
+        const approved = task.submissionsApproved || 0;
+        const pending = task.submissionsPending || 0; // নতুন: পেন্ডিং কাউন্ট যোগ করা হয়েছে
+        const slotsTaken = approved + pending; // নতুন: এটিই স্লটের আসল সংখ্যা
         const needed = task.workersNeeded || 1;
-        const progress = needed > 0 ? (completed / needed) * 100 : 0;
+        const progress = needed > 0 ? (slotsTaken / needed) * 100 : 0; // প্রোগ্রেস বারও আপডেট করা হয়েছে
         const approvalTime = task.approvalTime || '24 Hours';
 
-        // --- Desktop Card HTML (No Change) ---
+        // --- Desktop Card HTML ---
         const desktopCardHTML = `
             <a href="/worker/job-details.html?id=${task.id}" class="task-card desktop-only">
                 <div class="task-card__header">
@@ -50,7 +54,7 @@ const renderTasks = (tasks) => {
                         <i class="stat-icon fa-solid fa-users"></i>
                         <div class="stat-text">
                             <span class="stat-label">Slots</span>
-                            <strong>${completed}/${needed}</strong>
+                            <strong>${slotsTaken}/${needed}</strong>
                         </div>
                     </div>
                     <div class="stat-item">
@@ -90,7 +94,7 @@ const renderTasks = (tasks) => {
             </a>
         `;
 
-        // --- NEW: Mobile Card HTML (With Icons and Progress Bar) ---
+        // --- Mobile Card HTML ---
         const mobileCardHTML = `
             <a href="/worker/job-details.html?id=${task.id}" class="task-card mobile-only">
                 <div class="task-card__header">
@@ -109,7 +113,7 @@ const renderTasks = (tasks) => {
                         <i class="fa-solid fa-users stat-icon-mobile"></i>
                         <div class="stat-text-mobile">
                             <span class="stat-label-mobile">Slots</span>
-                            <strong>${completed}/${needed}</strong>
+                            <strong>${slotsTaken}/${needed}</strong>
                         </div>
                     </div>
                     <div class="stat-item-mobile">
@@ -145,9 +149,9 @@ const renderTasks = (tasks) => {
         return desktopCardHTML + mobileCardHTML;
     }).join('');
 };
-
-
-
+// ===================================================================
+// === END: renderTasks ফাংশন আপডেট ===
+// ===================================================================
 
     const fetchAndRenderTasks = async () => {
         const category = categoryFilter.value;
