@@ -102,23 +102,52 @@ document.addEventListener('componentsLoaded', () => {
                     return;
                 }
             }
-            // Step 2 Validation
+// Step 2 Validation (REVISED BLOCK)
             if (currentStep === 2) {
-                const instructionCount = instructionList.children.length;
-                const restrictionCount = restrictionList.children.length;
+                const instructionItems = instructionList.querySelectorAll('input'); //
+                const restrictionItems = restrictionList.querySelectorAll('input'); //
+                
+                const instructionCount = instructionItems.length;
+                const restrictionCount = restrictionItems.length;
+
+                // 1. Check if lists are empty (আগের চেক)
                 if (instructionCount === 0 || restrictionCount === 0) {
-                    showModal('error', 'Missing Steps', 'Please add at least one instruction and one restriction.');
+                    showModal('error', 'Missing Steps', 'Please add at least one instruction and one restriction.'); //
+                    return;
+                }
+
+                // 2. NEW: Check if any input value is empty (নতুন চেক)
+                // We combine both lists and check them all
+                const allInputs = [...instructionItems, ...restrictionItems];
+                const hasEmptyInput = allInputs.some(input => input.value.trim() === ''); //
+
+                if (hasEmptyInput) {
+                    showModal('error', 'Empty Fields', 'Please fill out all added instructions and rules. Do not leave any field blank.');
                     return;
                 }
             }
-            // Step 3 Validation
+
+            // Step 3 Validation (REVISED BLOCK)
             if (currentStep === 3) {
-                const proofCount = proofList.children.length;
-                if (proofCount === 0) {
-                    showModal('error', 'Proof Required', 'Please add at least one proof requirement.');
+                const proofInputs = proofList.querySelectorAll('input'); //
+                const proofCount = proofInputs.length;
+
+                // 1. Check if the list is empty (আগের চেক)
+                if (proofCount === 0) { //
+                    showModal('error', 'Proof Required', 'Please add at least one proof requirement.'); //
+                    return;
+                }
+
+                // 2. NEW: Check if any proof input value is empty (নতুন চেক)
+                const hasEmptyInput = Array.from(proofInputs).some(input => input.value.trim() === ''); //
+
+                if (hasEmptyInput) {
+                    showModal('error', 'Empty Instruction', 'Please fill out all added proof instructions. Do not leave any field blank.');
                     return;
                 }
             }
+
+
             // Step 4 Validation
             if (currentStep === 4) {
                 const workers = document.getElementById('workers-needed').value;
