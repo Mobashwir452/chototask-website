@@ -47,7 +47,7 @@ const renderJobs = (jobs) => {
     }
     jobListContainer.innerHTML = jobs.map(job => {
         // প্রোগ্রেস বার ক্যালকুলেশন
-        const received = job.submissionsReceived || 0;
+        const received = job.submissionsApproved || 0;
         const needed = job.workersNeeded || 0;
         const progressPercent = needed > 0 ? (received / needed) * 100 : 0;
 
