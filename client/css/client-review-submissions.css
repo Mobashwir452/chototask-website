@@ -169,11 +169,39 @@
     flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
     width: 100%; /* Ensure actions take full width for centering */
 }
-.action-btn { padding: 0.6rem 1rem; border-radius: 0.5rem; font-weight: 600; cursor: pointer; border: none; font-size: 0.85rem; transition: transform 0.2s ease; }
+.action-btn { 
+    padding: 0.6rem 1rem; 
+    border-radius: 0.5rem; 
+    font-weight: 600; 
+    cursor: pointer; 
+    border: 1px solid transparent; /* 'none' থেকে পরিবর্তন করা হয়েছে */
+    font-size: 0.85rem; 
+    /* ট্রানজিশন আপডেট করা হয়েছে */
+    transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; 
+}
+
 .action-btn:hover { transform: scale(1.05); }
 .btn-view { background: var(--client-accent-gradient); color: var(--client-text-dark); }
-.btn-approve { background-color: #27AE60; color: white; }
-.btn-reject { background-color: #c94040; color: white; }
+.btn-approve { 
+    background-color: transparent;
+    color: #27AE60; /* Green Text */
+    border-color: #27AE60; /* Green Border */
+}
+.btn-approve:hover { 
+    background-color: #27AE60; /* Solid Green BG on Hover */
+    color: white; 
+    border-color: #27AE60;
+}
+.btn-reject { 
+    background-color: transparent;
+    color: #EB5757; /* Red Text */
+    border-color: #EB5757; /* Red Border */
+}
+.btn-reject:hover { 
+    background-color: #EB5757; /* Solid Red BG on Hover */
+    color: white; 
+    border-color: #EB5757;
+}
 
 /* --- Modal Styles (for Success, Rejection, and Proof) --- */
 .modal-overlay {
